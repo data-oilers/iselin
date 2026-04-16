@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E1 — Fundamentos, Calidad y Primer Contacto con PBI | ISELIN</title>
+<link rel="stylesheet" href="node_modules/reveal.js/dist/reset.css">
+<link rel="stylesheet" href="node_modules/reveal.js/dist/reveal.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════ */
+:root {
+    --font: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+
+    /* Backgrounds */
+    --bg: #F5F7FA;
+    --surface: #FFFFFF;
+    --surface-alt: #F0F3F8;
+    --surface-dark: #0E1525;
+
+    /* Borders */
+    --border: #E2E8F0;
+    --border-hover: #CBD5E1;
+
+    /* Text */
+    --ink: #0F172A;
+    --ink2: #334155;
+    --ink3: #475569;
+    --ink4: #64748B;
+
+    /* Accents */
+    --blue: #3B82F6;
+    --blue-soft: #EFF6FF;
+    --blue-mid: #BFDBFE;
+    --teal: #0D9488;
+    --teal-soft: #F0FDFA;
+    --orange: #EA580C;
+    --orange-soft: #FFF7ED;
+    --green: #059669;
+    --green-soft: #ECFDF5;
+    --purple: #7C3AED;
+    --purple-soft: #F5F3FF;
+    --red: #DC2626;
+
+    /* Gradients */
+    --grad-blue: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+    --grad-teal: linear-gradient(135deg, #0D9488 0%, #0891B2 100%);
+    --grad-warm: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%);
+    --grad-green: linear-gradient(135deg, #059669 0%, #0D9488 100%);
+    --grad-cover: linear-gradient(160deg, #0E1525 0%, #162032 40%, #1A2744 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow: 0 4px 16px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.08);
+
+    /* Radius */
+    --r: 14px;
+    --r-sm: 8px;
+    --r-lg: 20px;
+}
+
+/* ═══════════════════════════════════════
+   REVEAL CORE
+   ═══════════════════════════════════════ */
+.reveal-viewport { background: var(--bg); }
+.reveal { font-family: var(--font); font-size: 36px; color: var(--ink2); }
+.reveal .slides { text-align: left; }
+.reveal .slides section {
+    padding: 44px 72px 48px;
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: column;
+    height: 720px;
+}
+.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+    font-family: var(--font); color: var(--ink); font-weight: 700;
+    text-transform: none; letter-spacing: -0.025em; line-height: 1.15; margin: 0; text-align: left;
+}
+.reveal h1 { font-size: 2.4em; font-weight: 900; letter-spacing: -0.04em; }
+.reveal h2 { font-size: 1.6em; font-weight: 800; }
+.reveal h3 { font-size: 0.88em; font-weight: 700; }
+.reveal p { margin: 0; line-height: 1.65; }
+.reveal strong { color: var(--ink); font-weight: 600; }
+.reveal .slide-number {
+    font-family: var(--font); font-size: 12px; font-weight: 500;
+    color: var(--ink4); background: none; right: 52px; bottom: 20px;
+}
+.reveal .progress span { background: var(--blue); height: 3px; }
+.reveal .controls { color: var(--blue); }
+.reveal .controls button { opacity: 0.4; }
+.reveal .controls button:hover { opacity: 1; }
+
+/* ═══════════════════════════════════════
+   LAYOUT HELPERS
+   ═══════════════════════════════════════ */
+.grow { flex: 1; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: stretch; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; flex: 1; align-content: stretch; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex: 1; align-content: stretch; }
+
+/* ═══════════════════════════════════════
+   SECTION LABEL
+   ═══════════════════════════════════════ */
+.label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.4em; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--blue); margin-bottom: 6px;
+}
+.label::before {
+    content: ''; width: 24px; height: 2px; background: var(--blue); border-radius: 2px;
+}
+.label.teal { color: var(--teal); }
+.label.teal::before { background: var(--teal); }
+.label.green { color: var(--green); }
+.label.green::before { background: var(--green); }
+
+/* ═══════════════════════════════════════
+   SUBTITLE
+   ═══════════════════════════════════════ */
+.sub { color: var(--ink2); font-size: 0.52em; font-weight: 400; margin-top: 6px; line-height: 1.5; }
+
+/* ═══════════════════════════════════════
+   BOTTOM QUOTE (frase de impacto)
+   ═══════════════════════════════════════ */
+.bottom-quote {
+    margin-top: auto;
+    padding-top: 14px;
+    text-align: center;
+    font-size: 0.42em;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--ink3);
+    border-top: 1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════
+   CARD
+   ═══════════════════════════════════════ */
+.card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 24px;
+    box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+}
+.card[data-top]::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.card[data-top="blue"]::before { background: var(--grad-blue); }
+.card[data-top="teal"]::before { background: var(--grad-teal); }
+.card[data-top="orange"]::before { background: var(--grad-warm); }
+.card[data-top="green"]::before { background: var(--grad-green); }
+.card[data-top="purple"]::before { background: linear-gradient(135deg, #7C3AED, #6366F1); }
+
+.card h3 { font-size: 0.62em; margin-bottom: 8px; }
+.card p { font-size: 0.5em; color: var(--ink2); line-height: 1.75; }
+.card ul { font-size: 0.5em; color: var(--ink2); line-height: 1.85; padding-left: 1.1em; margin: 8px 0 0; }
+
+/* Soft bg cards */
+.card.soft-blue { background: var(--blue-soft); border-color: var(--blue-mid); }
+.card.soft-teal { background: var(--teal-soft); border-color: #99F6E4; }
+.card.soft-orange { background: var(--orange-soft); border-color: #FED7AA; }
+.card.soft-green { background: var(--green-soft); border-color: #A7F3D0; }
+
+/* ═══════════════════════════════════════
+   BADGE
+   ═══════════════════════════════════════ */
+.badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: var(--r-sm);
+    font-weight: 800; font-size: 0.52em; color: white; flex-shrink: 0;
+}
+.badge.blue { background: var(--grad-blue); }
+.badge.teal { background: var(--grad-teal); }
+.badge.orange { background: var(--grad-warm); }
+.badge.green { background: var(--grad-green); }
+
+/* ═══════════════════════════════════════
+   PILL
+   ═══════════════════════════════════════ */
+.pill {
+    display: inline-block; font-size: 0.4em; font-weight: 600;
+    padding: 3px 12px; border-radius: 20px;
+    background: var(--surface-alt); color: var(--ink3); border: 1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════
+   AGENDA
+   ═══════════════════════════════════════ */
+.agenda { display: flex; flex-direction: column; gap: 7px; flex: 1; margin-top: 14px; justify-content: center; }
+.ag {
+    display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 13px 24px;
+    position: relative; overflow: hidden;
+}
+.ag::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.ag:nth-child(1)::before, .ag:nth-child(3)::before, .ag:nth-child(5)::before { background: var(--blue); }
+.ag:nth-child(2)::before, .ag:nth-child(4)::before { background: var(--teal); }
+.ag:nth-child(6)::before { background: var(--ink4); }
+.ag .t { font-size: 0.44em; color: var(--ink3); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ag .n { font-size: 0.52em; color: var(--ink); font-weight: 600; }
+.ag .d { font-size: 0.42em; color: var(--ink3); text-align: right; }
+
+/* ═══════════════════════════════════════
+   FLOW (ETL steps)
+   ═══════════════════════════════════════ */
+.flow { display: flex; align-items: stretch; gap: 0; flex: 1; margin-top: 16px; min-height: 0; }
+.flow-step {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 28px 22px; text-align: center;
+    display: flex; flex-direction: column; align-items: center;
+}
+.flow-step h3 { text-align: center; margin: 10px 0 8px; }
+.flow-step p { text-align: center; font-size: 0.46em; }
+.flow-step .detail {
+    font-size: 0.4em; color: var(--ink3); margin-top: auto;
+    padding-top: 14px; border-top: 1px solid var(--border);
+    width: 100%;
+}
+.flow-arrow {
+    display: flex; align-items: center; padding: 0 8px;
+    font-size: 1.4em; color: var(--ink4); flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════
+   COMPARE (Filters)
+   ═══════════════════════════════════════ */
+.compare { display: flex; gap: 20px; align-items: stretch; flex: 1; margin-top: 16px; min-height: 0; }
+.compare-box {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 28px;
+}
+.compare-box.active { border-color: var(--teal); background: var(--teal-soft); }
+.compare-box h3 { font-size: 0.58em; margin-bottom: 18px; }
+.compare-row {
+    display: flex; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid var(--border); font-size: 0.48em;
+}
+.compare-row:last-child { border: none; }
+.compare-row .v { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.compare-arrow { display: flex; align-items: center; font-size: 1.8em; color: var(--blue); flex-shrink: 0; padding: 0 4px; }
+
+/* ═══════════════════════════════════════
+   QUALITY GRID
+   ═══════════════════════════════════════ */
+.q-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; flex: 1; margin-top: 16px; align-content: center; }
+.q-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 22px 18px;
+    display: flex; align-items: flex-start; gap: 14px;
+}
+.q-item .ic {
+    width: 36px; height: 36px; border-radius: var(--r-sm); display: flex;
+    align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; color: white;
+}
+.q-item h4 { font-size: 0.5em; margin: 0 0 4px; }
+.q-item p { font-size: 0.42em; margin: 0; color: var(--ink2); }
+
+/* ═══════════════════════════════════════
+   PDCA
+   ═══════════════════════════════════════ */
+.pdca-wrap { display: flex; gap: 56px; align-items: center; flex: 1; margin-top: 16px; }
+.pdca-svg { flex-shrink: 0; }
+.pdca-text { flex: 1; }
+.pdca-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 22px; }
+.pdca-item h4 { font-size: 0.54em; margin: 0 0 3px; }
+.pdca-item p { font-size: 0.44em; margin: 0; color: var(--ink2); }
+
+/* ═══════════════════════════════════════
+   PYRAMID
+   ═══════════════════════════════════════ */
+.pyr-wrap { display: flex; gap: 48px; align-items: center; flex: 1; margin-top: 16px; }
+.pyr-visual { flex-shrink: 0; width: 380px; }
+.pyr-labels { flex: 1; display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+.pyr-row {
+    display: grid; grid-template-columns: 120px 1fr 1fr; gap: 14px; align-items: center;
+    padding: 16px 20px; border-radius: var(--r-sm);
+    background: var(--surface); border: 1px solid var(--border);
+}
+.pyr-row h4 { font-size: 0.48em; margin: 0; }
+.pyr-row p { font-size: 0.42em; margin: 0; color: var(--ink2); }
+.pyr-row .ex { font-size: 0.38em; color: var(--ink3); }
+
+/* ═══════════════════════════════════════
+   TIMELINE
+   ═══════════════════════════════════════ */
+.tl { display: flex; gap: 0; flex: 1; margin-top: 28px; position: relative; align-items: flex-start; align-content: center; }
+.tl::before {
+    content: ''; position: absolute; top: 80px; left: 10%; right: 10%;
+    height: 2px; background: var(--border);
+}
+.tl-item { flex: 1; text-align: center; position: relative; z-index: 1; }
+.tl-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 18px 16px; margin: 0 10px 18px;
+    box-shadow: var(--shadow-sm);
+}
+.tl-card.active { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft), var(--shadow); }
+.tl-dot { width: 14px; height: 14px; border-radius: 50%; margin: 0 auto 16px; background: var(--ink4); }
+.tl-dot.active { background: var(--blue); box-shadow: 0 0 0 4px var(--blue-soft); }
+.tl-dot.teal { background: var(--teal); }
+.tl-dot.blue { background: var(--blue); }
+.tl-item h4 { font-size: 0.48em; text-align: center; }
+.tl-item p { font-size: 0.4em; color: var(--ink2); text-align: center; margin-top: 4px; }
+
+/* ═══════════════════════════════════════
+   ENTREGABLES
+   ═══════════════════════════════════════ */
+.ent { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.ent .title { font-size: 0.5em; color: var(--ink); font-weight: 600; }
+.ent .desc { font-size: 0.42em; color: var(--ink3); }
+
+/* ═══════════════════════════════════════
+   COVER / CLOSING SLIDES
+   ═══════════════════════════════════════ */
+.cover {
+    background: var(--grad-cover) !important;
+    color: white;
+    justify-content: center !important;
+    position: relative;
+}
+.cover h1, .cover h2, .cover h3 { color: #F1F5F9; }
+.cover p { color: #94A3B8; }
+.cover .side {
+    position: absolute; left: 0; top: 0; width: 5px; height: 100%;
+    background: linear-gradient(180deg, #3B82F6, #14B8A6, #059669);
+}
+.cover .logo { font-size: 0.7em; font-weight: 800; margin-bottom: 48px; }
+.cover .logo .da { color: #94A3B8; }
+.cover .logo .oi { color: #14B8A6; }
+.cover .enc {
+    display: inline-block; font-size: 0.42em; font-weight: 700;
+    padding: 5px 20px; border-radius: 24px; letter-spacing: 0.12em;
+    background: var(--grad-blue); color: white; margin-bottom: 16px;
+}
+.cover .meta { font-size: 0.46em; color: #4B5F7A; margin-top: 48px; }
+.cover .bottom-quote { color: #4B5F7A; border-top-color: rgba(255,255,255,0.08); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══ 1. PORTADA ═══ -->
+<section class="cover">
+    <div class="side"></div>
+    <div class="logo"><span class="da">data </span><span class="oi">oilers</span></div>
+    <div class="enc">ENCUENTRO 1 DE 4</div>
+    <h1>Fundamentos, Calidad<br>y Primer Contacto<br>con Power BI</h1>
+    <p style="font-size:0.68em;color:#CBD5E1;margin-top:12px">Capacitación en Análisis de Datos</p>
+    <p style="font-size:0.52em;color:#14B8A6;margin-top:8px;font-weight:600;letter-spacing:0.05em">ISELIN &middot; TRANSPORTE</p>
+    <p class="meta">Jueves 16 de abril de 2026</p>
+    <div class="bottom-quote">"Si el petróleo mueve los colectivos, los datos mueven las decisiones."</div>
+</section>
+
+<!-- ═══ 2. AGENDA ═══ -->
+<section>
+    <div class="label">Encuentro 1</div>
+    <h2>Agenda del d&iacute;a</h2>
+    <p class="sub">Lo que vamos a recorrer en estas 2 horas</p>
+    <div class="agenda">
+        <div class="ag"><span class="t">10 min</span><span class="n">Apertura y contexto</span><span class="d">Presentaci&oacute;n del programa y expectativas</span></div>
+        <div class="ag"><span class="t">25 min</span><span class="n">An&aacute;lisis de datos y calidad</span><span class="d">Por qu&eacute; importa y c&oacute;mo se conecta con ISELIN</span></div>
+        <div class="ag"><span class="t">25 min</span><span class="n">Conceptos fundamentales</span><span class="d">ETL, tablas, filtros y estad&iacute;sticas b&aacute;sicas</span></div>
+        <div class="ag"><span class="t">35 min</span><span class="n">Power BI: demo en vivo</span><span class="d">Conocer la herramienta y cargar datos reales</span></div>
+        <div class="ag"><span class="t">15 min</span><span class="n">Cierre y tarea</span><span class="d">Mapa de ruta y preparaci&oacute;n para el Encuentro 2</span></div>
+        <div class="ag"><span class="t">10 min</span><span class="n" style="color:var(--ink4)">Tiempo extra</span><span class="d">Preguntas adicionales</span></div>
+    </div>
+    <div class="bottom-quote">"Un buen plan es el primer paso hacia un buen resultado."</div>
+</section>
+
+<!-- ═══ 3. POR QUÉ IMPORTA ═══ -->
+<section>
+    <div class="label">Fundamentos</div>
+    <h2>&iquest;Por qu&eacute; importa el an&aacute;lisis de datos?</h2>
+    <p class="sub">De la intuici&oacute;n a las decisiones basadas en evidencia</p>
+    <div class="grid-3 grow" style="margin-top:18px; align-items:stretch;">
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">Sin datos, se maneja a ciegas</h3>
+            <p>Cuando las decisiones se basan solo en la experiencia, los errores se repiten.</p>
+            <p style="margin-top:12px">Rutas ineficientes, gasoil que no cierra, siniestros que podrían prevenirse.</p>
+        </div>
+        <div class="card" data-top="green">
+            <h3 style="color:var(--green)">Los datos ya existen</h3>
+            <p>ISELIN genera datos todos los días: viajes, choferes, rutas, consumos, siniestros.</p>
+            <p style="margin-top:12px">El desafío no es tener datos, sino <strong>convertirlos en información útil</strong> para decidir mejor.</p>
+        </div>
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue)">Todos mirando lo mismo</h3>
+            <p>Un dashboard muestra <strong>los mismos números para todas las áreas</strong>, en tiempo real.</p>
+            <p style="margin-top:12px">Operaciones, Calidad, Administración y Dirección alineados con la misma información.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Lo que no se define no se puede medir. Lo que no se mide no se puede mejorar." — Lord Kelvin</div>
+</section>
+
+<!-- ═══ 4. PIRÁMIDE DIKW ═══ -->
+<section>
+    <div class="label teal">Fundamentos</div>
+    <h2>De datos a decisiones</h2>
+    <p class="sub">La pir&aacute;mide del conocimiento (DIKW)</p>
+    <div class="pyr-wrap">
+        <div class="pyr-visual">
+            <svg viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%">
+                <rect x="120" y="4" width="160" height="40" rx="8" fill="#059669"/>
+                <text x="200" y="30" text-anchor="middle" fill="white" font-size="14" font-weight="800" font-family="Inter">SABIDUR&Iacute;A</text>
+                <rect x="84" y="50" width="232" height="40" rx="8" fill="#0D9488"/>
+                <text x="200" y="76" text-anchor="middle" fill="white" font-size="14" font-weight="700" font-family="Inter">CONOCIMIENTO</text>
+                <rect x="48" y="96" width="304" height="40" rx="8" fill="#3B82F6"/>
+                <text x="200" y="122" text-anchor="middle" fill="white" font-size="14" font-weight="700" font-family="Inter">INFORMACI&Oacute;N</text>
+                <rect x="12" y="142" width="376" height="40" rx="8" fill="#64748B"/>
+                <text x="200" y="168" text-anchor="middle" fill="white" font-size="14" font-weight="600" font-family="Inter">DATO</text>
+            </svg>
+        </div>
+        <div class="pyr-labels">
+            <div class="pyr-row" style="border-left:3px solid var(--green)"><h4 style="color:var(--green)">Sabiduría</h4><p>Decidir y actuar con criterio</p><p class="ex">Programar mantenimiento preventivo para no perder colectivos</p></div>
+            <div class="pyr-row" style="border-left:3px solid var(--teal)"><h4 style="color:var(--teal)">Conocimiento</h4><p>Entender patrones y causas</p><p class="ex">Los viajes bajaron 15% porque 3 colectivos estaban en reparación</p></div>
+            <div class="pyr-row" style="border-left:3px solid var(--blue)"><h4 style="color:var(--blue)">Información</h4><p>Datos organizados que responden preguntas</p><p class="ex">Total viajes del mes: 1.250 — Km promedio por día: 4.500</p></div>
+            <div class="pyr-row" style="border-left:3px solid var(--ink4)"><h4 style="color:var(--ink4)">Dato</h4><p>Registros brutos, sin contexto</p><p class="ex">Una fila en el Excel: 16/04, Chofer 23, Ruta 5, 180 km, 45 lts</p></div>
+        </div>
+    </div>
+    <div class="bottom-quote">"Dato sin contexto es ruido. Dato con propósito es poder."</div>
+</section>
+
+<!-- ═══ 5. 4 NIVELES DE ANÁLISIS ═══ -->
+<section>
+    <div class="label">Fundamentos</div>
+    <h2>Los 4 niveles de an&aacute;lisis</h2>
+    <p class="sub">Cada nivel responde una pregunta diferente</p>
+    <div class="grid-4 grow" style="margin-top:16px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <div class="badge blue">1</div>
+            <h3 style="color:var(--blue);margin-top:10px">Descriptivo</h3>
+            <p style="font-size:0.68em;color:var(--ink);font-weight:700;margin:8px 0">¿Qué pasó?</p>
+            <p>Mirar para atrás: resúmenes, totales, reportes de lo que ya ocurrió.</p>
+            <p style="margin-top:10px;font-size:0.48em;color:var(--ink3)">Ej: ¿Cuántos viajes hicimos? ¿Cuánto gasoil se consumió?</p>
+        </div>
+        <div class="card" data-top="teal">
+            <div class="badge teal">2</div>
+            <h3 style="color:var(--teal);margin-top:10px">Diagnóstico</h3>
+            <p style="font-size:0.68em;color:var(--ink);font-weight:700;margin:8px 0">¿Por qué pasó?</p>
+            <p>Buscar causas: cruzar datos, comparar, desglosar para entender.</p>
+            <p style="margin-top:10px;font-size:0.48em;color:var(--ink3)">Ej: ¿Por qué bajaron los viajes en la Ruta 5?</p>
+        </div>
+        <div class="card" data-top="orange">
+            <div class="badge orange">3</div>
+            <h3 style="color:var(--orange);margin-top:10px">Predictivo</h3>
+            <p style="font-size:0.68em;color:var(--ink);font-weight:700;margin:8px 0">¿Qué va a pasar?</p>
+            <p>Anticiparse: usar tendencias y patrones para proyectar el futuro.</p>
+            <p style="margin-top:10px;font-size:0.48em;color:var(--ink3)">Ej: ¿Cuántos viajes haremos el próximo trimestre?</p>
+        </div>
+        <div class="card" data-top="green">
+            <div class="badge green">4</div>
+            <h3 style="color:var(--green);margin-top:10px">Prescriptivo</h3>
+            <p style="font-size:0.68em;color:var(--ink);font-weight:700;margin:8px 0">¿Qué debemos hacer?</p>
+            <p>Recomendar acciones concretas basándose en los datos.</p>
+            <p style="margin-top:10px;font-size:0.48em;color:var(--ink3)">Ej: Reasignar 2 colectivos a la Ruta 5</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"No se trata solo de mirar para atr&aacute;s, sino de dise&ntilde;ar lo que viene."</div>
+</section>
+
+<!-- ═══ 6. CALIDAD ═══ -->
+<section>
+    <div class="label teal">Fundamentos</div>
+    <h2>Calidad de datos: la base de todo</h2>
+    <p class="sub">Si la información que cargamos está mal, todo lo que construyamos encima también va a estar mal</p>
+    <div class="q-grid">
+        <div class="q-item"><div class="ic" style="background:var(--grad-blue)">&#10003;</div><div><h4 style="color:var(--blue)">Precisión</h4><p>Los km cargados coinciden con los km reales recorridos</p></div></div>
+        <div class="q-item"><div class="ic" style="background:var(--grad-teal)">&#10003;</div><div><h4 style="color:var(--teal)">Completitud</h4><p>Todos los viajes tienen chofer, ruta y fecha asignados</p></div></div>
+        <div class="q-item"><div class="ic" style="background:var(--grad-green)">&#10003;</div><div><h4 style="color:var(--green)">Consistencia</h4><p>El mismo chofer no figura con dos nombres distintos</p></div></div>
+        <div class="q-item"><div class="ic" style="background:var(--grad-warm)">&#10003;</div><div><h4 style="color:var(--orange)">Validez</h4><p>Las fechas tienen formato correcto, los km son números positivos</p></div></div>
+        <div class="q-item"><div class="ic" style="background:var(--grad-blue)">&#10003;</div><div><h4 style="color:var(--blue)">Unicidad</h4><p>Un mismo viaje no aparece registrado dos veces</p></div></div>
+        <div class="q-item"><div class="ic" style="background:var(--grad-teal)">&#10003;</div><div><h4 style="color:var(--teal)">Oportunidad</h4><p>Los datos del mes están disponibles cuando se necesitan analizar</p></div></div>
+    </div>
+    <div class="bottom-quote">"Basura entra, basura sale. Buenos datos entran, buenas decisiones salen."</div>
+</section>
+
+<!-- ═══ 7. CICLO MEJORA CONTINUA ═══ -->
+<section>
+    <div class="label green">Calidad</div>
+    <h2>Ciclo de mejora continua</h2>
+    <p class="sub">Power BI es la herramienta de "Verificar" dentro del ciclo</p>
+    <div class="pdca-wrap">
+        <div class="pdca-svg">
+            <svg viewBox="0 0 380 340" width="380" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                        <path d="M0,0 L10,4 L0,8Z" fill="#334155"/>
+                    </marker>
+                </defs>
+
+                <!-- Cuadrantes con separación -->
+                <rect x="10" y="10" width="160" height="130" rx="14" fill="#3B82F6"/>
+                <text x="90" y="68" text-anchor="middle" fill="white" font-size="15" font-weight="800" font-family="Inter">PLANIFICAR</text>
+                <text x="90" y="90" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11" font-family="Inter">Definir objetivos</text>
+
+                <rect x="210" y="10" width="160" height="130" rx="14" fill="#0D9488"/>
+                <text x="290" y="68" text-anchor="middle" fill="white" font-size="15" font-weight="800" font-family="Inter">HACER</text>
+                <text x="290" y="90" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11" font-family="Inter">Ejecutar el plan</text>
+
+                <rect x="10" y="180" width="160" height="130" rx="14" fill="#059669"/>
+                <text x="90" y="238" text-anchor="middle" fill="white" font-size="15" font-weight="800" font-family="Inter">ACTUAR</text>
+                <text x="90" y="260" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11" font-family="Inter">Ajustar y mejorar</text>
+
+                <rect x="210" y="180" width="160" height="130" rx="14" fill="#EA580C"/>
+                <text x="290" y="232" text-anchor="middle" fill="white" font-size="16" font-weight="900" font-family="Inter">VERIFICAR</text>
+                <text x="290" y="254" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="12" font-weight="700" font-family="Inter">con Power BI</text>
+
+                <!-- Flechas entre cuadrantes (clockwise) -->
+                <!-- Planificar → Hacer (arriba) -->
+                <line x1="172" y1="55" x2="208" y2="55" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+                <!-- Hacer → Verificar (derecha) -->
+                <line x1="310" y1="142" x2="310" y2="178" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+                <!-- Verificar → Actuar (abajo) -->
+                <line x1="208" y1="260" x2="172" y2="260" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+                <!-- Actuar → Planificar (izquierda) -->
+                <line x1="70" y1="178" x2="70" y2="142" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+
+                <!-- Indicador Power BI -->
+                <rect x="235" y="316" width="110" height="22" rx="11" fill="#EA580C" opacity="0.15"/>
+                <text x="290" y="332" text-anchor="middle" fill="#EA580C" font-size="11" font-weight="700" font-family="Inter">POWER BI</text>
+            </svg>
+        </div>
+        <div class="pdca-text">
+            <div class="pdca-item"><div class="badge blue">1</div><div><h4 style="color:var(--blue)">Planificar</h4><p>Reducir el consumo de gasoil en un 10% este trimestre</p></div></div>
+            <div class="pdca-item"><div class="badge teal">2</div><div><h4 style="color:var(--teal)">Hacer</h4><p>Capacitar choferes en conducción eficiente, ajustar rutas</p></div></div>
+            <div class="pdca-item"><div class="badge orange">3</div><div><h4 style="color:var(--orange)">Verificar</h4><p>Ver en PBI si el consumo bajó — <strong style="color:var(--orange)">Power BI entra acá</strong></p></div></div>
+            <div class="pdca-item"><div class="badge green">4</div><div><h4 style="color:var(--green)">Actuar</h4><p>Si funcionó, estandarizar. Si no, ajustar el plan.</p></div></div>
+            <p style="font-size:0.48em;color:var(--ink3);margin-top:8px">ISELIN ya trabaja con mejora continua. Power BI se suma para verificar con datos reales si las acciones dan resultado.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"No se puede mejorar lo que no se mide."</div>
+</section>
+
+<!-- ═══ 8. ETL ═══ -->
+<section>
+    <div class="label teal">Conceptos</div>
+    <h2>Del Excel a Power BI</h2>
+    <p class="sub">El proceso de carga en 3 pasos</p>
+    <div class="flow">
+        <div class="flow-step" style="border-top:3px solid var(--blue)">
+            <div class="badge blue">1</div>
+            <h3 style="color:var(--blue)">Extraer</h3>
+            <p>Sacar los datos desde Excel, Wara u otra fuente</p>
+            <div class="detail">Archivos Excel de ISELIN: viajes, choferes, rutas, siniestros</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step" style="border-top:3px solid var(--teal)">
+            <div class="badge teal">2</div>
+            <h3 style="color:var(--teal)">Transformar</h3>
+            <p>Limpiar, corregir formatos, eliminar lo innecesario</p>
+            <div class="detail">Power Query: el "taller mecánico" donde se preparan los datos</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step" style="border-top:3px solid var(--green)">
+            <div class="badge green">3</div>
+            <h3 style="color:var(--green)">Cargar</h3>
+            <p>Los datos limpios entran a PBI, listos para visualizar</p>
+            <div class="detail">Gráficos, tablas y dashboards se alimentan de estos datos</div>
+        </div>
+    </div>
+    <div class="bottom-quote">"Datos limpios, decisiones claras."</div>
+</section>
+
+<!-- ═══ 9. TIPOS DE TABLAS ═══ -->
+<section>
+    <div class="label">Conceptos</div>
+    <h2>Tipos de tablas en Power BI</h2>
+    <p class="sub">Los datos se organizan en dos tipos de tablas que se conectan entre s&iacute;</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card soft-blue" data-top="blue">
+            <h3 style="color:var(--blue)">Tabla de hechos</h3>
+            <p>Registran <strong>lo que pasó</strong>. Cada fila es un evento o transacción.</p>
+            <ul><li>Cada viaje realizado</li><li>Cada boleto vendido</li><li>Cada siniestro registrado</li><li>Cada gasto operativo</li></ul>
+        </div>
+        <div class="card soft-teal" data-top="teal">
+            <h3 style="color:var(--teal)">Tabla de dimensiones</h3>
+            <p>Describen <strong>el contexto</strong>. Datos que no cambian seguido y sirven para clasificar.</p>
+            <ul><li>Lista de choferes</li><li>Lista de rutas</li><li>Lista de colectivos</li><li>Calendario de fechas</li></ul>
+        </div>
+    </div>
+    <p style="text-align:center;font-size:0.52em;color:var(--ink3);margin-top:14px">Ambas tablas se <strong>relacionan</strong> entre sí: por ejemplo, cada viaje tiene un chofer asignado, y ese chofer está en la tabla de dimensiones.</p>
+    <div class="bottom-quote">"Tablas bien conectadas, an&aacute;lisis sin sorpresas."</div>
+</section>
+
+<!-- ═══ 10. FILTROS ═══ -->
+<section>
+    <div class="label teal">Conceptos</div>
+    <h2>&iquest;C&oacute;mo funcionan los filtros?</h2>
+    <p class="sub">Al aplicar un filtro, Power BI recalcula todo autom&aacute;ticamente</p>
+    <div class="compare">
+        <div class="compare-box">
+            <h3 style="color:var(--ink3)">Sin filtro — Toda la empresa</h3>
+            <div class="compare-row"><span>Total viajes</span><span class="v">12.500</span></div>
+            <div class="compare-row"><span>Km recorridos</span><span class="v">890.000</span></div>
+            <div class="compare-row"><span>Siniestros</span><span class="v">45</span></div>
+            <div class="compare-row"><span>Consumo gasoil</span><span class="v">320.000 lts</span></div>
+        </div>
+        <div class="compare-arrow">&rarr;</div>
+        <div class="compare-box active">
+            <h3 style="color:var(--teal)">Filtro: Ruta 5</h3>
+            <div class="compare-row"><span>Total viajes</span><span class="v">1.800</span></div>
+            <div class="compare-row"><span>Km recorridos</span><span class="v">125.000</span></div>
+            <div class="compare-row"><span>Siniestros</span><span class="v">6</span></div>
+            <div class="compare-row"><span>Consumo gasoil</span><span class="v">47.000 lts</span></div>
+        </div>
+    </div>
+    <div class="bottom-quote">"Un click cambia la perspectiva. As&iacute; de simple."</div>
+</section>
+
+<!-- ═══ 11. ESTADÍSTICAS ═══ -->
+<section>
+    <div class="label">Conceptos</div>
+    <h2>Estadísticas básicas</h2>
+    <p class="sub">Números que resumen los datos y nos ayudan a entenderlos rápidamente</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue);font-size:0.58em">Medidas de tendencia central</h3>
+            <p style="margin-bottom:10px">Responden: <strong>¿cuál es el valor "típico"?</strong></p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
+                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:10px 14px">
+                    <p style="font-size:0.5em"><strong style="color:var(--blue)">Promedio (media)</strong> — Sumar todo y dividir por la cantidad.</p>
+                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Ej: Si 5 colectivos hicieron 100, 120, 110, 130, 140 km → promedio = 120 km</p>
+                </div>
+                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:10px 14px">
+                    <p style="font-size:0.5em"><strong style="color:var(--blue)">Mediana</strong> — El valor del medio cuando ordenamos. No se distorsiona por extremos.</p>
+                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Ej: Demoras de 5, 7, 8, 9, 45 min → mediana = 8 min (el 45 no la arrastra)</p>
+                </div>
+                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:10px 14px">
+                    <p style="font-size:0.5em"><strong style="color:var(--blue)">Moda</strong> — El valor que más se repite.</p>
+                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Ej: Si la mayoría de los viajes son de Ruta 3, esa es la ruta más frecuente (moda)</p>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange);font-size:0.58em">Medidas de variabilidad</h3>
+            <p style="margin-bottom:10px">Responden: <strong>¿qué tan diferentes son los datos entre sí?</strong></p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:10px 14px">
+                    <p style="font-size:0.5em"><strong style="color:var(--orange)">Rango</strong> — La diferencia entre el mayor y el menor valor.</p>
+                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Ej: Consumo entre 30 y 70 lts → rango = 40 lts (hay mucha diferencia)</p>
+                </div>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:10px 14px">
+                    <p style="font-size:0.5em"><strong style="color:var(--orange)">Desviación estándar</strong> — Cuánto se alejan los datos del promedio en general.</p>
+                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Ej: Si todos consumen parecido → desviación baja. Si hay mucha diferencia → alta.</p>
+                </div>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:10px 14px">
+                    <p style="font-size:0.5em"><strong style="color:var(--orange)">¿Por qué importa?</strong></p>
+                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Un promedio de gasoil de 50 lts puede esconder que hay colectivos con 30 y otros con 80.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-quote">"El promedio solo cuenta la mitad de la historia. La variabilidad cuenta la otra mitad."</div>
+</section>
+
+<!-- ═══ 12. DEMO ═══ -->
+<section>
+    <div class="label teal">Power BI</div>
+    <h2>Demo en vivo</h2>
+    <p class="sub">35 minutos — Conocer la herramienta y cargar datos reales</p>
+    <div class="grid-2 grow" style="margin-top:16px;align-items:stretch">
+        <div>
+            <h3 style="font-size:0.68em;margin-bottom:14px">Las 3 vistas de PBI Desktop</h3>
+            <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 18px">
+                    <div class="badge blue">1</div>
+                    <div><div style="font-size:0.6em;color:var(--blue);font-weight:700">Informe</div><div style="font-size:0.5em;color:var(--ink3)">Donde se crean las visualizaciones</div></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 18px">
+                    <div class="badge teal">2</div>
+                    <div><div style="font-size:0.6em;color:var(--teal);font-weight:700">Datos</div><div style="font-size:0.5em;color:var(--ink3)">Donde se ven las tablas cargadas</div></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 18px">
+                    <div class="badge green">3</div>
+                    <div><div style="font-size:0.6em;color:var(--green);font-weight:700">Modelo</div><div style="font-size:0.5em;color:var(--ink3)">Donde se conectan las tablas entre s&iacute;</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="card soft-teal" data-top="teal" style="display:flex;flex-direction:column">
+            <h3 style="color:var(--teal)">Pasos de la pr&aacute;ctica</h3>
+            <p>1. Abrir PBI e importar un Excel de ISELIN</p>
+            <p style="margin-top:8px">2. Revisar los datos en Power Query</p>
+            <p style="margin-top:8px">3. Corregir tipos (fechas, números, texto)</p>
+            <p style="margin-top:8px">4. Cerrar Power Query y cargar los datos</p>
+            <p style="margin-top:8px">5. Armar el primer gráfico con datos reales de ISELIN</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"La mejor manera de aprender es haciendo."</div>
+</section>
+
+<!-- ═══ 13. ROADMAP ═══ -->
+<section>
+    <div class="label">Roadmap</div>
+    <h2>Los 4 encuentros</h2>
+    <p class="sub">El camino completo de la capacitaci&oacute;n</p>
+    <div class="tl">
+        <div class="tl-item">
+            <div class="tl-card active"><h4 style="color:var(--blue);font-size:0.56em">E1 — Hoy</h4><p style="font-size:0.44em;color:var(--ink4)">16/04 &middot; Presencial</p></div>
+            <div class="tl-dot active"></div>
+            <p>Fundamentos, Calidad<br>y Primer Contacto</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card"><h4 style="color:var(--teal);font-size:0.56em">E2</h4><p style="font-size:0.44em;color:var(--ink4)">21/04 &middot; Virtual</p></div>
+            <div class="tl-dot teal"></div>
+            <p>Modelo de Datos,<br>Power Query y<br>Visualizaciones</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card"><h4 style="color:var(--blue);font-size:0.56em">E3</h4><p style="font-size:0.44em;color:var(--ink4)">23/04 &middot; Virtual</p></div>
+            <div class="tl-dot blue"></div>
+            <p>F&oacute;rmulas DAX,<br>Dashboards y<br>Storytelling</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card"><h4 style="color:var(--teal);font-size:0.56em">E4</h4><p style="font-size:0.44em;color:var(--ink4)">30/04 &middot; Presencial</p></div>
+            <div class="tl-dot teal"></div>
+            <p>Interpretaci&oacute;n,<br>Publicaci&oacute;n y<br>Actualizaci&oacute;n</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"4 encuentros, un objetivo: que los datos trabajen para ISELIN."</div>
+</section>
+
+<!-- ═══ 14. TAREA ═══ -->
+<section>
+    <div class="label teal">Cierre</div>
+    <h2>Tarea para el Encuentro 2</h2>
+    <p class="sub">Para practicar antes del martes 21/04</p>
+    <div class="grid-2 grow" style="margin-top:16px;align-items:stretch">
+        <div class="card soft-teal" data-top="teal" style="display:flex;flex-direction:column">
+            <h3 style="color:var(--teal)">Abrir PBI Desktop y cargar un Excel de tu &aacute;rea</h3>
+            <p>1. Abrir Power BI Desktop</p>
+            <p style="margin-top:6px">2. Ir a Inicio &rarr; Obtener datos &rarr; Excel</p>
+            <p style="margin-top:6px">3. Seleccionar un archivo de tu &aacute;rea</p>
+            <p style="margin-top:6px">4. Revisar la vista previa y clic en "Cargar"</p>
+            <p style="margin-top:6px">5. Explorar los datos en la vista de Datos</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="card" style="flex-shrink:0">
+                <h3 style="color:var(--ink3)">Si ten&eacute;s dudas</h3>
+                <p>No te preocupes si algo no sale. En el E2 arrancamos resolviendo dudas. Lo importante es <strong>animarse a probar</strong>.</p>
+            </div>
+            <div style="flex:1">
+                <h3 style="font-size:0.64em;margin-bottom:12px">Entregables</h3>
+                <div class="ent"><div class="badge blue">1</div><div><div class="title">Archivo .pbix base</div><div class="desc">Primera tabla cargada y una visualizaci&oacute;n</div></div></div>
+                <div class="ent"><div class="badge teal">2</div><div><div class="title">Gu&iacute;a de conceptos fundamentales</div><div class="desc">ETL, tablas, filtros, estad&iacute;sticas, calidad</div></div></div>
+                <div class="ent"><div class="badge green">3</div><div><div class="title">Gu&iacute;a de instalaci&oacute;n de PBI Desktop</div><div class="desc">Para practicar por su cuenta</div></div></div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-quote">"Lo que practic&aacute;s hoy, lo domin&aacute;s ma&ntilde;ana."</div>
+</section>
+
+<!-- ═══ 15. CIERRE ═══ -->
+<section class="cover">
+    <div class="side"></div>
+    <div class="logo"><span class="da">data </span><span class="oi">oilers</span></div>
+    <div style="width:48px;height:3px;background:var(--grad-teal);border-radius:4px;margin-bottom:24px"></div>
+    <h1 style="font-size:3.2em">&iexcl;Gracias!</h1>
+    <p style="color:#CBD5E1;font-size:0.72em;margin-top:12px">Nos vemos en el Encuentro 2 — Martes 21 de abril</p>
+    <p style="color:#14B8A6;font-size:0.58em;margin-top:8px">Modelo de Datos, Power Query y Primeras Visualizaciones</p>
+    <p class="meta">&iquest;Preguntas? Escribinos por el canal de Teams/WhatsApp del programa</p>
+    <div class="bottom-quote">"Transformar datos en decisiones es transformar la empresa."</div>
+</section>
+
+</div>
+</div>
+
+<script src="node_modules/reveal.js/dist/reveal.js"></script>
+<script>
+Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'fade',
+    transitionSpeed: 'default',
+    backgroundTransition: 'fade',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0,
+    controls: true,
+    controlsLayout: 'edges',
+    progress: true,
+    history: true,
+});
+</script>
+</body>
+</html>

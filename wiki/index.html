@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Referencia de Análisis de Datos</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+
+<body>
+
+    <header>
+        <h1>Manual de Análisis de Datos</h1>
+        <p>La Evolución de la Intuición al Dato</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#intro">Introducción</a></li>
+            <li><a href="#cultura">Cultura</a></li>
+            <li><a href="#ingenieria">Ingeniería</a></li>
+            <li><a href="#calidad">Calidad</a></li>
+            <li><a href="#glosario">Glosario</a></li>
+            <li><a href="#quiz">Autoevaluación</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="intro">
+            <h2>1. La Evolución de la Intuición al Dato</h2>
+            <h3>1.1. Introducción: El Valor Estratégico de una Cultura de Datos</h3>
+            <p>La toma de decisiones en el mundo empresarial ha transitado un largo camino, evolucionando desde un arte
+                basado en la intuición y la experiencia hacia una disciplina rigurosa fundamentada en la evidencia. En
+                el vertiginoso mercado actual, la capacidad de una organización para transformar sus datos en
+                inteligencia accionable ya no es simplemente una ventaja competitiva; se ha convertido en una condición
+                indispensable para la supervivencia, la agilidad y el crecimiento sostenido. Las empresas que logran
+                aprovechar eficazmente el análisis de sus datos no solo optimizan sus operaciones, sino que obtienen una
+                ventaja significativa y medible sobre aquellos competidores que todavía navegan a ciegas, guiados
+                únicamente por el instinto.
+            </p>
+
+            <h3>1.2. Breve Historia</h3>
+            <p>La historia del análisis de datos es la historia de nuestra búsqueda de conocimiento. Inicialmente, los
+                datos se registraban en sistemas transaccionales en papel, como libros contables, limitando su análisis
+                a procesos manuales y lentos. La era digital marcó un punto de inflexión. Durante la década de 1960,
+                proyectos de investigación pioneros comenzaron a desarrollar conceptos fundamentales que hoy sustentan
+                el análisis moderno, como los términos "dimensiones" (el contexto) y "hechos" (las mediciones).</p>
+
+            <p>La década de 1970 fue testigo de un hito crucial cuando Bill Inmon empezó a definir el término "data
+                warehouse", conceptualizando un repositorio centralizado diseñado específicamente para el análisis y la
+                toma de decisiones. Esta idea sentó las bases para la arquitectura de inteligencia de negocios que
+                conocemos hoy. Esta progresión histórica nos ha catapultado a la era actual, un mundo donde la escala de
+                la información es casi inimaginable: se estima, según datos de IBM citados por el Banco Mundial, que
+                producimos aproximadamente 2.5 quintillones de bytes de datos cada día, una cantidad que sigue creciendo
+                de forma exponencial.</p>
+
+            <h3>1.3. El Dilema Moderno: Parálisis por Análisis vs. Decisión a Ciegas</h3>
+            <p>Las empresas modernas se enfrentan a un doble desafío en su relación con los datos. Por un lado, persiste
+                la "decisión a ciegas", un enfoque donde la intuición y la experiencia personal siguen siendo las
+                herramientas principales. Una encuesta de PwC de 2016 (Global Data and Analytics Survey: Big Decisions™)
+                reveló que un sorprendente 33% de los ejecutivos todavía basan sus decisiones más importantes en su
+                propia experiencia e intuición, un método que, aunque valioso, es insuficiente en un entorno de alta
+                complejidad.</p>
+
+            <p>En el extremo opuesto se encuentra la "parálisis por análisis". La abundancia de datos, sin una
+                estructura clara ni un propósito definido, puede abrumar a los equipos y llevar a la inacción. El exceso
+                de información sin un camino claro hacia la inteligencia se convierte en ruido, no en una señal. El
+                verdadero arte de una cultura de datos reside en navegar este estrecho pasaje: utilizar la estructura
+                para evitar la parálisis, pero mantener la agilidad para no caer en la ceguera. El objetivo estratégico,
+                por lo tanto, no son los datos por sí solos. La verdadera meta es la capacidad de obtener "información
+                valiosa que conduzca a acciones más informadas". El valor no reside en la acumulación de datos, sino en
+                la habilidad para convertirlos en conocimiento accionable que impulse el negocio.</p>
+
+            <h3>1.4. Propuesta de Valor</h3>
+            <p>Adoptar una cultura de toma de decisiones basadas en datos no es un ejercicio tecnológico, sino una
+                decisión estratégica de
+                negocio que se traduce en mayor agilidad, rentabilidad y resiliencia. Para aquellos que aún dudan, los
+                beneficios son claros, tangibles y respaldados por evidencia.</p>
+
+            <ul>
+                <li><strong>Adiós a la intuición, hola a la certeza:</strong> Dejamos de adivinar. Usamos datos reales
+                    para saber exactamente qué funciona y qué no, reduciendo el margen de error.</li>
+
+                <li><strong>Conocer mejor a nuestro cliente:</strong> Entendemos los hábitos y necesidades del pasajero
+                    real. Esto nos permite ajustar horarios y servicios donde realmente hacen falta.</li>
+
+                <li><strong>Eficiencia Operativa (Ahorro):</strong> Detectamos "fugas" de dinero y tiempo. Identificamos
+                    rápidamente ineficiencias en el consumo de combustible, talleres o logística para corregirlas al
+                    instante.</li>
+
+                <li><strong>Anticiparnos a los problemas:</strong> En lugar de apagar incendios, los prevenimos. Los
+                    datos nos avisan de riesgos potenciales (como fallas mecánicas recurrentes) antes de que detengan el
+                    servicio.</li>
+
+                <li><strong>Ventaja sobre la competencia:</strong> Quien decide rápido y bien, gana. Las empresas que
+                    usan datos crecen más rápido porque reaccionan antes a los cambios del mercado.</li>
+            </ul>
+
+            <p>La evidencia es irrefutable: los datos son el activo más valioso de la era moderna. Pero para poder
+                explotar este activo, primero debemos entender su naturaleza fundamental.</p>
+
+            <p><strong>Perspectiva Estratégica:</strong> Ver los datos no como un coste de TI, sino como un activo
+                generador de ingresos, es el primer y más crucial cambio de mentalidad en el camino hacia el liderazgo
+                del mercado.</p>
+        </section>
+
+        <section id="cultura">
+            <h2>2. Cultura de Datos:</h2>
+            <h3>2.1. Introducción: Los Bloques Fundamentales del Conocimiento</h3>
+            <p>La alfabetización de datos es la base indispensable sobre la que se construye cualquier iniciativa de
+                análisis exitosa. Antes de poder analizar, modelar o visualizar, es crucial entender la naturaleza de
+                los activos con los que trabajamos: los datos. Este capítulo tiene como objetivo desmitificar los
+                conceptos esenciales, descomponiendo el proceso que transforma la materia prima (los datos brutos) en el
+                producto final de mayor valor para el negocio: la sabiduría aplicable. Comprender estos bloques
+                fundamentales es el primer paso para hablar el lenguaje de los datos con fluidez y confianza.</p>
+
+            <h3>2.2. La Pirámide del Conocimiento (DIKW)</h3>
+            <div class="image-container">
+                <img src="images/dikw_pyramid.png" alt="Pirámide DIKW: Datos, Información, Conocimiento, Sabiduría">
+                <p><em>Figura 1: La Jerarquía DIKW</em></p>
+            </div>
+            <ul>
+                <li><strong>Dato:</strong> Es la materia prima, la base de la pirámide. Los datos son muestras de la
+                    realidad, registradas como mediciones y valores discretos y objetivos. Ejemplos típicos son los
+                    datos operativos de las empresas, como el registro de una venta, la duración de una llamada o una
+                    lectura de un sensor. Por sí solos, carecen de contexto y significado.</li>
+                <li><strong>Información:</strong> Es el resultado de procesar, agrupar y organizar los datos para darles
+                    contexto. La información responde a las preguntas básicas: qué, quién, cuándo y dónde. Por ejemplo,
+                    al agregar los datos de ventas de un mes, obtenemos información sobre el total de ingresos. Los
+                    datos brutos se transforman en respuestas significativas.</li>
+                <li><strong>Conocimiento:</strong>Es la aplicación de la información. El conocimiento surge de la
+                    síntesis de múltiples fuentes de información para comprender patrones, tendencias y relaciones de
+                    causa y efecto. Si la información nos dice que las ventas de un producto aumentaron, el conocimiento
+                    nos explica por qué aumentaron, quizás al correlacionar ese aumento con una campaña de marketing
+                    específica.</li>
+                <li><strong>Sabiduría:</strong> Es el conocimiento aplicado con juicio y visión estratégica. La
+                    sabiduría representa la cima de la pirámide y es la capacidad de usar el conocimiento para tomar
+                    decisiones efectivas que generen mejores resultados a futuro. Implica comprender los principios
+                    fundamentales detrás de los patrones y tomar acciones proactivas. Por ejemplo, usar el conocimiento
+                    sobre el éxito de una campaña para diseñar una estrategia de marketing a largo plazo.</li>
+            </ul>
+
+            <h3>2.3. Visualizando el Concepto: La Pirámide DIKW en Acción (Caso Transporte Iselin)</h3>
+            <p>Para ilustrar cómo funciona esta jerarquía en la práctica, aplicaremos el modelo a <strong>Transporte
+                    Iselin</strong>. A continuación, transformaremos datos crudos en decisiones estratégicas utilizando
+                visualizaciones modernas.</p>
+
+            <div class="dikw-step">
+                <h4>Nivel 1: Datos (La Materia Prima)</h4>
+                <p>Registros crudos generados minuto a minuto por las unidades y sistemas de boletería. Son hechos
+                    aislados sin contexto inmediato.</p>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID Interno</th>
+                                <th>Línea / Ruta</th>
+                                <th>Timestamp</th>
+                                <th>Evento / Métrica</th>
+                                <th>Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>45</td>
+                                <td>501 (Urbana)</td>
+                                <td>07:15:00</td>
+                                <td>Corte Boleto</td>
+                                <td>Abono Docente</td>
+                            </tr>
+                            <tr>
+                                <td>102</td>
+                                <td>San Rafael - Mza</td>
+                                <td>07:15:22</td>
+                                <td>Telemetría GPS</td>
+                                <td>Vel: 85 km/h, Comb: 40%</td>
+                            </tr>
+                            <tr>
+                                <td>45</td>
+                                <td>501 (Urbana)</td>
+                                <td>07:15:45</td>
+                                <td>GPS Parada</td>
+                                <td>Lat: -34.6, Long: -68.3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="dikw-step">
+                <h4>Nivel 2: Información (El Contexto)</h4>
+                <p>Procesamos los datos para responder <strong>qué</strong> está pasando. Aquí observamos el
+                    cumplimiento de horarios y la ocupación.</p>
+                <div class="chart-wrapper">
+                    <div id="chart-information"></div>
+                    <p class="chart-caption"><em>Gráfico 1: Promedio de Retraso por Línea (Minutos). Se observa un
+                            retraso notable en la línea a Gral. Alvear.</em></p>
+                </div>
+            </div>
+
+            <div class="dikw-step">
+                <h4>Nivel 3: Conocimiento (El Porqué)</h4>
+                <p>Cruzamos variables para entender la causa raíz. Analizamos la correlación entre el tiempo de demora y
+                    el método de pago.</p>
+                <div class="chart-wrapper">
+                    <div id="chart-knowledge"></div>
+                    <p class="chart-caption"><em>Gráfico 2: Correlación entre Pagos en Efectivo y Tiempo de Demora en
+                            Parada. A mayor efectivo, mayor demora.</em></p>
+                </div>
+            </div>
+
+            <div class="dikw-step">
+                <h4>Nivel 4: Sabiduría (La Acción Estratégica)</h4>
+                <div class="wisdom-card">
+                    <h5>🚀 Acción Directiva</h5>
+                    <p><strong>Problema Detectado:</strong> El retraso en Media Distancia no es por velocidad, sino por
+                        el tiempo de cobro en efectivo a bordo.</p>
+                    <p><strong>Decisión:</strong></p>
+                    <ol>
+                        <li>Implementar venta obligatoria de pasajes anticipados o QR para paradas intermedias clave.
+                        </li>
+                        <li>Ajustar cuadro de horarios sumando 10 min en horas pico.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <p><strong>Perspectiva Estratégica:</strong> En una empresa como Iselin, la fluidez en la jerarquía DIKW es
+                la diferencia entre tener colectivos circulando vacíos y tener una flota optimizada.</p>
+
+            <h3>2.4. Tipos de Datos</h3>
+            <p>Los datos que alimentan la pirámide del conocimiento se presentan en dos formatos principales, cada uno
+                con sus propias características y desafíos.</p>
+            <ul>
+                <li>
+                    <strong>Estructurados:</strong> Son datos que residen en un campo fijo dentro de un registro o
+                    archivo,
+                    adhiriéndose a un esquema predeterminado y bien definido. El ejemplo más común son las tablas en
+                    bases
+                    de datos relacionales (como SQL) u hojas de cálculo (como Excel), donde cada pieza de información
+                    tiene
+                    su propia columna y tipo de dato. Su organización rígida los hace más fáciles de consultar,
+                    gestionar y
+                    analizar con herramientas tradicionales.
+                </li>
+                <li>
+                    <strong>No Estructurados:</strong> Son datos que no se organizan según un esquema predeterminado.
+                    Este
+                    universo incluye una vasta y diversa gama de información como el texto de correos electrónicos, el
+                    contenido de publicaciones en redes sociales, imágenes, videos y archivos de audio. Aunque su
+                    análisis
+                    es inherentemente más complejo y requiere herramientas avanzadas, su flexibilidad permite un
+                    almacenamiento rápido y la capacidad de capturar una realidad mucho más rica y matizada que los
+                    datos
+                    estructurados por sí solos.
+                </li>
+            </ul>
+        </section>
+
+        <section id="ingenieria">
+            <h2>3. La Fábrica de Datos</h2>
+            <h3>3.1. Introducción</h3>
+            <p>Si los datos son el nuevo petróleo, la ingeniería de datos es la refinería. Detrás de cada dashboard
+                intuitivo y cada informe revelador, existe una compleja maquinaria de procesos que trabajan en silencio.
+                Podemos visualizar esta infraestructura como una fábrica: los datos brutos de diversas fuentes entran
+                como materia prima, se someten a un riguroso proceso de transformación y control de calidad, y salen
+                como productos de información refinada y lista para el consumo. Aunque estos procesos son a menudo
+                "invisibles" para el usuario final, constituyen la columna vertebral que garantiza que la información
+                sea fiable, consistente y esté disponible en el momento preciso para la toma de decisiones estratégicas.
+            </p>
+
+            <h3>3.2. El Viaje del Dato</h3>
+            <p>El ciclo de vida de un dato es un viaje fascinante. Comienza en el momento de su creación, en un sistema
+                operacional como un ERP (planificación de recursos empresariales), un CRM (gestión de relaciones con el
+                cliente) o incluso un simple archivo de texto generado por una aplicación web. Desde este punto de
+                origen, el dato es extraído y transportado a un área de preparación. Aquí, se somete a un proceso de
+                limpieza y transformación para corregir errores, estandarizar formatos y enriquecerlo con información de
+                otras fuentes. Una vez refinado, el dato es cargado en un repositorio centralizado, como un Data
+                Warehouse. Finalmente, queda a disposición de los usuarios de negocio, quienes lo consumen a través de
+                herramientas de análisis, informes y dashboards para extraer conocimiento y tomar decisiones informadas,
+                completando así su viaje de valor.
+            </p>
+
+            <h3>3.3. Data Warehouse</h3>
+
+            <p>
+                Un <strong>Data Warehouse</strong> es como el almacén central y ordenado de toda la información
+                importante de una organización.
+                En lugar de tener datos dispersos en distintos sistemas (ventas, CRM, Excel, contabilidad, soporte,
+                etc.),
+                el Data Warehouse los <strong>integra, limpia y organiza</strong> para que todas las áreas puedan
+                trabajar con información confiable y coherente.
+            </p>
+
+            <p>
+                Podés imaginarlo como un lugar donde los datos llegan “desordenados”, pero antes de guardarlos se
+                <strong>clasifican, estandarizan y acomodan</strong>, para que luego sean fáciles de consultar y
+                analizar.
+            </p>
+
+            <h4>¿Para qué sirve?</h4>
+
+            <ul>
+                <li>Para tener <strong>reportes confiables</strong>.</li>
+                <li>Para analizar el negocio sin contradicciones entre áreas.</li>
+                <li>Para responder preguntas como:
+                    <ul>
+                        <li>¿Cuánto vendimos?</li>
+                        <li>¿Cuántos clientes perdimos?</li>
+                        <li>¿Qué productos son más rentables?</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>Ventajas principales</h4>
+
+            <ul>
+                <li><strong>Información consistente:</strong> todos miran los mismos datos, con las mismas definiciones.
+                </li>
+                <li><strong>Velocidad en los análisis:</strong> al estar optimizado, las consultas son más rápidas.</li>
+                <li><strong>Histórico del negocio:</strong> permite ver tendencias a lo largo del tiempo.</li>
+                <li><strong>Mejor toma de decisiones:</strong> al tener datos limpios, integrados y confiables.</li>
+            </ul>
+
+            <h4>¿Por qué es clave una “fuente única de verdad”?</h4>
+
+            <p>
+                Cuando cada área trabaja con su propio Excel o sistema, aparecen versiones distintas de la realidad.
+                El Data Warehouse unifica todo eso y se convierte en la <strong>referencia oficial</strong> de la
+                empresa.
+            </p>
+
+            <p>
+                Esto evita discusiones del tipo:
+            </p>
+
+            <ul>
+                <li>“A mí me da otro número…”</li>
+                <li>“Ese dato no coincide con mi reporte…”</li>
+                <li>“En mi Excel aparece diferente…”</li>
+            </ul>
+
+            <p>
+                Con una <strong>fuente única de verdad</strong>, todos hablan el mismo <strong>idioma de datos</strong>.
+            </p>
+
+
+            <h3>3.4. El Proceso de Manufactura: Entendiendo ETL</h3>
+
+            <p>El proceso más tradicional y fundamental para poblar un Data Warehouse es el ETL (Extract, Transform,
+                Load). Podemos compararlo con una línea de montaje industrial que convierte materias primas en productos
+                terminados.
+            </p>
+
+            <ul>
+                <li>
+                    <strong>Extracción (Extract): Recolección de Materia Prima</strong>
+                    <p>Esta es la fase inicial donde se recolecta el material. Consiste en 'aspirar' los datos de sus
+                        fuentes originales. Estas fuentes pueden ser muy variadas y desorganizadas: bases de datos
+                        operacionales (como las de venta de boletos o registros de GPS), archivos simples (como hojas de
+                        cálculo o logs de servidores), e incluso información proveniente de sistemas externos.</p>
+                    <p class="nota"><em>Analogía:</em> Es como recolectar el algodón crudo de diferentes campos, sin
+                        importar si está sucio o mezclado.</p>
+                </li>
+
+                <li>
+                    <strong>Transformación (Transform): Refinamiento y Preparación</strong>
+                    <p>Aquí ocurre el verdadero trabajo de procesamiento. Los datos se llevan a un área de preparación
+                        donde se someten a operaciones críticas para asegurar su calidad y utilidad:</p>
+                    <ul>
+                        <li><strong>Limpieza:</strong> Se corrigen errores, se eliminan duplicados y se resuelven
+                            inconsistencias (por ejemplo, un registro de GPS con una fecha errónea).</li>
+                        <li><strong>Estandarización:</strong> Se asegura que todos los datos tengan el mismo formato
+                            (por ejemplo, todas las fechas deben tener el formato AAAA-MM-DD).</li>
+                        <li><strong>Combinación:</strong> Se unen datos de diferentes fuentes (por ejemplo, se combina
+                            el ID del Chofer del sistema de Recursos Humanos con los registros de consumo de combustible
+                            del sistema de telemetría).</li>
+
+                    </ul>
+                </li>
+
+                <li>
+                    <strong>Carga (Load): Almacenamiento para el Análisis</strong>
+                    <p>Esta es la fase final donde el producto terminado y refinado se guarda en su destino: el Data
+                        Warehouse.</p>
+                    <p>Los datos, ya limpios, consistentes y organizados, se cargan de forma estructurada. Una vez allí,
+                        quedan listos para ser consultados, utilizados en tableros de control (dashboards) y analizados
+                        por los usuarios y gerentes para la toma de decisiones estratégicas.</p>
+                    <p class="nota"><em>Resultado:</em> El Data Warehouse es el depósito final, un repositorio
+                        centralizado de información confiable.</p>
+                </li>
+            </ul>
+        </section>
+
+        <section id="calidad">
+            <h2>4. Calidad y Gobierno: Construyendo Confianza</h2>
+
+            <h3>4.1. El Principio Fundamental: "Basura Entra, Basura Sale"</h3>
+            <p>Existe una regla de oro en el mundo de los datos: <em>la calidad del resultado depende totalmente de la
+                    calidad de lo que ingresamos</em>. Podemos tener el software más costoso y los analistas más
+                brillantes,
+                pero si los datos originales son incorrectos, las decisiones también lo serán.</p>
+            <p>Piénsalo como el combustible de una unidad: si cargamos combustible sucio o adulterado, el motor fallará,
+                sin
+                importar cuán nuevo sea el camión o colectivo. La "higiene de datos" es el filtro que asegura que
+                nuestro
+                motor de decisiones funcione suavemente y sin fallas.</p>
+
+            <h3>4.2. ¿Qué define a un Dato de "Alta Calidad"?</h3>
+            <p>Para confiar en un reporte, debemos evaluar sus "signos vitales". Desglosamos la calidad en 6 dimensiones
+                clave:</p>
+            <ul>
+                <li><strong>Precisión (¿Es real?):</strong> El dato debe reflejar la realidad física.
+                    <br><em>Ejemplo:</em> Si el GPS dice que la unidad está en la terminal, pero físicamente está en el
+                    taller, el dato no es preciso.
+                </li>
+                <br>
+                <li><strong>Completitud (¿Está todo?):</strong> No deben faltar piezas del rompecabezas.
+                    <br><em>Ejemplo:</em> Una ficha de cliente es inútil si tiene el nombre pero le falta el número de
+                    teléfono o el DNI.
+                </li>
+                <br>
+                <li><strong>Consistencia (¿Coincidimos?):</strong> La información no debe contradecirse entre sistemas.
+                    <br><em>Ejemplo:</em> Si el sistema de Tráfico dice que una unidad está "Activa" pero el sistema de
+                    Mantenimiento dice "En Reparación", tenemos un problema de consistencia.
+                </li>
+                <br>
+                <li><strong>Validez (¿Cumple las reglas?):</strong> El dato debe respetar el formato establecido.
+                    <br><em>Ejemplo:</em> No podemos ingresar texto (como "diez pesos") en un campo diseñado para
+                    números, ni
+                    fechas imposibles como "30 de febrero".
+                </li>
+                <br>
+                <li><strong>Unicidad (¿Es único?):</strong> No queremos ver doble.
+                    <br><em>Ejemplo:</em> Si un mismo chofer aparece creado dos veces con códigos diferentes, nuestros
+                    cálculos de horas trabajadas o comisiones saldrán mal.
+                </li>
+                <br>
+                <li><strong>Oportunidad (¿Es actual?):</strong> La información debe estar disponible cuando se necesita.
+                    <br><em>Ejemplo:</em> Saber que una ruta estaba cortada ayer no nos sirve hoy. Necesitamos el dato
+                    en el
+                    momento justo para desviar la unidad a tiempo.
+                </li>
+            </ul>
+
+            <h3>4.3. Gobernanza de Datos: Poniendo Orden en la Casa</h3>
+            <p>La Gobernanza no es burocracia, es responsabilidad. Se trata de definir las "reglas del juego" y
+                responder a
+                una pregunta simple: <strong>¿Quién es el dueño del dato?</strong></p>
+            <p>En una organización, los datos (como las tarifas, los horarios o la lista de personal) deben tener un
+                responsable claro que se encargue de crearlos, actualizarlos y borrarlos. La gobernanza establece quién
+                tiene
+                la "llave" para modificar información crítica, evitando que cualquiera pueda alterar datos sensibles por
+                error
+                y garantizando que todos sepamos a quién acudir si algo no cuadra.</p>
+        </section>
+
+
+
+        <section id="glosario">
+            <h2>6. Glosario y Referencia Rápida</h2>
+
+            <h3>6.1. Hablando el Mismo Idioma</h3>
+            <p>Para que la comunicación fluya entre áreas (Tráfico, Taller, Administración), necesitamos compartir un
+                diccionario común. Aquí "traducimos" los términos técnicos a conceptos del día a día.</p>
+
+            <dl>
+                <dt><strong>Big Data (Datos Masivos)</strong></dt>
+                <dd>No es solo tener "mucha información". Se refiere a datos que tienen gran Volumen, Velocidad (se
+                    generan rápido), Variedad (texto, GPS, video), Veracidad y Complejidad.</dd>
+                <br>
+                <dt><strong>Cloud Computing (La Nube)</strong></dt>
+                <dd>Es usar recursos (servidores, programas) a través de internet en lugar de tenerlos en el disco duro
+                    de tu computadora. Es como alquilar una oficina digital en lugar de construir una propia.</dd>
+                <br>
+                <dt><strong>Dashboard (Tablero de Control)</strong></dt>
+                <dd>Una pantalla visual con gráficos y semáforos que muestra el estado del negocio de un vistazo.
+                    Funciona igual que el tablero de un colectivo: te dice la velocidad y el combustible sin tener que
+                    mirar el motor.</dd>
+                <br>
+                <dt><strong>Dataset (Conjunto de Datos)</strong></dt>
+                <dd>Una colección específica de datos relacionados. Imagínalo como una carpeta o archivo que contiene
+                    toda la información sobre un tema (ej: "Dataset de Ventas de Enero").</dd>
+                <br>
+                <dt><strong>Data Warehouse (Almacén de Datos)</strong></dt>
+                <dd>Es nuestro gran archivo central. Un repositorio digital donde guardamos información histórica de
+                    toda la empresa, ya limpia y ordenada, lista para analizar y tomar decisiones.</dd>
+                <br>
+                <dt><strong>ETL (Extraer, Transformar, Cargar)</strong></dt>
+                <dd>Es el proceso de "logística del dato". Consiste en sacar los datos de su origen (Extraer),
+                    limpiarlos y arreglarlos (Transformar) y guardarlos en el almacén final (Cargar).</dd>
+                <br>
+                <dt><strong>KPI (Indicador Clave de Desempeño)</strong></dt>
+                <dd>Es la brújula del negocio. Un valor medible que nos dice si estamos cumpliendo nuestros objetivos
+                    principales (ej: Porcentaje de Puntualidad, IPK).</dd>
+                <br>
+                <dt><strong>NoSQL</strong></dt>
+                <dd>Bases de datos flexibles. A diferencia de las hojas de cálculo rígidas, estas permiten guardar
+                    información "desordenada" o variada, como comentarios de redes sociales o registros complejos de
+                    sensores.</dd>
+                <br>
+                <dt><strong>SQL (Lenguaje de Consulta Estructurado)</strong></dt>
+                <dd>Es el "idioma" estándar que usamos para hacerle preguntas a las bases de datos tradicionales (las
+                    que se ven como tablas con filas y columnas).</dd>
+            </dl>
+        </section>
+
+        <section id="quiz">
+            <h2>Autoevaluación</h2>
+            <p>Pon a prueba tus conocimientos:</p>
+            <div class="quiz-container">
+                <div id="quiz-questions">
+                    <!-- Questions injected by JS -->
+                </div>
+                <button id="submit-quiz">Enviar Respuestas</button>
+                <div id="quiz-result"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Manual de Análisis de Datos. Generado con IA.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

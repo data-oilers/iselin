@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80">
+  <!-- Left bracket (teal) -->
+  <polyline points="14,12 14,66 48,66" fill="none" stroke="#4aada4" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter"/>
+
+  <!-- "data" text (gray) -->
+  <text x="54" y="55" font-family="Barlow, Arial, Helvetica, sans-serif" font-weight="700" font-size="42" fill="#8494a7" letter-spacing="1">data</text>
+
+  <!-- "oilers" text (teal) -->
+  <text x="160" y="55" font-family="Barlow, Arial, Helvetica, sans-serif" font-weight="700" font-size="42" fill="#4aada4" letter-spacing="1">oilers</text>
+
+  <!-- Right bracket (gray) -->
+  <polyline points="326,68 326,14 292,14" fill="none" stroke="#8494a7" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter"/>
+</svg>
