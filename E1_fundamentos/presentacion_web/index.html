@@ -91,6 +91,19 @@
     color: var(--ink4); background: none; right: 52px; bottom: 20px;
 }
 .reveal .progress span { background: var(--blue); height: 3px; }
+
+/* HOME BUTTON */
+#home-btn {
+    position: fixed; top: 16px; left: 16px; z-index: 100;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 16px;
+    font-family: var(--font); font-size: 13px; font-weight: 600;
+    color: var(--ink3); text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+}
+#home-btn:hover { color: var(--blue); border-color: var(--blue); transform: translateY(-1px); }
 .reveal .controls { color: var(--blue); }
 .reveal .controls button { opacity: 0.4; }
 .reveal .controls button:hover { opacity: 1; }
@@ -342,6 +355,8 @@
 </style>
 </head>
 <body>
+<a href="../../index.html" id="home-btn" title="Volver al inicio">← Inicio</a>
+
 <div class="reveal">
 <div class="slides">
 
