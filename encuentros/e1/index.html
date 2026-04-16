@@ -552,6 +552,53 @@
     <div class="bottom-quote">"No se puede mejorar lo que no se mide."</div>
 </section>
 
+<!-- ═══ EXCEL VS POWER BI ═══ -->
+<section>
+    <div class="label">Conceptos</div>
+    <h2>Excel vs. Power BI</h2>
+    <p class="sub">No se trata de reemplazar Excel, sino de entender dónde termina uno y empieza el otro</p>
+    <div class="grid-2" style="margin-top:14px">
+        <div class="card" data-top="orange" style="padding:22px">
+            <h3 style="color:var(--orange);font-size:0.62em">Excel</h3>
+            <p style="font-size:0.48em;margin-bottom:8px">Ideal para cargar, editar y preparar datos.</p>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em">Editar celdas manualmente, corregir datos puntuales</p>
+                </div>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em">Tablas chicas: funciona bien hasta cierto volumen</p>
+                </div>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em">Gráficos estáticos: se arman una vez y no se actualizan solos</p>
+                </div>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em">Cada persona tiene su propia versión del archivo</p>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-top="blue" style="padding:22px">
+            <h3 style="color:var(--blue);font-size:0.62em">Power BI</h3>
+            <p style="font-size:0.48em;margin-bottom:8px">Ideal para analizar, visualizar y compartir.</p>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Conecta múltiples fuentes</strong> de datos en un solo lugar</p>
+                </div>
+                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Escala sin límites</strong>: millones de filas sin perder velocidad</p>
+                </div>
+                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Dashboards interactivos</strong> que se filtran con un click</p>
+                </div>
+                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Se actualiza solo</strong> y todos ven la misma información</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p style="text-align:center;font-size:0.46em;color:var(--ink2);margin-top:14px">Excel es donde <strong>nacen</strong> los datos. Power BI es donde se <strong>convierten en decisiones</strong>.</p>
+    <div class="bottom-quote">"Excel y Power BI no compiten. Se complementan."</div>
+</section>
+
 <!-- ═══ 8. ETL ═══ -->
 <section>
     <div class="label teal">Conceptos</div>
@@ -600,7 +647,54 @@
         </div>
     </div>
     <p style="text-align:center;font-size:0.52em;color:var(--ink3);margin-top:14px">Ambas tablas se <strong>relacionan</strong> entre sí: por ejemplo, cada viaje tiene un chofer asignado, y ese chofer está en la tabla de dimensiones.</p>
-    <div class="bottom-quote">"Tablas bien conectadas, an&aacute;lisis sin sorpresas."</div>
+    <div class="bottom-quote">"Tablas bien conectadas, análisis sin sorpresas."</div>
+</section>
+
+<!-- ═══ DATOS CRUDOS VS MANIPULADOS ═══ -->
+<section>
+    <div class="label teal">Conceptos</div>
+    <h2>Datos crudos vs. datos manipulados</h2>
+    <p class="sub">A Power BI siempre deben entrar los datos en su estado original, sin procesar</p>
+    <div class="grid-2" style="margin-top:14px">
+        <div class="card" data-top="green" style="padding:22px">
+            <h3 style="color:var(--green);font-size:0.62em">Dato crudo (lo que necesitamos)</h3>
+            <p style="font-size:0.48em;margin-bottom:10px">Cada fila es un registro individual, sin resúmenes ni cálculos previos.</p>
+            <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="background:var(--green-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Una fila = un viaje</strong> con fecha, chofer, ruta, km, gasoil</p>
+                </div>
+                <div style="background:var(--green-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Sin totales ni subtotales</strong> mezclados entre los datos</p>
+                </div>
+                <div style="background:var(--green-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Sin fórmulas de Excel</strong> en las celdas (solo valores)</p>
+                </div>
+                <div style="background:var(--green-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Permite cualquier análisis</strong>: filtrar, agrupar, cruzar</p>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-top="orange" style="padding:22px">
+            <h3 style="color:var(--orange);font-size:0.62em">Dato manipulado (lo que NO queremos)</h3>
+            <p style="font-size:0.48em;margin-bottom:10px">Ya fue resumido, agrupado o calculado antes de llegar a PBI.</p>
+            <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Tablas dinámicas</strong> pegadas como valores</p>
+                </div>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Totales, promedios o %</strong> ya calculados en el Excel</p>
+                </div>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Datos filtrados</strong>: faltan registros que alguien eliminó</p>
+                </div>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.44em"><strong>Perdemos control</strong>: no podemos recalcular ni verificar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p style="text-align:center;font-size:0.46em;color:var(--ink2);margin-top:14px">Los resúmenes, agrupaciones y cálculos <strong>los hacemos dentro de Power BI</strong>, no antes. Así mantenemos el control total.</p>
+    <div class="bottom-quote">"El dato crudo es la verdad. Todo lo demás es una interpretación."</div>
 </section>
 
 <!-- ═══ 10. FILTROS ═══ -->
