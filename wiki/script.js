@@ -212,36 +212,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('submit-quiz').textContent = 'Enviado ✓';
         document.getElementById('submit-quiz').style.opacity = '0.6';
 
-        // ── Send email via EmailJS ──
-        const templateParams = {
-            to_email: 'branko.almeira96@gmail.com',
-            from_email: userEmail,
-            participant_email: userEmail,
-            score: `${score} de ${quizData.length}`,
-            percentage: `${Math.round(score/quizData.length*100)}%`,
-            details: details.join('\n'),
-            date: new Date().toLocaleString('es-AR')
-        };
-
-        // EmailJS: se necesita configurar service_id, template_id y public_key
-        // Por ahora usamos un fallback que muestra el resultado en consola
-        if (typeof emailjs !== 'undefined' && window.EMAILJS_CONFIGURED) {
-            emailjs.send('service_iselin', 'template_quiz', templateParams)
-                .then(() => console.log('Email enviado'))
-                .catch(err => console.warn('EmailJS error:', err));
-        } else {
-            // Fallback: enviar via mailto como respaldo
-            const subject = encodeURIComponent(`Autoevaluación ISELIN — ${userEmail} — ${score}/${quizData.length}`);
-            const body = encodeURIComponent(
-                `Participante: ${userEmail}\n` +
-                `Resultado: ${score} de ${quizData.length} (${Math.round(score/quizData.length*100)}%)\n` +
-                `Fecha: ${new Date().toLocaleString('es-AR')}\n\n` +
-                `Detalle:\n${details.join('\n')}`
-            );
-            // Abrir mailto silenciosamente como backup
-            const mailtoLink = document.createElement('a');
-            mailtoLink.href = `mailto:branko.almeira96@gmail.com?subject=${subject}&body=${body}`;
-            mailtoLink.click();
-        }
+        // ── Enviar resultado via FormSubmit.co ──
+        fetch('https://formsubmit.co/ajax/branko.almeira96@gmail.com', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+                _subject: `Autoevaluación ISELIN — ${userEmail} — ${score}/${quizData.length}`,
+                Participante: userEmail,
+                Resultado: `${score} de ${quizData.length} (${Math.round(score/quizData.length*100)}%)`,
+                Fecha: new Date().toLocaleString('es-AR'),
+                Detalle: details.join('\n')
+            })
+        })
+        .then(r => r.json())
+        .then(data => console.log('Email enviado:', data))
+        .catch(err => console.warn('FormSubmit error:', err));
     });
 });
