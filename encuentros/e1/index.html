@@ -112,8 +112,8 @@
    LAYOUT HELPERS
    ═══════════════════════════════════════ */
 .grow { flex: 1; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: stretch; }
-.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; flex: 1; align-content: stretch; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex: 1; align-content: stretch; }
 
 /* ═══════════════════════════════════════
@@ -141,7 +141,7 @@
    BOTTOM QUOTE (frase de impacto)
    ═══════════════════════════════════════ */
 .bottom-quote {
-    margin-top: auto;
+    margin-top: 20px;
     padding-top: 14px;
     text-align: center;
     font-size: 0.42em;
@@ -633,22 +633,22 @@
     <div class="label">Conceptos</div>
     <h2>Estadísticas básicas</h2>
     <p class="sub">Números que resumen los datos y nos ayudan a entenderlos rápidamente</p>
-    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+    <div class="grid-2" style="margin-top:14px">
         <div class="card" data-top="blue">
             <h3 style="color:var(--blue);font-size:0.58em">Medidas de tendencia central</h3>
             <p style="margin-bottom:10px">Responden: <strong>¿cuál es el valor "típico"?</strong></p>
             <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
-                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:10px 14px">
-                    <p style="font-size:0.5em"><strong style="color:var(--blue)">Promedio (media)</strong> — Sumar todo y dividir por la cantidad.</p>
-                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Ej: Si 5 colectivos hicieron 100, 120, 110, 130, 140 km → promedio = 120 km</p>
+                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.48em"><strong style="color:var(--blue)">Promedio (media)</strong> — Sumar todo y dividir por la cantidad.</p>
+                    <p style="font-size:0.42em;color:var(--ink3);margin-top:3px">Ej: Si 5 colectivos hicieron 100, 120, 110, 130, 140 km → promedio = 120 km</p>
                 </div>
-                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:10px 14px">
-                    <p style="font-size:0.5em"><strong style="color:var(--blue)">Mediana</strong> — El valor del medio cuando ordenamos. No se distorsiona por extremos.</p>
-                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Ej: Demoras de 5, 7, 8, 9, 45 min → mediana = 8 min (el 45 no la arrastra)</p>
+                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.48em"><strong style="color:var(--blue)">Mediana</strong> — El valor del medio cuando ordenamos. No se distorsiona por extremos.</p>
+                    <p style="font-size:0.42em;color:var(--ink3);margin-top:3px">Ej: Demoras de 5, 7, 8, 9, 45 min → mediana = 8 min (el 45 no la arrastra)</p>
                 </div>
-                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:10px 14px">
-                    <p style="font-size:0.5em"><strong style="color:var(--blue)">Moda</strong> — El valor que más se repite.</p>
-                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Ej: Si la mayoría de los viajes son de Ruta 3, esa es la ruta más frecuente (moda)</p>
+                <div style="background:var(--blue-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.48em"><strong style="color:var(--blue)">Moda</strong> — El valor que más se repite.</p>
+                    <p style="font-size:0.42em;color:var(--ink3);margin-top:3px">Ej: Si la mayoría de los viajes son de Ruta 3, esa es la ruta más frecuente (moda)</p>
                 </div>
             </div>
         </div>
@@ -656,17 +656,17 @@
             <h3 style="color:var(--orange);font-size:0.58em">Medidas de variabilidad</h3>
             <p style="margin-bottom:10px">Responden: <strong>¿qué tan diferentes son los datos entre sí?</strong></p>
             <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
-                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:10px 14px">
-                    <p style="font-size:0.5em"><strong style="color:var(--orange)">Rango</strong> — La diferencia entre el mayor y el menor valor.</p>
-                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Ej: Consumo entre 30 y 70 lts → rango = 40 lts (hay mucha diferencia)</p>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.48em"><strong style="color:var(--orange)">Rango</strong> — La diferencia entre el mayor y el menor valor.</p>
+                    <p style="font-size:0.42em;color:var(--ink3);margin-top:3px">Ej: Consumo entre 30 y 70 lts → rango = 40 lts (hay mucha diferencia)</p>
                 </div>
-                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:10px 14px">
-                    <p style="font-size:0.5em"><strong style="color:var(--orange)">Desviación estándar</strong> — Cuánto se alejan los datos del promedio en general.</p>
-                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Ej: Si todos consumen parecido → desviación baja. Si hay mucha diferencia → alta.</p>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.48em"><strong style="color:var(--orange)">Desviación estándar</strong> — Cuánto se alejan los datos del promedio en general.</p>
+                    <p style="font-size:0.42em;color:var(--ink3);margin-top:3px">Ej: Si todos consumen parecido → desviación baja. Si hay mucha diferencia → alta.</p>
                 </div>
-                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:10px 14px">
-                    <p style="font-size:0.5em"><strong style="color:var(--orange)">¿Por qué importa?</strong></p>
-                    <p style="font-size:0.44em;color:var(--ink3);margin-top:4px">Un promedio de gasoil de 50 lts puede esconder que hay colectivos con 30 y otros con 80.</p>
+                <div style="background:var(--orange-soft);border-radius:var(--r-sm);padding:8px 12px">
+                    <p style="font-size:0.48em"><strong style="color:var(--orange)">¿Por qué importa?</strong></p>
+                    <p style="font-size:0.42em;color:var(--ink3);margin-top:3px">Un promedio de gasoil de 50 lts puede esconder que hay colectivos con 30 y otros con 80.</p>
                 </div>
             </div>
         </div>
@@ -674,7 +674,110 @@
     <div class="bottom-quote">"El promedio solo cuenta la mitad de la historia. La variabilidad cuenta la otra mitad."</div>
 </section>
 
-<!-- ═══ 12. DEMO ═══ -->
+<!-- ═══ 12. GRÁFICOS ═══ -->
+<section>
+    <div class="label">Conceptos</div>
+    <h2>Tipos de gráficos</h2>
+    <p class="sub">Cada gráfico sirve para responder una pregunta diferente</p>
+    <div class="grid-3" style="margin-top:12px;gap:14px">
+
+        <div class="card" data-top="blue" style="display:flex;flex-direction:column;padding:20px 22px">
+            <div style="text-align:center;margin-bottom:8px">
+                <svg viewBox="0 0 120 70" width="130" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="8" y="45" width="18" height="20" rx="3" fill="#3B82F6" opacity="0.5"/>
+                    <rect x="32" y="28" width="18" height="37" rx="3" fill="#3B82F6" opacity="0.7"/>
+                    <rect x="56" y="8" width="18" height="57" rx="3" fill="#3B82F6"/>
+                    <rect x="80" y="33" width="18" height="32" rx="3" fill="#3B82F6" opacity="0.6"/>
+                    <line x1="4" y1="66" x2="104" y2="66" stroke="#CBD5E1" stroke-width="1"/>
+                </svg>
+            </div>
+            <h3 style="color:var(--blue);text-align:center;font-size:0.62em">Barras</h3>
+            <p style="text-align:center;font-size:0.46em">Comparar cantidades entre categorías</p>
+            <p style="text-align:center;font-size:0.38em;color:var(--ink3);margin-top:6px">Viajes por ruta, consumo por colectivo</p>
+        </div>
+
+        <div class="card" data-top="teal" style="display:flex;flex-direction:column;padding:20px 22px">
+            <div style="text-align:center;margin-bottom:8px">
+                <svg viewBox="0 0 120 70" width="130" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="8,55 30,40 55,45 75,22 100,12" fill="none" stroke="#0D9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="8" cy="55" r="3" fill="#0D9488"/><circle cx="30" cy="40" r="3" fill="#0D9488"/>
+                    <circle cx="55" cy="45" r="3" fill="#0D9488"/><circle cx="75" cy="22" r="3" fill="#0D9488"/>
+                    <circle cx="100" cy="12" r="3" fill="#0D9488"/>
+                    <line x1="4" y1="66" x2="104" y2="66" stroke="#CBD5E1" stroke-width="1"/>
+                </svg>
+            </div>
+            <h3 style="color:var(--teal);text-align:center;font-size:0.62em">Líneas</h3>
+            <p style="text-align:center;font-size:0.46em">Tendencias y evolución en el tiempo</p>
+            <p style="text-align:center;font-size:0.38em;color:var(--ink3);margin-top:6px">Viajes mensuales, evolución de siniestros</p>
+        </div>
+
+        <div class="card" data-top="orange" style="display:flex;flex-direction:column;padding:20px 22px">
+            <div style="text-align:center;margin-bottom:8px">
+                <svg viewBox="0 0 120 70" width="130" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="55" cy="35" r="28" fill="none" stroke="#E2E8F0" stroke-width="7"/>
+                    <circle cx="55" cy="35" r="28" fill="none" stroke="#EA580C" stroke-width="7" stroke-dasharray="106 176" stroke-dashoffset="0" transform="rotate(-90 55 35)"/>
+                    <circle cx="55" cy="35" r="28" fill="none" stroke="#F59E0B" stroke-width="7" stroke-dasharray="44 176" stroke-dashoffset="-106" transform="rotate(-90 55 35)"/>
+                    <circle cx="55" cy="35" r="18" fill="white"/>
+                </svg>
+            </div>
+            <h3 style="color:var(--orange);text-align:center;font-size:0.62em">Anillo / Torta</h3>
+            <p style="text-align:center;font-size:0.46em">Proporciones de un total</p>
+            <p style="text-align:center;font-size:0.38em;color:var(--ink3);margin-top:6px">Distribución de viajes por tipo de servicio</p>
+        </div>
+
+        <div class="card" data-top="green" style="display:flex;flex-direction:column;padding:20px 22px">
+            <div style="text-align:center;margin-bottom:8px">
+                <svg viewBox="0 0 120 70" width="130" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="6" width="96" height="56" rx="4" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+                    <line x1="6" y1="20" x2="102" y2="20" stroke="#E2E8F0" stroke-width="1"/>
+                    <line x1="6" y1="34" x2="102" y2="34" stroke="#E2E8F0" stroke-width="1"/>
+                    <line x1="6" y1="48" x2="102" y2="48" stroke="#E2E8F0" stroke-width="1"/>
+                    <line x1="40" y1="6" x2="40" y2="62" stroke="#E2E8F0" stroke-width="1"/>
+                    <line x1="72" y1="6" x2="72" y2="62" stroke="#E2E8F0" stroke-width="1"/>
+                    <text x="22" y="15" text-anchor="middle" fill="#059669" font-size="7" font-weight="700" font-family="Inter">Ruta</text>
+                    <text x="56" y="15" text-anchor="middle" fill="#059669" font-size="7" font-weight="700" font-family="Inter">Viajes</text>
+                    <text x="87" y="15" text-anchor="middle" fill="#059669" font-size="7" font-weight="700" font-family="Inter">Km</text>
+                </svg>
+            </div>
+            <h3 style="color:var(--green);text-align:center;font-size:0.62em">Tabla / Matriz</h3>
+            <p style="text-align:center;font-size:0.46em">Detalle exacto de los datos</p>
+            <p style="text-align:center;font-size:0.38em;color:var(--ink3);margin-top:6px">Detalle por ruta con viajes, km y gasoil</p>
+        </div>
+
+        <div class="card" data-top="blue" style="display:flex;flex-direction:column;padding:20px 22px">
+            <div style="text-align:center;margin-bottom:8px">
+                <svg viewBox="0 0 120 70" width="130" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="20" y="6" width="80" height="54" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+                    <text x="60" y="30" text-anchor="middle" fill="#3B82F6" font-size="18" font-weight="900" font-family="Inter">1.250</text>
+                    <text x="60" y="46" text-anchor="middle" fill="#64748B" font-size="8" font-family="Inter">Total viajes</text>
+                </svg>
+            </div>
+            <h3 style="color:var(--blue);text-align:center;font-size:0.62em">Tarjeta / KPI</h3>
+            <p style="text-align:center;font-size:0.46em">Un número clave de un vistazo</p>
+            <p style="text-align:center;font-size:0.38em;color:var(--ink3);margin-top:6px">Total viajes, facturación, siniestros del mes</p>
+        </div>
+
+        <div class="card" data-top="teal" style="display:flex;flex-direction:column;padding:20px 22px">
+            <div style="text-align:center;margin-bottom:8px">
+                <svg viewBox="0 0 120 70" width="130" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="48" width="14" height="17" rx="2" fill="#0D9488" opacity="0.3"/>
+                    <rect x="28" y="38" width="14" height="27" rx="2" fill="#0D9488" opacity="0.5"/>
+                    <rect x="46" y="12" width="14" height="53" rx="2" fill="#3B82F6" opacity="0.7"/>
+                    <rect x="64" y="32" width="14" height="33" rx="2" fill="#0D9488" opacity="0.5"/>
+                    <rect x="82" y="44" width="14" height="21" rx="2" fill="#0D9488" opacity="0.3"/>
+                    <line x1="6" y1="66" x2="100" y2="66" stroke="#CBD5E1" stroke-width="1"/>
+                </svg>
+            </div>
+            <h3 style="color:var(--teal);text-align:center;font-size:0.62em">Histograma</h3>
+            <p style="text-align:center;font-size:0.46em">Cómo se distribuyen los datos</p>
+            <p style="text-align:center;font-size:0.38em;color:var(--ink3);margin-top:6px">Distribución de km recorridos por chofer</p>
+        </div>
+
+    </div>
+    <div class="bottom-quote">"El gráfico correcto convierte números en comprensión instantánea."</div>
+</section>
+
+<!-- ═══ 13. DEMO ═══ -->
 <section>
     <div class="label teal">Power BI</div>
     <h2>Demo en vivo</h2>
