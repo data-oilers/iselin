@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cronograma — Capacitación en Análisis de Datos con Power BI · ISELIN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --font: 'Inter', system-ui, sans-serif;
+    --bg: #F5F7FA;
+    --surface: #FFFFFF;
+    --border: #E2E8F0;
+    --ink: #0F172A;
+    --ink2: #334155;
+    --ink3: #64748B;
+    --blue: #3B82F6;
+    --teal: #0D9488;
+    --orange: #EA580C;
+    --green: #059669;
+    --r: 14px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink2);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ── HOME BUTTON ── */
+.home-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1000;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748B;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+}
+.home-btn:hover {
+    color: #3B82F6;
+    border-color: #3B82F6;
+}
+
+/* ── HERO ── */
+.hero {
+    background: linear-gradient(160deg, #0E1525 0%, #162032 40%, #1A2744 100%);
+    color: white;
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -80px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -50px;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(20,184,166,0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+.hero-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+.hero h1 {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 12px;
+    color: #F1F5F9;
+}
+.hero p {
+    font-size: 17px;
+    color: #94A3B8;
+    line-height: 1.6;
+}
+
+/* ── MAIN ── */
+.main {
+    max-width: 960px;
+    margin: 32px auto 60px;
+    padding: 0 24px;
+}
+
+/* ── SECTION CARDS ── */
+.section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+    padding: 32px;
+    margin-bottom: 24px;
+}
+
+/* ── HEADINGS ── */
+h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 20px;
+}
+h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 12px;
+}
+h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 8px;
+    margin-top: 20px;
+}
+
+/* ── TABLES ── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+thead th {
+    background: #0F172A;
+    color: #fff;
+    font-weight: 700;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+}
+thead th:first-child {
+    border-radius: 8px 0 0 0;
+}
+thead th:last-child {
+    border-radius: 0 8px 0 0;
+}
+tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+tbody tr:nth-child(odd) {
+    background: #F8FAFC;
+}
+tbody tr:nth-child(even) {
+    background: #FFFFFF;
+}
+tbody tr:last-child td:first-child {
+    border-radius: 0 0 0 8px;
+}
+tbody tr:last-child td:last-child {
+    border-radius: 0 0 8px 0;
+}
+
+/* ── DETAILS / SUMMARY ── */
+details {
+    margin-bottom: 16px;
+}
+details summary {
+    cursor: pointer;
+    padding: 14px 18px;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ink);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before {
+    content: '▸';
+    font-size: 14px;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+details[open] summary::before {
+    transform: rotate(90deg);
+}
+details summary:hover {
+    background: #F8FAFC;
+}
+details .detail-content {
+    padding: 8px 18px 18px;
+}
+
+/* Encounter-specific border colors */
+details.e1 { border-left: 3px solid #3B82F6; }
+details.e2 { border-left: 3px solid #0D9488; }
+details.e3 { border-left: 3px solid #EA580C; }
+details.e4 { border-left: 3px solid #059669; }
+
+/* ── OBJECTIVE BOX ── */
+.objetivo-box {
+    background: #F0FDFA;
+    border: 1px solid #CCFBF1;
+    border-radius: 10px;
+    padding: 20px 24px;
+    color: #134E4A;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+
+/* ── META LINE ── */
+.meta-line {
+    font-size: 14px;
+    color: var(--ink3);
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+}
+.meta-line span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ── CALENDAR TABLE BADGES ── */
+.badge-presencial {
+    display: inline-block;
+    background: #ECFDF5;
+    color: #059669;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
+}
+.badge-virtual {
+    display: inline-block;
+    background: #EFF6FF;
+    color: #3B82F6;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
+}
+
+/* ── FUERA DE ALCANCE ── */
+.fuera-tema {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* ── FOOTER ── */
+footer {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 24px 40px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--ink3);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+    .hero { padding: 50px 20px 40px; }
+    .hero h1 { font-size: 28px; }
+    .section-card { padding: 20px 16px; }
+    table { font-size: 13px; }
+    thead th, tbody td { padding: 8px 10px; }
+    h2 { font-size: 1.4rem; }
+}
+@media (max-width: 480px) {
+    .hero h1 { font-size: 24px; }
+    .hero p { font-size: 15px; }
+    details summary { font-size: 14px; padding: 12px 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HOME BUTTON -->
+<a href="index.html" class="home-btn" onmouseover="this.style.color='#3B82F6';this.style.borderColor='#3B82F6'" onmouseout="this.style.color='#64748B';this.style.borderColor='#E2E8F0'">&#8592; Inicio</a>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-inner">
+        <h1>Cronograma completo</h1>
+        <p>Capacitaci&oacute;n en An&aacute;lisis de Datos con Power BI &middot; ISELIN</p>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- ============================================ -->
+    <!-- SECTION 1: INFORMACIÓN GENERAL               -->
+    <!-- ============================================ -->
+    <div class="section-card">
+        <h2>1. Informaci&oacute;n General</h2>
+
+        <table>
+            <thead>
+                <tr><th>Campo</th><th>Detalle</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Empresa</strong></td><td>ISELIN (Transporte)</td></tr>
+                <tr><td><strong>Participantes</strong></td><td>~25 personas</td></tr>
+                <tr><td><strong>Nivel inicial</strong></td><td>Mixto (desde cero hasta perfiles t&eacute;cnicos avanzados)</td></tr>
+                <tr><td><strong>Modalidad</strong></td><td>Presencial (E1, E4) / Virtual (E2, E3)</td></tr>
+                <tr><td><strong>Duraci&oacute;n por encuentro</strong></td><td>2 horas</td></tr>
+                <tr><td><strong>Herramienta principal</strong></td><td>Power BI Desktop + Power BI Service</td></tr>
+                <tr><td><strong>Datos</strong></td><td>Archivos Excel reales de ISELIN</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Calendario</h3>
+        <table>
+            <thead>
+                <tr><th>Encuentro</th><th>Fecha</th><th>D&iacute;a</th><th>Modalidad</th><th>T&iacute;tulo</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>E1</strong></td>
+                    <td>16/04/2026</td>
+                    <td>Jueves</td>
+                    <td><span class="badge-presencial">Presencial</span></td>
+                    <td>Fundamentos, Calidad y Primer Contacto con PBI</td>
+                </tr>
+                <tr>
+                    <td><strong>E2</strong></td>
+                    <td>21/04/2026</td>
+                    <td>Martes</td>
+                    <td><span class="badge-virtual">Virtual</span></td>
+                    <td>Modelo de Datos, Power Query y Primeras Visualizaciones</td>
+                </tr>
+                <tr>
+                    <td><strong>E3</strong></td>
+                    <td>23/04/2026</td>
+                    <td>Jueves</td>
+                    <td><span class="badge-virtual">Virtual</span></td>
+                    <td>F&oacute;rmulas DAX, Dashboards Avanzados y Storytelling con Datos</td>
+                </tr>
+                <tr>
+                    <td><strong>E4</strong></td>
+                    <td>30/04/2026</td>
+                    <td>Jueves</td>
+                    <td><span class="badge-presencial">Presencial</span></td>
+                    <td>Interpretaci&oacute;n de Datos, Publicaci&oacute;n y Actualizaci&oacute;n Autom&aacute;tica</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 2: OBJETIVO GENERAL                  -->
+    <!-- ============================================ -->
+    <div class="section-card">
+        <h2>2. Objetivo General</h2>
+        <div class="objetivo-box">
+            Que los participantes de ISELIN incorporen el uso de Power BI como herramienta cotidiana para transformar datos en informaci&oacute;n &uacute;til, facilitando la toma de decisiones basada en evidencia y fortaleciendo la cultura de mejora continua en todas las &aacute;reas de la empresa.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 3: DETALLE POR ENCUENTRO             -->
+    <!-- ============================================ -->
+    <div class="section-card">
+        <h2>3. Detalle por Encuentro</h2>
+
+        <!-- ── ENCUENTRO 1 ── -->
+        <details class="e1" open>
+            <summary>Encuentro 1: Fundamentos, Calidad y Primer Contacto con PBI</summary>
+            <div class="detail-content">
+
+                <div class="meta-line">
+                    <span>Jueves 16/04/2026</span>
+                    <span><span class="badge-presencial">Presencial</span></span>
+                    <span>Duraci&oacute;n: 2 horas</span>
+                </div>
+
+                <h4>Objetivo espec&iacute;fico</h4>
+                <p style="margin-bottom:16px;">Establecer el &ldquo;para qu&eacute;&rdquo; del an&aacute;lisis de datos conect&aacute;ndolo con la cultura de calidad de ISELIN, introducir los conceptos fundamentales de Power BI y lograr la primera carga de datos real.</p>
+
+                <h4>Agenda</h4>
+                <table>
+                    <thead>
+                        <tr><th>Bloque</th><th>Duraci&oacute;n</th><th>Tema</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>10 min</td><td>Apertura y contexto</td></tr>
+                        <tr><td>2</td><td>25 min</td><td>An&aacute;lisis de datos y calidad: por qu&eacute; importa</td></tr>
+                        <tr><td>3</td><td>25 min</td><td>Conceptos fundamentales</td></tr>
+                        <tr><td>4</td><td>35 min</td><td>Power BI: conociendo la herramienta (demo en vivo)</td></tr>
+                        <tr><td>5</td><td>15 min</td><td>Cierre: mapa de ruta y tarea</td></tr>
+                        <tr><td>--</td><td>10 min</td><td>Tiempo extra</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>Conceptos clave</h4>
+                <table>
+                    <thead>
+                        <tr><th>Concepto</th><th>Definici&oacute;n simplificada</th><th>Analog&iacute;a ISELIN</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Proceso de carga (ETL)</td><td>Sacar datos, limpiarlos y meterlos en PBI</td><td>Sacar datos de Wara/Excel, limpiarlos, meterlos en PBI</td></tr>
+                        <tr><td>Tabla de datos principales</td><td>Tabla con registros de eventos</td><td>Cada viaje realizado, cada boleto vendido, cada siniestro</td></tr>
+                        <tr><td>Tabla de referencia</td><td>Tabla con datos descriptivos</td><td>Lista de choferes, rutas, colectivos, agencias</td></tr>
+                        <tr><td>Filtros en PBI</td><td>Al filtrar, PBI recalcula todos los valores</td><td>Si filtro por &ldquo;Ruta 5&rdquo;, solo veo indicadores de esa ruta</td></tr>
+                        <tr><td>Estad&iacute;sticas b&aacute;sicas</td><td>Promedio, mediana y dispersi&oacute;n</td><td>Km promedio por colectivo, tiempo mediano de demora, variabilidad del consumo de gasoil</td></tr>
+                        <tr><td>Ciclo de mejora continua</td><td>Planificar-Hacer-Verificar-Actuar</td><td>PBI es la herramienta de &ldquo;Verificar&rdquo; dentro del ciclo de mejora</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>Entregables</h4>
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>Entregable</th><th>Formato</th><th>Descripci&oacute;n</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1.1</td><td>Archivo PBI base</td><td>.pbix</td><td>Archivo con la primera tabla cargada desde Excel real de ISELIN, con una visualizaci&oacute;n b&aacute;sica.</td></tr>
+                        <tr><td>1.2</td><td>Gu&iacute;a de conceptos fundamentales</td><td>PDF</td><td>Documento con todos los conceptos del encuentro: ETL, tablas principales y de referencia, filtros, estad&iacute;sticas b&aacute;sicas y nociones de calidad y mejora continua.</td></tr>
+                        <tr><td>1.3</td><td>Gu&iacute;a de instalaci&oacute;n de PBI Desktop</td><td>PDF</td><td>Paso a paso de instalaci&oacute;n y primer inicio para que puedan practicar por su cuenta.</td></tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </details>
+
+        <!-- ── ENCUENTRO 2 ── -->
+        <details class="e2">
+            <summary>Encuentro 2: Modelo de Datos, Power Query y Primeras Visualizaciones</summary>
+            <div class="detail-content">
+
+                <div class="meta-line">
+                    <span>Martes 21/04/2026</span>
+                    <span><span class="badge-virtual">Virtual</span></span>
+                    <span>Duraci&oacute;n: 2 horas</span>
+                </div>
+
+                <h4>Objetivo espec&iacute;fico</h4>
+                <p style="margin-bottom:16px;">Conectar m&uacute;ltiples tablas entre s&iacute;, aprender a limpiar datos con Power Query y generar las primeras visualizaciones con f&oacute;rmulas propias.</p>
+
+                <h4>Agenda</h4>
+                <table>
+                    <thead>
+                        <tr><th>Bloque</th><th>Duraci&oacute;n</th><th>Tema</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>10 min</td><td>Recap y resoluci&oacute;n de dudas</td></tr>
+                        <tr><td>2</td><td>25 min</td><td>Power Query: limpieza de datos (demo en vivo)</td></tr>
+                        <tr><td>3</td><td>25 min</td><td>Conectar tablas entre s&iacute;</td></tr>
+                        <tr><td>4</td><td>25 min</td><td>Primeros c&aacute;lculos con DAX</td></tr>
+                        <tr><td>5</td><td>25 min</td><td>Primeras visualizaciones (demo en vivo)</td></tr>
+                        <tr><td>6</td><td>10 min</td><td>Cierre y tarea</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>Conceptos clave</h4>
+                <table>
+                    <thead>
+                        <tr><th>Concepto</th><th>Definici&oacute;n simplificada</th><th>Ejemplo pr&aacute;ctico</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Power Query</td><td>Herramienta para limpiar y preparar datos</td><td>Limpiar columnas vac&iacute;as del Excel de choferes</td></tr>
+                        <tr><td>Combinar tablas</td><td>Unir o apilar datos de distintas fuentes</td><td>Cruzar viajes con rutas por &ldquo;ID_Ruta&rdquo;, o juntar datos de varios meses</td></tr>
+                        <tr><td>Pasos aplicados</td><td>Historial grabado de cada cambio</td><td>Cada limpieza en Power Query queda registrada y se repite sola</td></tr>
+                        <tr><td>Modelo de datos</td><td>Las tablas conectadas entre s&iacute; por campos en com&uacute;n</td><td>Viajes al centro, conectada con Choferes, Rutas y Fechas</td></tr>
+                        <tr><td>C&aacute;lculo autom&aacute;tico vs. f&oacute;rmula</td><td>PBI calcula solo al arrastrar un campo, o escribimos nuestra propia f&oacute;rmula</td><td>Arrastrar &ldquo;Importe&rdquo; (PBI suma solo) vs. escribir Total Viajes = COUNT(Viajes[ID_Viaje])</td></tr>
+                        <tr><td>CALCULATE</td><td>Funci&oacute;n DAX que permite filtrar dentro de una f&oacute;rmula</td><td>Viajes Ruta 5 = CALCULATE(COUNT(Viajes[ID]), Rutas[Nombre]=&quot;Ruta 5&quot;)</td></tr>
+                        <tr><td>Segmentador / Slicer</td><td>Filtro visual interactivo en el reporte</td><td>Dropdown para seleccionar mes o ruta</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>Entregables</h4>
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>Entregable</th><th>Formato</th><th>Descripci&oacute;n</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>2.1</td><td>Archivo PBI con tablas conectadas</td><td>.pbix</td><td>Archivo con 3-4 tablas relacionadas, f&oacute;rmulas b&aacute;sicas creadas y primeras visualizaciones funcionales.</td></tr>
+                        <tr><td>2.2</td><td>Gu&iacute;a de Power Query</td><td>PDF</td><td>Paso a paso de las operaciones de limpieza m&aacute;s comunes, con capturas de pantalla.</td></tr>
+                        <tr><td>2.3</td><td>Gu&iacute;a de relaciones y modelo de datos</td><td>PDF</td><td>Explicaci&oacute;n visual de c&oacute;mo se conectan las tablas de ISELIN entre s&iacute;.</td></tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </details>
+
+        <!-- ── ENCUENTRO 3 ── -->
+        <details class="e3">
+            <summary>Encuentro 3: F&oacute;rmulas DAX, Dashboards Avanzados y Storytelling con Datos</summary>
+            <div class="detail-content">
+
+                <div class="meta-line">
+                    <span>Jueves 23/04/2026</span>
+                    <span><span class="badge-virtual">Virtual</span></span>
+                    <span>Duraci&oacute;n: 2 horas</span>
+                </div>
+
+                <h4>Objetivo espec&iacute;fico</h4>
+                <p style="margin-bottom:16px;">Profundizar en f&oacute;rmulas DAX para crear indicadores de negocio, construir un dashboard completo multip&aacute;gina y aprender a contar una historia con los datos.</p>
+
+                <h4>Agenda</h4>
+                <table>
+                    <thead>
+                        <tr><th>Bloque</th><th>Duraci&oacute;n</th><th>Tema</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>5 min</td><td>Recap r&aacute;pido</td></tr>
+                        <tr><td>2</td><td>30 min</td><td>F&oacute;rmulas DAX m&aacute;s potentes (demo en vivo)</td></tr>
+                        <tr><td>3</td><td>10 min</td><td>Tabla de calendario</td></tr>
+                        <tr><td>4</td><td>30 min</td><td>Visualizaciones avanzadas e interactividad</td></tr>
+                        <tr><td>5</td><td>25 min</td><td>Storytelling con datos: dise&ntilde;ar para comunicar</td></tr>
+                        <tr><td>6</td><td>15 min</td><td>Construcci&oacute;n en vivo: dashboard multip&aacute;gina</td></tr>
+                        <tr><td>7</td><td>5 min</td><td>Cierre y preparaci&oacute;n para E4</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>Conceptos clave</h4>
+                <table>
+                    <thead>
+                        <tr><th>Concepto</th><th>Definici&oacute;n simplificada</th><th>Ejemplo pr&aacute;ctico</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>VAR / RETURN</td><td>Variables para organizar f&oacute;rmulas DAX</td><td>VAR Total = SUM(Viajes[Km])&nbsp; RETURN Total / 1000</td></tr>
+                        <tr><td>TOTALYTD</td><td>Acumulado desde inicio del a&ntilde;o</td><td>Viajes acumulados del a&ntilde;o en curso</td></tr>
+                        <tr><td>SAMEPERIODLASTYEAR</td><td>Comparar con el mismo per&iacute;odo del a&ntilde;o anterior</td><td>Viajes de marzo 2026 vs. marzo 2025</td></tr>
+                        <tr><td>Tabla de calendario</td><td>Tabla de fechas necesaria para comparaciones en el tiempo</td><td>Tabla con cada d&iacute;a del 2020 al 2027, con mes, trimestre, etc.</td></tr>
+                        <tr><td>Formato condicional</td><td>Colores autom&aacute;ticos seg&uacute;n reglas</td><td>Celda roja si cumplimiento &lt; 80%, verde si &gt;= 100%</td></tr>
+                        <tr><td>Informaci&oacute;n emergente (tooltip)</td><td>Detalle que aparece al pasar el mouse</td><td>Pasar el mouse sobre una ruta y ver detalle de viajes y choferes</td></tr>
+                        <tr><td>Ir al detalle (drillthrough)</td><td>Navegar al detalle haciendo click derecho</td><td>Click en &ldquo;Ruta 5&rdquo; y ver p&aacute;gina con todo el detalle de esa ruta</td></tr>
+                        <tr><td>Vistas guardadas (bookmarks)</td><td>Guardar una vista espec&iacute;fica del reporte</td><td>Bot&oacute;n &ldquo;Vista Mensual&rdquo; vs. &ldquo;Vista Anual&rdquo;</td></tr>
+                        <tr><td>Storytelling</td><td>Dise&ntilde;ar para comunicar, no para decorar</td><td>Dashboard ejecutivo que responde: c&oacute;mo vamos este mes vs. el anterior</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>Entregables</h4>
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>Entregable</th><th>Formato</th><th>Descripci&oacute;n</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>3.1</td><td>Dashboard multip&aacute;gina completo</td><td>.pbix</td><td>Reporte con 3+ p&aacute;ginas, f&oacute;rmulas DAX, formato condicional, navegaci&oacute;n e informaci&oacute;n emergente.</td></tr>
+                        <tr><td>3.2</td><td>Gu&iacute;a de f&oacute;rmulas DAX</td><td>PDF</td><td>Referencia r&aacute;pida de funciones DAX usadas, con sintaxis y ejemplos aplicados a ISELIN.</td></tr>
+                        <tr><td>3.3</td><td>Gu&iacute;a de dise&ntilde;o de dashboards</td><td>PDF</td><td>Principios de storytelling con datos, paleta de colores, layouts recomendados, checklist de dise&ntilde;o.</td></tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </details>
+
+        <!-- ── ENCUENTRO 4 ── -->
+        <details class="e4">
+            <summary>Encuentro 4: Interpretaci&oacute;n de Datos, Publicaci&oacute;n y Actualizaci&oacute;n Autom&aacute;tica</summary>
+            <div class="detail-content">
+
+                <div class="meta-line">
+                    <span>Jueves 30/04/2026</span>
+                    <span><span class="badge-presencial">Presencial</span></span>
+                    <span>Duraci&oacute;n: 2 horas</span>
+                </div>
+
+                <h4>Objetivo espec&iacute;fico</h4>
+                <p style="margin-bottom:16px;">Aprender a interpretar tendencias y proyecciones en los datos, publicar el dashboard en Power BI Service y configurar la actualizaci&oacute;n autom&aacute;tica programada.</p>
+
+                <h4>Agenda</h4>
+                <table>
+                    <thead>
+                        <tr><th>Bloque</th><th>Duraci&oacute;n</th><th>Tema</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>5 min</td><td>Recap y estado de dashboards</td></tr>
+                        <tr><td>2</td><td>15 min</td><td>N&uacute;meros clave en PBI: repaso pr&aacute;ctico</td></tr>
+                        <tr><td>3</td><td>25 min</td><td>Interpretar datos: tendencias, proyecciones y datos fuera de lo normal</td></tr>
+                        <tr><td>4</td><td>25 min</td><td>Publicaci&oacute;n en Power BI Service (demo en vivo)</td></tr>
+                        <tr><td>5</td><td>20 min</td><td>Actualizaci&oacute;n programada (Scheduled Refresh)</td></tr>
+                        <tr><td>6</td><td>20 min</td><td>Cierre: hoja de ruta post-capacitaci&oacute;n y buenas pr&aacute;cticas</td></tr>
+                        <tr><td>--</td><td>10 min</td><td>Tiempo extra</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>Conceptos clave</h4>
+                <table>
+                    <thead>
+                        <tr><th>Concepto</th><th>Definici&oacute;n simplificada</th><th>Aplicaci&oacute;n en ISELIN</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Relaci&oacute;n entre variables</td><td>Que dos variables se muevan juntas no significa que una cause la otra</td><td>M&aacute;s km y m&aacute;s gasoil van juntos, pero m&aacute;s lluvia y m&aacute;s siniestros no significa que la lluvia los cause</td></tr>
+                        <tr><td>L&iacute;nea de tendencia</td><td>L&iacute;nea que resume la relaci&oacute;n entre dos variables en un gr&aacute;fico</td><td>L&iacute;nea de tendencia en gr&aacute;fico de Km vs. Gasoil</td></tr>
+                        <tr><td>Proyecci&oacute;n autom&aacute;tica</td><td>PBI proyecta valores futuros bas&aacute;ndose en datos anteriores</td><td>PBI proyecta los viajes del pr&oacute;ximo trimestre bas&aacute;ndose en el hist&oacute;rico</td></tr>
+                        <tr><td>Rango probable (&ldquo;banda gris&rdquo;)</td><td>Rango donde probablemente caer&aacute; el valor real</td><td>&ldquo;Los viajes del pr&oacute;ximo mes estar&aacute;n entre X e Y&rdquo;</td></tr>
+                        <tr><td>Dato at&iacute;pico</td><td>Dato fuera de lo normal</td><td>Un d&iacute;a con 50 siniestros cuando el promedio es 3</td></tr>
+                        <tr><td>Workspace</td><td>Espacio de trabajo compartido en PBI Service</td><td>Workspace &ldquo;Log&iacute;stica&rdquo;, workspace &ldquo;Calidad&rdquo;</td></tr>
+                        <tr><td>Actualizaci&oacute;n programada</td><td>PBI actualiza los datos autom&aacute;ticamente seg&uacute;n un horario</td><td>Actualizaci&oacute;n diaria a las 7am desde OneDrive</td></tr>
+                    </tbody>
+                </table>
+
+                <h4>Entregables</h4>
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>Entregable</th><th>Formato</th><th>Descripci&oacute;n</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>4.1</td><td>Dashboard publicado en PBI Service</td><td>PBI Service</td><td>Reporte completo publicado y compartido en el workspace de ISELIN.</td></tr>
+                        <tr><td>4.2</td><td>Gu&iacute;a de interpretaci&oacute;n de datos en PBI</td><td>PDF</td><td>Conceptos de interpretaci&oacute;n de datos aplicados, con ejemplos de c&oacute;mo leer gr&aacute;ficos y tomar decisiones.</td></tr>
+                        <tr><td>4.3</td><td>Gu&iacute;a de publicaci&oacute;n y refresh</td><td>PDF</td><td>Paso a paso para publicar, compartir, configurar refresh programado y monitorear actualizaciones.</td></tr>
+                        <tr><td>4.4</td><td>Documento de buenas pr&aacute;cticas y organizaci&oacute;n</td><td>PDF</td><td>Nomenclatura, versionado, roles sugeridos, checklist de mantenimiento de dashboards.</td></tr>
+                        <tr><td>4.5</td><td>Hoja de ruta post-capacitaci&oacute;n</td><td>PDF</td><td>Plan sugerido para los siguientes 30-60-90 d&iacute;as despu&eacute;s de la capacitaci&oacute;n.</td></tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </details>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 4: FUERA DE ALCANCE                  -->
+    <!-- ============================================ -->
+    <div class="section-card">
+        <h2>4. Fuera de Alcance</h2>
+        <p style="margin-bottom:16px;">Los siguientes temas no se abordan en esta capacitaci&oacute;n ya que requieren un nivel t&eacute;cnico m&aacute;s avanzado o exceden el alcance de estos 4 encuentros. Se mencionan como referencia para futuras instancias de formaci&oacute;n.</p>
+
+        <table>
+            <thead>
+                <tr><th>Tema</th><th>Motivo</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fuera-tema">Permisos por &aacute;rea (RLS &ndash; Row Level Security)</td>
+                    <td>Configurar que cada usuario vea solo los datos de su &aacute;rea requiere conocimientos de modelado avanzado y administraci&oacute;n de PBI Service.</td>
+                </tr>
+                <tr>
+                    <td class="fuera-tema">On-Premises Data Gateway</td>
+                    <td>La instalaci&oacute;n y configuraci&oacute;n del gateway para conectar fuentes de datos locales requiere coordinaci&oacute;n con el &aacute;rea de IT e infraestructura de red.</td>
+                </tr>
+                <tr>
+                    <td class="fuera-tema">Conexi&oacute;n a bases de datos (SQL Server, etc.)</td>
+                    <td>Conectar PBI directamente a bases de datos en vez de archivos Excel implica conocimientos de SQL y permisos de acceso a servidores.</td>
+                </tr>
+                <tr>
+                    <td class="fuera-tema">DAX avanzado (SWITCH, tablas virtuales, c&aacute;lculo din&aacute;mico)</td>
+                    <td>F&oacute;rmulas complejas que requieren una base s&oacute;lida de DAX intermedio y pr&aacute;ctica sostenida.</td>
+                </tr>
+                <tr>
+                    <td class="fuera-tema">Dataflows y pipelines de datos</td>
+                    <td>Procesos de transformaci&oacute;n de datos centralizados en la nube, orientados a equipos de datos con experiencia t&eacute;cnica.</td>
+                </tr>
+                <tr>
+                    <td class="fuera-tema">Integraci&oacute;n con otras herramientas (Python, R, Azure)</td>
+                    <td>Ampliar PBI con scripts o servicios en la nube requiere conocimientos de programaci&oacute;n y arquitectura de datos.</td>
+                </tr>
+                <tr>
+                    <td class="fuera-tema">Administraci&oacute;n de capacidades y licenciamiento avanzado</td>
+                    <td>Gesti&oacute;n de licencias Premium/Fabric, capacidades dedicadas y gobierno a nivel organizacional.</td>
+                </tr>
+                <tr>
+                    <td class="fuera-tema">Modelado avanzado (muchos a muchos, tablas puente, grupos de c&aacute;lculo)</td>
+                    <td>Patrones de modelado que resuelven casos complejos pero requieren dominio previo de relaciones y DAX.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    ISELIN &middot; Capacitaci&oacute;n en An&aacute;lisis de Datos &middot; data oilers &middot; 2026
+</footer>
+
+</body>
+</html>
