@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 
 <body>
@@ -36,6 +37,7 @@
             <li><a href="#cultura">Cultura</a></li>
             <li><a href="#ingenieria">Ingeniería</a></li>
             <li><a href="#calidad">Calidad</a></li>
+            <li><a href="#analitica">Analítica</a></li>
             <li><a href="#glosario">Glosario</a></li>
             <li><a href="#quiz">Autoevaluación</a></li>
         </ul>
@@ -472,6 +474,40 @@
 
 
 
+        <section id="analitica">
+            <h2>5. Analítica para la Acción</h2>
+
+            <h3>5.1. De los Datos a las Decisiones</h3>
+            <p>Una vez que los datos han sido recolectados, procesados y su calidad ha sido asegurada, llegamos al paso más crítico: <strong>convertirlos en acciones</strong> que impulsen el negocio. La analítica es el motor que transforma información en resultados.</p>
+
+            <h3>5.2. Los Cuatro Niveles de Madurez Analítica</h3>
+            <p>El análisis de datos se clasifica en cuatro niveles, cada uno responde una pregunta diferente:</p>
+
+            <ul>
+                <li><strong>Analítica Descriptiva — ¿Qué pasó?</strong><br>
+                    Reportes y dashboards que resumen lo que ya ocurrió. Es el punto de partida: saber cuántos viajes se hicieron, cuánto gasoil se consumió, cuántos siniestros hubo.</li>
+
+                <li><strong>Analítica Diagnóstica — ¿Por qué pasó?</strong><br>
+                    Investigar las causas. Si los viajes bajaron, ¿fue por menos colectivos disponibles? ¿por una ruta cortada? Se cruzan datos para encontrar la respuesta.</li>
+
+                <li><strong>Analítica Predictiva — ¿Qué va a pasar?</strong><br>
+                    Usar tendencias y patrones históricos para anticiparse. Por ejemplo, proyectar cuántos viajes habrá el próximo trimestre o predecir picos de demanda.</li>
+
+                <li><strong>Analítica Prescriptiva — ¿Qué debemos hacer?</strong><br>
+                    El nivel más avanzado: recomendar acciones concretas basándose en los datos. Por ejemplo, reasignar colectivos a rutas con mayor demanda automáticamente.</li>
+            </ul>
+
+            <h3>5.3. KPIs vs. Métricas de Vanidad</h3>
+            <p>No todo lo que se mide es igualmente valioso. Un <strong>KPI</strong> (Indicador Clave de Desempeño) está directamente vinculado a un objetivo de negocio. Una <strong>métrica de vanidad</strong> puede parecer impresionante pero no ayuda a tomar decisiones.</p>
+            <ul>
+                <li><strong>KPI:</strong> Porcentaje de puntualidad de las unidades, consumo de gasoil por km, índice de siniestralidad.</li>
+                <li><strong>Métrica de vanidad:</strong> Cantidad de reportes generados, número de filas en una tabla, cantidad de gráficos en un dashboard.</li>
+            </ul>
+            <p>Lo importante no es cuánto medimos, sino <strong>si lo que medimos nos ayuda a decidir mejor</strong>.</p>
+
+            <p><strong>Perspectiva Estratégica:</strong> La madurez analítica no es un destino técnico, sino una capacidad de negocio. El verdadero valor no está en predecir el futuro, sino en tener la capacidad de actuar sobre esa predicción.</p>
+        </section>
+
         <section id="glosario">
             <h2>6. Glosario y Referencia Rápida</h2>
 
@@ -521,9 +557,17 @@
         </section>
 
         <section id="quiz">
-            <h2>Autoevaluación</h2>
-            <p>Pon a prueba tus conocimientos:</p>
+            <h2>7. Autoevaluación</h2>
+            <p>Poné a prueba tus conocimientos. Completá tu email para recibir el resultado.</p>
             <div class="quiz-container">
+                <div style="margin-bottom:20px;padding:16px;background:white;border-radius:var(--r-sm);border:1px solid var(--border);">
+                    <label for="quiz-email" style="font-size:0.9rem;font-weight:600;color:var(--ink);display:block;margin-bottom:6px;">Tu email</label>
+                    <input type="email" id="quiz-email" placeholder="nombre@empresa.com" required style="
+                        width:100%;padding:10px 14px;font-size:0.95rem;font-family:var(--font);
+                        border:1px solid var(--border);border-radius:var(--r-sm);
+                        outline:none;transition:border 0.2s;
+                    " onfocus="this.style.borderColor='#3B82F6'" onblur="this.style.borderColor='#E2E8F0'">
+                </div>
                 <div id="quiz-questions">
                     <!-- Questions injected by JS -->
                 </div>
@@ -534,7 +578,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 Manual de Análisis de Datos. Generado con IA.</p>
+        <p>ISELIN &middot; Capacitación en Análisis de Datos &middot; data oilers &middot; 2026</p>
     </footer>
 
     <script src="script.js"></script>

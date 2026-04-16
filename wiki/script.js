@@ -1,24 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Smooth scrolling for navigation
+
+    // ── Smooth scrolling for navigation ──
     document.querySelectorAll('nav a').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
             const targetSection = document.getElementById(targetId);
-
-            window.scrollTo({
-                top: targetSection.offsetTop - 100,
-                behavior: 'smooth'
-            });
-
-            // Update active state
-            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-            this.classList.add('active');
+            if (targetSection) {
+                window.scrollTo({
+                    top: targetSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
         });
     });
 
-    // Intersection Observer for active nav state on scroll
-    const sections = document.querySelectorAll('section');
+    // ── Intersection Observer for active nav (fixed) ──
+    const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('nav a');
 
     const observer = new IntersectionObserver((entries) => {
@@ -33,96 +31,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-    }, { threshold: 0.5 });
+    }, {
+        rootMargin: '-20% 0px -60% 0px',
+        threshold: 0
+    });
 
     sections.forEach(section => observer.observe(section));
 
-    // --- ApexCharts Rendering ---
+    // ── ApexCharts ──
+    const fontFamily = 'Inter, system-ui, sans-serif';
 
     // Chart 1: Information (Average Delay by Route)
-    const optionsInfo = {
-        series: [{
-            name: 'Retraso Promedio (min)',
-            data: [2, 5, 20, 3]
-        }],
-        chart: {
-            type: 'bar',
-            height: 300,
-            fontFamily: 'Nunito, sans-serif',
-            toolbar: { show: false }
-        },
-        plotOptions: {
-            bar: {
-                borderRadius: 4,
-                horizontal: true,
-                distributed: true
-            }
-        },
-        colors: ['#3b82f6', '#3b82f6', '#ef4444', '#3b82f6'],
-        dataLabels: {
-            enabled: true
-        },
-        xaxis: {
-            categories: ['Urbano (Centro)', 'Urbano (Periferia)', 'Media Dist. (Alvear)', 'Larga Dist. (Mza)'],
-        },
-        title: {
-            text: 'Puntualidad por Servicio',
-            align: 'center',
-            style: { fontFamily: 'Outfit, sans-serif', fontSize: '16px' }
-        },
-        tooltip: {
-            y: {
-                formatter: function (val) {
-                    return val + " minutos"
-                }
-            }
-        }
-    };
-
-    const chartInfo = new ApexCharts(document.querySelector("#chart-information"), optionsInfo);
-    chartInfo.render();
+    if (document.querySelector("#chart-information")) {
+        new ApexCharts(document.querySelector("#chart-information"), {
+            series: [{
+                name: 'Retraso Promedio (min)',
+                data: [2, 5, 20, 3]
+            }],
+            chart: { type: 'bar', height: 300, fontFamily, toolbar: { show: false } },
+            plotOptions: { bar: { borderRadius: 6, horizontal: true, distributed: true } },
+            colors: ['#3B82F6', '#3B82F6', '#EF4444', '#3B82F6'],
+            dataLabels: { enabled: true },
+            xaxis: { categories: ['Urbano (Centro)', 'Urbano (Periferia)', 'Media Dist. (Alvear)', 'Larga Dist. (Mza)'] },
+            title: { text: 'Puntualidad por Servicio', align: 'center', style: { fontFamily, fontSize: '15px', fontWeight: 700 } },
+            tooltip: { y: { formatter: val => val + " minutos" } }
+        }).render();
+    }
 
     // Chart 2: Knowledge (Correlation Cash vs Delay)
-    const optionsKnowledge = {
-        series: [{
-            name: "Demora vs Efectivo",
-            data: [
-                [10, 2], [15, 3], [20, 4], [30, 5], [40, 8], [50, 12], [60, 15], [70, 18], [80, 22]
-            ]
-        }],
-        chart: {
-            type: 'scatter',
-            height: 300,
-            fontFamily: 'Nunito, sans-serif',
-            toolbar: { show: false },
-            zoom: { enabled: false }
-        },
-        colors: ['#8b5cf6'],
-        xaxis: {
-            title: { text: '% Pagos en Efectivo' },
-            tickAmount: 10,
-            min: 0,
-            max: 100
-        },
-        yaxis: {
-            title: { text: 'Demora en Parada (min)' },
-            tickAmount: 5
-        },
-        title: {
-            text: 'Análisis de Causa Raíz',
-            align: 'center',
-            style: { fontFamily: 'Outfit, sans-serif', fontSize: '16px' }
-        },
-        markers: {
-            size: 6
-        }
-    };
+    if (document.querySelector("#chart-knowledge")) {
+        new ApexCharts(document.querySelector("#chart-knowledge"), {
+            series: [{ name: "Demora vs Efectivo", data: [[10,2],[15,3],[20,4],[30,5],[40,8],[50,12],[60,15],[70,18],[80,22]] }],
+            chart: { type: 'scatter', height: 300, fontFamily, toolbar: { show: false }, zoom: { enabled: false } },
+            colors: ['#0D9488'],
+            xaxis: { title: { text: '% Pagos en Efectivo' }, tickAmount: 10, min: 0, max: 100 },
+            yaxis: { title: { text: 'Demora en Parada (min)' }, tickAmount: 5 },
+            title: { text: 'Análisis de Causa Raíz', align: 'center', style: { fontFamily, fontSize: '15px', fontWeight: 700 } },
+            markers: { size: 7 }
+        }).render();
+    }
 
-    const chartKnowledge = new ApexCharts(document.querySelector("#chart-knowledge"), optionsKnowledge);
-    chartKnowledge.render();
-
-
-    // --- Quiz Logic ---
+    // ── Quiz Logic ──
     const quizData = [
         {
             question: "¿Cuál es la diferencia principal entre Dato e Información?",
@@ -148,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             question: "¿Cuál es la característica principal de un Data Lake frente a un Data Warehouse?",
             options: [
                 "El Data Lake es más pequeño.",
-                "El Data Lake almacena datos estructurados y no estructurados en su formato nativo (schema-on-read).",
+                "El Data Lake almacena datos estructurados y no estructurados en su formato nativo.",
                 "El Data Warehouse no permite consultas SQL.",
                 "El Data Lake solo sirve para datos financieros."
             ],
@@ -160,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 "¿Qué pasó?",
                 "¿Por qué pasó?",
                 "¿Qué pasará?",
-                "¿Qué acciones debemos tomar para que suceda?"
+                "¿Qué acciones debemos tomar?"
             ],
             correct: 3
         },
@@ -169,14 +118,15 @@ document.addEventListener('DOMContentLoaded', () => {
             options: [
                 "El KPI es siempre un número entero.",
                 "La métrica de vanidad es más difícil de calcular.",
-                "El KPI está directamente vinculado a objetivos estratégicos de negocio; la métrica de vanidad no.",
-                "Las métricas de vanidad son usadas solo por el departamento de marketing."
+                "El KPI está directamente vinculado a objetivos estratégicos de negocio.",
+                "Las métricas de vanidad son usadas solo por marketing."
             ],
             correct: 2
         }
     ];
 
     const quizContainer = document.getElementById('quiz-questions');
+    if (!quizContainer) return;
 
     // Render Quiz
     quizData.forEach((item, index) => {
@@ -197,20 +147,25 @@ document.addEventListener('DOMContentLoaded', () => {
     window.selectOption = (questionIndex, optionIndex) => {
         const optionsDiv = document.getElementById(`q${questionIndex}-options`);
         const buttons = optionsDiv.getElementsByClassName('option-btn');
-
-        // Remove selected class from all buttons in this question
         Array.from(buttons).forEach(btn => btn.classList.remove('selected'));
-
-        // Add selected class to clicked button
         buttons[optionIndex].classList.add('selected');
-
-        // Store user answer (you could use a global array or data attribute)
         optionsDiv.dataset.selected = optionIndex;
     };
 
+    // ── Submit Quiz ──
     document.getElementById('submit-quiz').addEventListener('click', () => {
+        const emailInput = document.getElementById('quiz-email');
+        const userEmail = emailInput ? emailInput.value.trim() : '';
+
+        if (!userEmail || !userEmail.includes('@')) {
+            alert("Por favor, ingresá tu email antes de enviar.");
+            if (emailInput) emailInput.focus();
+            return;
+        }
+
         let score = 0;
         let allAnswered = true;
+        const details = [];
 
         quizData.forEach((item, index) => {
             const optionsDiv = document.getElementById(`q${index}-options`);
@@ -220,35 +175,73 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selected === undefined) {
                 allAnswered = false;
             } else {
-                // Disable buttons
                 Array.from(buttons).forEach(btn => btn.disabled = true);
-
-                if (parseInt(selected) === item.correct) {
+                const isCorrect = parseInt(selected) === item.correct;
+                if (isCorrect) {
                     score++;
                     buttons[selected].classList.add('correct');
                 } else {
                     buttons[selected].classList.add('incorrect');
                     buttons[item.correct].classList.add('correct');
                 }
+                details.push(`P${index+1}: ${isCorrect ? '✓' : '✗'} (respondió: "${item.options[selected]}")`);
             }
         });
 
         if (!allAnswered) {
-            alert("Por favor, responde todas las preguntas antes de enviar.");
-        } else {
-            const resultDiv = document.getElementById('quiz-result');
-            resultDiv.textContent = `Has obtenido ${score} de ${quizData.length} puntos.`;
+            alert("Por favor, respondé todas las preguntas antes de enviar.");
+            return;
+        }
 
-            if (score === quizData.length) {
-                resultDiv.style.color = "#10b981";
-                resultDiv.innerHTML += "<br>¡Excelente! Dominas los conceptos.";
-            } else if (score >= quizData.length / 2) {
-                resultDiv.style.color = "#f59e0b";
-                resultDiv.innerHTML += "<br>Buen trabajo, pero repasa algunos temas.";
-            } else {
-                resultDiv.style.color = "#ef4444";
-                resultDiv.innerHTML += "<br>Te recomiendo leer el manual nuevamente.";
-            }
+        const resultDiv = document.getElementById('quiz-result');
+        resultDiv.textContent = `Resultado: ${score} de ${quizData.length} correctas.`;
+
+        if (score === quizData.length) {
+            resultDiv.style.color = "#059669";
+            resultDiv.innerHTML += "<br>¡Excelente! Dominas los conceptos.";
+        } else if (score >= quizData.length / 2) {
+            resultDiv.style.color = "#EA580C";
+            resultDiv.innerHTML += "<br>Buen trabajo, pero repasá algunos temas.";
+        } else {
+            resultDiv.style.color = "#DC2626";
+            resultDiv.innerHTML += "<br>Te recomiendo leer el manual nuevamente.";
+        }
+
+        // Disable submit button
+        document.getElementById('submit-quiz').disabled = true;
+        document.getElementById('submit-quiz').textContent = 'Enviado ✓';
+        document.getElementById('submit-quiz').style.opacity = '0.6';
+
+        // ── Send email via EmailJS ──
+        const templateParams = {
+            to_email: 'branko.almeira96@gmail.com',
+            from_email: userEmail,
+            participant_email: userEmail,
+            score: `${score} de ${quizData.length}`,
+            percentage: `${Math.round(score/quizData.length*100)}%`,
+            details: details.join('\n'),
+            date: new Date().toLocaleString('es-AR')
+        };
+
+        // EmailJS: se necesita configurar service_id, template_id y public_key
+        // Por ahora usamos un fallback que muestra el resultado en consola
+        if (typeof emailjs !== 'undefined' && window.EMAILJS_CONFIGURED) {
+            emailjs.send('service_iselin', 'template_quiz', templateParams)
+                .then(() => console.log('Email enviado'))
+                .catch(err => console.warn('EmailJS error:', err));
+        } else {
+            // Fallback: enviar via mailto como respaldo
+            const subject = encodeURIComponent(`Autoevaluación ISELIN — ${userEmail} — ${score}/${quizData.length}`);
+            const body = encodeURIComponent(
+                `Participante: ${userEmail}\n` +
+                `Resultado: ${score} de ${quizData.length} (${Math.round(score/quizData.length*100)}%)\n` +
+                `Fecha: ${new Date().toLocaleString('es-AR')}\n\n` +
+                `Detalle:\n${details.join('\n')}`
+            );
+            // Abrir mailto silenciosamente como backup
+            const mailtoLink = document.createElement('a');
+            mailtoLink.href = `mailto:branko.almeira96@gmail.com?subject=${subject}&body=${body}`;
+            mailtoLink.click();
         }
     });
 });
