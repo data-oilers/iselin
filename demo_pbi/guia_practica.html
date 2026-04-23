@@ -478,6 +478,98 @@ pre.ascii {
 }
 pre.ascii::before { content: 'LAYOUT'; color: #475569; }
 
+/* ── VISUAL CARD (instrucciones paso a paso) ── */
+.visual {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 1rem 0 1.2rem;
+    overflow: hidden;
+    background: var(--surface);
+    transition: all 0.2s ease;
+}
+.visual:hover { box-shadow: var(--shadow); border-color: var(--border-strong); }
+.visual-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+    border-bottom: 1px solid var(--border);
+}
+.visual-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3B82F6, #6366F1);
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+.visual-icon {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.visual-title {
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+.visual-type {
+    font-size: 12px;
+    color: var(--ink4);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+}
+.visual-body {
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.visual-step {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 12px;
+    font-size: 13.5px;
+    align-items: start;
+    padding: 4px 0;
+    line-height: 1.5;
+}
+.visual-step .step-lbl {
+    color: var(--ink4);
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding-top: 1px;
+}
+.visual-step .step-val {
+    color: var(--ink2);
+}
+.visual-step .step-val code {
+    font-size: 12.5px;
+}
+.visual-fmt {
+    margin-top: 4px;
+    padding: 10px 14px;
+    background: var(--yellow-soft);
+    border-left: 3px solid var(--yellow);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--ink2);
+}
+.visual-fmt strong { color: var(--yellow); font-weight: 700; }
+@media (max-width: 700px) {
+    .visual-step { grid-template-columns: 1fr; gap: 2px; }
+}
+
 /* ── MEDIDA CARD ── */
 .medida {
     margin: 1.2rem 0 1.8rem;
@@ -885,7 +977,9 @@ SWITCH ( TRUE (),
      ============================================================ -->
 <section id="medidas">
     <h2>5. Paso 3 · Medidas base</h2>
-    <p>Estas medidas son la materia prima de todas las demás. Las vas a usar una y otra vez.</p>
+    <p>Estas medidas son la materia prima del dashboard. Las vas a usar una y otra vez en las 6 páginas. Conviene crearlas <strong>todas al principio</strong> en la tabla <code>_Medidas</code> antes de empezar a armar los visuales.</p>
+
+    <h3>Conteos y sumas sobre <code>Viajes</code></h3>
 
     <div class="medida">
         <div class="title">total_viajes</div>
@@ -921,6 +1015,85 @@ SUM ( Viajes[Gasoil_Lts] )</code></pre>
         <pre data-lang="DAX"><code class="language-dax">total_siniestros =
 CALCULATE ( [total_viajes], Viajes[Siniestro] = "Sí" )</code></pre>
     </div>
+
+    <div class="medida">
+        <div class="title">viajes_puntuales</div>
+        <div class="desc">Viajes con demora ≤ 5 min. Umbral acordado internamente como "a tiempo". Base para el cálculo de puntualidad.</div>
+        <pre data-lang="DAX"><code class="language-dax">viajes_puntuales =
+CALCULATE ( [total_viajes], Viajes[Demora_Min] &lt;= 5 )</code></pre>
+    </div>
+
+    <h3>Conteos sobre <code>Colectivos</code></h3>
+
+    <div class="medida">
+        <div class="title">total_colectivos</div>
+        <div class="desc">Cantidad total de unidades en la flota. Denominador para calcular disponibilidad.</div>
+        <pre data-lang="DAX"><code class="language-dax">total_colectivos =
+COUNTROWS ( Colectivos )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">colectivos_activos</div>
+        <div class="desc">Unidades que están efectivamente operando (no en taller ni de baja).</div>
+        <pre data-lang="DAX"><code class="language-dax">colectivos_activos =
+CALCULATE ( [total_colectivos], Colectivos[Estado] = "Activo" )</code></pre>
+    </div>
+
+    <h3>Ratios y KPIs principales</h3>
+
+    <div class="medida">
+        <div class="title">km_por_viaje</div>
+        <div class="desc">Promedio de km por viaje. Si sube el volumen pero baja km/viaje, estamos acortando recorridos.</div>
+        <pre data-lang="DAX"><code class="language-dax">km_por_viaje =
+DIVIDE ( [total_km], [total_viajes] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">pasajeros_por_viaje</div>
+        <div class="desc">Ocupación promedio. Si sube el número de viajes pero baja la ocupación, estamos sobre-ofertando frecuencia.</div>
+        <pre data-lang="DAX"><code class="language-dax">pasajeros_por_viaje =
+DIVIDE ( [total_pasajeros], [total_viajes] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">lts_por_100km</div>
+        <div class="desc">Consumo estandarizado: litros cada 100 km. LA métrica de eficiencia de una flota de transporte. Permite comparar contra benchmarks de la industria.</div>
+        <pre data-lang="DAX"><code class="language-dax">lts_por_100km =
+DIVIDE ( [total_gasoil], [total_km] ) * 100</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">demora_promedio_min</div>
+        <div class="desc">Demora promedio en minutos por viaje. Métrica base de calidad de servicio, usada en Rutas, Puntualidad y Choferes.</div>
+        <pre data-lang="DAX"><code class="language-dax">demora_promedio_min =
+AVERAGE ( Viajes[Demora_Min] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">pct_puntualidad</div>
+        <div class="desc">Viajes puntuales sobre el total. KPI comunicable al cliente y potencial SLA de servicio.</div>
+        <pre data-lang="DAX"><code class="language-dax">pct_puntualidad =
+DIVIDE ( [viajes_puntuales], [total_viajes] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">pct_siniestralidad</div>
+        <div class="desc">Porcentaje de viajes con siniestro. Entre 1% y 3% se considera normal en transporte urbano; más de 5% dispara revisión de póliza de seguro.</div>
+        <pre data-lang="DAX"><code class="language-dax">pct_siniestralidad =
+DIVIDE ( [total_siniestros], [total_viajes] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">pct_disponibilidad_flota</div>
+        <div class="desc">Porcentaje de la flota operativa. KPI clave: cada unidad en taller son ingresos que no se generan.</div>
+        <pre data-lang="DAX"><code class="language-dax">pct_disponibilidad_flota =
+DIVIDE ( [colectivos_activos], [total_colectivos] )</code></pre>
+    </div>
+
+    <div class="callout info">
+        <div class="cicon">💡</div>
+        <div class="ctext">Con estas 14 medidas ya podés armar la página <strong>Home</strong> completa. Las páginas siguientes agregan medidas específicas de cada contexto (brechas, gaps, flags).</div>
+    </div>
 </section>
 
 <!-- ============================================================
@@ -938,20 +1111,9 @@ CALCULATE ( [total_viajes], Viajes[Siniestro] = "Sí" )</code></pre>
     <h3>Preguntas que responde</h3>
     <p><span class="pq">P1</span> <span class="pq">P2</span> <span class="pq">P3</span> <span class="pq">P4</span> <span class="pq">P5</span> <span class="pq">P6</span></p>
 
-    <h3>Medidas nuevas</h3>
-
-    <div class="medida">
-        <div class="title">km_por_viaje</div>
-        <div class="desc">Promedio de km por viaje. Si sube el volumen pero baja km/viaje, estamos acortando recorridos.</div>
-        <pre data-lang="DAX"><code class="language-dax">km_por_viaje =
-DIVIDE ( [total_km], [total_viajes] )</code></pre>
-    </div>
-
-    <div class="medida">
-        <div class="title">pasajeros_por_viaje</div>
-        <div class="desc">Ocupación promedio. Si sube el número de viajes pero baja la ocupación, estamos sobre-ofertando frecuencia.</div>
-        <pre data-lang="DAX"><code class="language-dax">pasajeros_por_viaje =
-DIVIDE ( [total_pasajeros], [total_viajes] )</code></pre>
+    <div class="callout tip">
+        <div class="cicon">✅</div>
+        <div class="ctext">Esta página no necesita medidas nuevas: usa todas las que ya creaste en el <a href="#medidas">Paso 3 · Medidas base</a>.</div>
     </div>
 
     <h3>Layout sugerido</h3>
@@ -960,24 +1122,95 @@ DIVIDE ( [total_pasajeros], [total_viajes] )</code></pre>
 ├─────────────────────────────────────────────────────────────┤
 │  [total_viajes] [Km] [Pasajeros] [Pax/Viaje] [Lts/100km] ...    │
 ├───────────────────────────┬─────────────────────────────────┤
-│  Evolución mensual        │  Comparativo hábil vs no hábil  │
-│  (columna + línea)        │  (columnas agrupadas)           │
+│  Evolución mensual        │  Comparativa hábil vs no hábil  │
+│  (columna + línea)        │  (matriz scorecard)             │
 ├───────────────────────────┼─────────────────────────────────┤
 │  Mapa de calor            │  Distribución por turno         │
 │  Día × Mes (matriz)       │  (dona)                         │
 └───────────────────────────┴─────────────────────────────────┘</pre>
 
-    <h3>Visuales uno por uno</h3>
-    <table>
-        <thead><tr><th>#</th><th>Visual</th><th>Tipo</th><th>Campos / Medida</th></tr></thead>
-        <tbody>
-            <tr><td>1</td><td>KPIs fila superior</td><td>Tarjeta × 7</td><td><code>[total_viajes]</code>, <code>[total_km]</code>, <code>[total_pasajeros]</code>, <code>[pasajeros_por_viaje]</code>, <code>[lts_por_100km]</code>, <code>[pct_puntualidad]</code>, <code>[pct_siniestralidad]</code></td></tr>
-            <tr><td>2</td><td>Evolución mensual</td><td>Combinado col + línea</td><td>Eje: <code>Calendario[Mes_Nombre]</code> · Columna: <code>[total_viajes]</code> · Línea: <code>[total_pasajeros]</code></td></tr>
-            <tr><td>3</td><td>Hábil vs No Hábil</td><td>Columnas agrupadas</td><td>Eje: <code>Calendario[Es_Hábil]</code> · Valores: <code>[total_viajes]</code> y <code>[total_pasajeros]</code></td></tr>
-            <tr><td>4</td><td>Mapa de calor</td><td>Matriz + formato condicional</td><td>Filas: <code>Día_Semana</code> · Columnas: <code>Mes_Nombre</code> · Valor: <code>[total_viajes]</code></td></tr>
-            <tr><td>5</td><td>Turnos</td><td>Dona</td><td>Leyenda: <code>Viajes[Turno]</code> · Valor: <code>[total_viajes]</code></td></tr>
-        </tbody>
-    </table>
+    <h3>Visuales paso a paso</h3>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">1</span><span class="visual-icon">🔢</span>
+            <div>
+                <div class="visual-title">KPIs fila superior (7 tarjetas)</div>
+                <div class="visual-type">Tarjeta</div>
+            </div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Tarjeta</strong> en el panel <em>Visualizaciones</em>. Repetir 7 veces, una por KPI.</span></div>
+            <div class="visual-step"><span class="step-lbl">Campos (1 por tarjeta)</span><span class="step-val"><code>[total_viajes]</code> · <code>[total_km]</code> · <code>[total_pasajeros]</code> · <code>[pasajeros_por_viaje]</code> · <code>[lts_por_100km]</code> · <code>[pct_puntualidad]</code> · <code>[pct_siniestralidad]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> en <em>Formato visual → Valor de la devolución</em>, tamaño 28 pt, color azul <code>#1F3A5F</code>. En <em>Etiqueta de categoría</em> poner el nombre amigable ("Viajes", "Kilómetros", etc.).</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">2</span><span class="visual-icon">📊</span>
+            <div>
+                <div class="visual-title">Evolución mensual</div>
+                <div class="visual-type">Gráfico combinado (columnas + líneas)</div>
+            </div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de líneas y columnas apiladas</strong> (o "columnas agrupadas y líneas").</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Calendario[Mes_Nombre]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y (columna)</span><span class="step-val"><code>[total_viajes]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y (línea)</span><span class="step-val"><code>[total_pasajeros]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> antes de usar, ir a la vista <em>Datos</em>, seleccionar la columna <code>Mes_Nombre</code>, y en <em>Herramientas de columna → Ordenar por columna</em> elegir <code>Mes_Num</code>. Así los meses aparecen en orden cronológico.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">3</span><span class="visual-icon">🗂️</span>
+            <div>
+                <div class="visual-title">Comparativa Hábil vs No Hábil</div>
+                <div class="visual-type">Matriz scorecard</div>
+            </div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Matriz</strong>. (Evitamos un gráfico de columnas porque hábil tiene muchos más días que no hábil y la comparación de totales confunde; la matriz con ratios y KPIs es más clara.)</span></div>
+            <div class="visual-step"><span class="step-lbl">Filas</span><span class="step-val"><code>Calendario[Es_Hábil]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Valores</span><span class="step-val"><code>[pasajeros_por_viaje]</code> · <code>[demora_promedio_min]</code> · <code>[pct_puntualidad]</code> · <code>[pct_siniestralidad]</code></span></div>
+            <div class="visual-fmt"><strong>Formato condicional:</strong> sobre cada medida → <em>Color de fondo → Escala de color</em>. Para <em>pct_puntualidad</em> poné verde→rojo invertido (verde = mejor). Para <em>demora</em> y <em>siniestralidad</em>, rojo = peor. Así se ve de un vistazo qué segmento gana en cada dimensión.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">4</span><span class="visual-icon">🔥</span>
+            <div>
+                <div class="visual-title">Mapa de calor Día × Mes</div>
+                <div class="visual-type">Matriz con formato condicional</div>
+            </div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Matriz</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Filas</span><span class="step-val"><code>Calendario[Día_Semana]</code> (ordenar previamente por <code>Día_Semana_Num</code>)</span></div>
+            <div class="visual-step"><span class="step-lbl">Columnas</span><span class="step-val"><code>Calendario[Mes_Nombre]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Valores</span><span class="step-val"><code>[total_viajes]</code></span></div>
+            <div class="visual-fmt"><strong>Formato condicional:</strong> sobre la medida, elegir <em>Formato condicional → Color de fondo → Escala de color</em>. Mínimo verde claro, máximo rojo. Así los días/meses de mayor operación se ven en rojo.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">5</span><span class="visual-icon">🍩</span>
+            <div>
+                <div class="visual-title">Distribución por Turno</div>
+                <div class="visual-type">Gráfico de anillo (dona)</div>
+            </div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de anillos</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Leyenda</span><span class="step-val"><code>Viajes[Turno]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Valores</span><span class="step-val"><code>[total_viajes]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> en <em>Etiquetas de detalle → Contenido</em> elegir "Categoría, porcentaje del total". Queda "Mañana 52%", "Tarde 48%".</div>
+        </div>
+    </div>
 </section>
 
 <!-- ============================================================
@@ -995,34 +1228,12 @@ DIVIDE ( [total_pasajeros], [total_viajes] )</code></pre>
     <h3>Preguntas que responde</h3>
     <p><span class="pq">P7</span> <span class="pq">P8</span> <span class="pq">P9</span> <span class="pq">P10</span> <span class="pq">P11</span></p>
 
-    <h3>Medidas</h3>
-
-    <div class="medida">
-        <div class="title">colectivos_activos</div>
-        <div class="desc">Unidades efectivamente operando (no en taller ni de baja). Se recalcula dinámicamente.</div>
-        <pre data-lang="DAX"><code class="language-dax">total_colectivos = COUNTROWS ( Colectivos )
-
-colectivos_activos =
-CALCULATE ( [total_colectivos], Colectivos[Estado] = "Activo" )</code></pre>
-    </div>
-
-    <div class="medida">
-        <div class="title">pct_disponibilidad_flota</div>
-        <div class="desc">Porcentaje de la flota operativa. KPI clave: cada unidad en taller son ingresos que no se generan.</div>
-        <pre data-lang="DAX"><code class="language-dax">pct_disponibilidad_flota =
-DIVIDE ( [colectivos_activos], [total_colectivos] )</code></pre>
-    </div>
-
-    <div class="medida">
-        <div class="title">lts_por_100km</div>
-        <div class="desc">Consumo estandarizado: litros cada 100 km. LA métrica de eficiencia de una flota de transporte. Permite comparar contra benchmarks de la industria.</div>
-        <pre data-lang="DAX"><code class="language-dax">lts_por_100km =
-DIVIDE ( [total_gasoil], [total_km] ) * 100</code></pre>
-    </div>
+    <h3>Medidas específicas de esta página</h3>
+    <p>Usa <code>[pct_disponibilidad_flota]</code>, <code>[lts_por_100km]</code> y <code>[colectivos_activos]</code> del <a href="#medidas">Paso 3</a>. Abajo agregamos las medidas que son propias del análisis de flota:</p>
 
     <div class="medida">
         <div class="title">brecha_consumo_vieja_nueva</div>
-        <div class="desc">Diferencia de consumo entre flota vieja (≤2018) y nueva (≥2021). Si es &gt;5 lts/100km, la renovación se paga sola en pocos años.</div>
+        <div class="desc">Diferencia de consumo entre la flota vieja (colectivos ≤2018) y la flota nueva (≥2021). Es el indicador clave para justificar (o descartar) un plan de renovación.</div>
         <pre data-lang="DAX"><code class="language-dax">lts_100km_flota_vieja =
 CALCULATE ( [lts_por_100km], Colectivos[Año] &lt;= 2018 )
 
@@ -1033,9 +1244,35 @@ brecha_consumo_vieja_nueva =
 [lts_100km_flota_vieja] - [lts_100km_flota_nueva]</code></pre>
     </div>
 
+    <div class="callout info">
+        <div class="cicon">💡</div>
+        <div class="ctext">
+            <strong>¿Qué significa esta brecha?</strong><br>
+            Es cuántos litros más, por cada 100 km, gasta un colectivo viejo comparado con uno nuevo. Por ejemplo, si la brecha es <strong>7 lts/100km</strong>, cada vez que un colectivo viejo recorre 100 km gasta 7 litros más que uno nuevo haciendo exactamente el mismo recorrido.
+            <br><br>
+            <strong>¿Qué implica en números?</strong><br>
+            Supongamos que un colectivo urbano recorre <strong>6.000 km por mes</strong>. Con una brecha de 7 lts/100km:
+            <ul style="margin: 6px 0 0 20px;">
+                <li>Gasto extra mensual por unidad vieja: <strong>420 litros</strong> (7 × 60).</li>
+                <li>Si el gasoil cuesta $1.400 el litro → <strong>≈ $588.000 por mes por colectivo viejo</strong>.</li>
+                <li>Por año: <strong>≈ $7,1 millones por colectivo</strong> que se van en combustible extra.</li>
+                <li>Multiplicado por 5 unidades viejas de la flota: <strong>≈ $35 millones al año</strong>.</li>
+            </ul>
+            <br>
+            <strong>¿Qué decisiones podés tomar a partir de este número?</strong>
+            <ul style="margin: 6px 0 0 20px;">
+                <li><strong>Brecha &gt; 5 lts/100km</strong> → plan de renovación prioritario. El ahorro anual en gasoil suele amortizar una unidad nueva en 3-5 años, sin contar mantenimiento.</li>
+                <li><strong>Brecha entre 2 y 5</strong> → la renovación ayuda pero no urge. Evaluar también otros factores (averías, disponibilidad, imagen).</li>
+                <li><strong>Brecha &lt; 2 lts/100km</strong> → el problema del consumo no está en la antigüedad. Mirar el scatter por colectivo individual: probablemente hay outliers específicos (como COL004) que tiran el promedio, no la flota entera.</li>
+            </ul>
+            <br>
+            <strong>¿Por qué importa mes a mes?</strong> Si la brecha crece con el tiempo, los colectivos viejos se están deteriorando más rápido → urgencia de renovación. Si se mantiene estable, la flota vieja "envejece bien" y podés postergar la decisión.
+        </div>
+    </div>
+
     <div class="medida">
         <div class="title">consumo_prom_parque · desvio_consumo_vs_parque · flag_outlier_consumo</div>
-        <div class="desc">Calcula el consumo promedio del PARQUE al que pertenece el colectivo (con <code>ALLEXCEPT</code> manteniendo solo el filtro de Parque), el desvío individual y un flag semáforo para la tabla de outliers.</div>
+        <div class="desc">Tres medidas encadenadas que permiten detectar <em>colectivos individuales</em> que consumen más (o menos) de lo esperado comparados con sus pares del mismo parque.</div>
         <pre data-lang="DAX"><code class="language-dax">consumo_prom_parque =
 CALCULATE (
     [lts_por_100km],
@@ -1055,23 +1292,124 @@ RETURN
     )</code></pre>
     </div>
 
-    <h3>Layout</h3>
-<pre class="ascii" data-lang="LAYOUT">┌─────────────────────────────────────────────────────────────┐
-│  [Flota y Eficiencia]       [Slicer: Parque] [Slicer: Mes]  │
-├──────────────┬──────────────┬──────────────┬───────────────┤
-│ %Disponibil. │ Lts/100km    │ Brecha V-N   │ # Activos     │
-├──────────────┴──────────────┴──────────────┴───────────────┤
-│ Consumo por Año de colectivo (barras horizontales)          │
-├─────────────────────────────┬───────────────────────────────┤
-│ Estados de la flota         │ Top Outliers (tabla)          │
-│ (columnas apiladas)         │                               │
-├─────────────────────────────┴───────────────────────────────┤
-│ Scatter: Km vs Gasoil (color = Año del colectivo)           │
-└─────────────────────────────────────────────────────────────┘</pre>
+    <div class="callout info">
+        <div class="cicon">💡</div>
+        <div class="ctext">
+            <strong>¿Qué significa cada una?</strong>
+            <ul style="margin: 6px 0 0 20px;">
+                <li><strong><code>consumo_prom_parque</code></strong>: el consumo promedio de todo el parque (por ejemplo Urbano, Media Distancia, Doble Piso) al que pertenece cada colectivo. Es el "benchmark interno": contra qué comparar.</li>
+                <li><strong><code>desvio_consumo_vs_parque</code></strong>: cuántos lts/100 km más (o menos) consume un colectivo comparado con el promedio de su parque. Positivo = consume más que sus pares; negativo = consume menos.</li>
+                <li><strong><code>flag_outlier_consumo</code></strong>: una etiqueta (<em>"Alto"</em>, <em>"Normal"</em>, <em>"Bajo"</em>) que clasifica al colectivo según la magnitud del desvío. El umbral de ±3 lts/100km lo acordamos con Mantenimiento: fuera de esa banda, la diferencia ya no se explica por desgaste normal.</li>
+            </ul>
+            <br>
+            <strong>¿Qué implica?</strong><br>
+            Permite pasar del análisis <em>general</em> (la flota vieja consume más) al análisis <em>individual</em> (qué colectivo puntual está fuera de lo normal). Con un ejemplo concreto: el Agrale INT-104 consume ~35,9 lts/100km cuando el promedio de su parque Urbano es 28,3. Desvío = <strong>+7,5</strong> → flag <strong>"Alto"</strong>. No es que los Agrale 2017 anden mal en general; es que <em>este</em> colectivo en particular tiene un problema.
+            <br><br>
+            <strong>¿Qué decisiones podés tomar?</strong>
+            <ul style="margin: 6px 0 0 20px;">
+                <li><strong>Colectivo con flag "Alto"</strong> → ingreso inmediato a taller para diagnóstico: inyectores sucios, filtros saturados, sensores mal calibrados, fugas o conducción agresiva del chofer asignado.</li>
+                <li><strong>Colectivo con flag "Bajo"</strong> (consume mucho menos que sus pares) → también amerita revisión: puede ser una carga de gasoil no registrada, un odómetro dañado o un robo de combustible que distorsiona el registro.</li>
+                <li><strong>Si varios colectivos del mismo parque aparecen "Alto"</strong> → el problema ya no es individual sino del parque: revisar el proveedor de gasoil asignado, las rutas que cubre o los choferes habituales de ese grupo.</li>
+                <li><strong>Seguimiento temporal</strong>: si el desvío de un colectivo crece mes a mes, es una señal temprana de falla mecánica inminente — actuar antes de que se rompa en ruta.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout info">
+        <div class="cicon">🔧</div>
+        <div class="ctext">
+            <strong>¿Cómo funciona <code>ALLEXCEPT</code>?</strong> Significa <em>"borrá todos los filtros de esta tabla, menos el que te indico"</em>.<br><br>
+            Cuando Power BI dibuja la fila de un colectivo (por ejemplo INT-104), automáticamente se enfoca solo en ese colectivo. Si querés calcular el promedio del <strong>parque completo</strong> al que pertenece, necesitás decirle: <em>"olvidate de filtrar por colectivo, pero seguí filtrando por parque"</em>.
+            <br><br>
+            <code>ALLEXCEPT ( Colectivos, Colectivos[Parque] )</code> hace eso:
+            <ul style="margin: 6px 0 0 20px;">
+                <li><strong>Borra:</strong> los filtros por ID, modelo, año, interno…</li>
+                <li><strong>Deja:</strong> el filtro por Parque ✅</li>
+            </ul>
+            <br>
+            <strong>Resultado:</strong> cada fila muestra el consumo del parque al que pertenece el colectivo, no el del colectivo individual. Así podés compararlo contra su grupo y detectar outliers (como el INT-104, que consume ≈7,5 lts/100km más que el promedio de su parque Urbano).
+        </div>
+    </div>
+
+    <h3>Visuales paso a paso</h3>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">1</span><span class="visual-icon">🔢</span>
+            <div><div class="visual-title">KPIs (4 tarjetas)</div><div class="visual-type">Tarjeta</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Tarjeta</strong> × 4.</span></div>
+            <div class="visual-step"><span class="step-lbl">Campos</span><span class="step-val"><code>[pct_disponibilidad_flota]</code> · <code>[lts_por_100km]</code> · <code>[brecha_consumo_vieja_nueva]</code> · <code>[colectivos_activos]</code></span></div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">2</span><span class="visual-icon">📊</span>
+            <div><div class="visual-title">Consumo por año de colectivo</div><div class="visual-type">Gráfico de barras agrupadas (horizontal)</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de barras agrupadas</strong> (horizontal).</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>Colectivos[Año]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X (valores)</span><span class="step-val"><code>[lts_por_100km]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> ordenar de menor a mayor por Año. Activar etiquetas de datos con 1 decimal.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">3</span><span class="visual-icon">📚</span>
+            <div><div class="visual-title">Estados de la flota por parque</div><div class="visual-type">Gráfico de columnas apiladas</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de columnas apiladas</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Colectivos[Parque]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y (valor)</span><span class="step-val"><code>Colectivos[ID_Colectivo]</code> (como <em>Recuento</em>)</span></div>
+            <div class="visual-step"><span class="step-lbl">Leyenda</span><span class="step-val"><code>Colectivos[Estado]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> definir colores por estado — verde para Activo, naranja para En Taller, rojo para Baja Temporal.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">4</span><span class="visual-icon">🚨</span>
+            <div><div class="visual-title">Top outliers de consumo</div><div class="visual-type">Tabla con formato condicional</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Tabla</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Columnas</span><span class="step-val"><code>Colectivos[Interno]</code> · <code>Colectivos[Modelo]</code> · <code>Colectivos[Año]</code> · <code>[lts_por_100km]</code> · <code>[desvio_consumo_vs_parque]</code> · <code>[flag_outlier_consumo]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Filtro</span><span class="step-val">En el panel <em>Filtros</em>, filtrar <code>[flag_outlier_consumo] = "Alto"</code></span></div>
+            <div class="visual-fmt"><strong>Formato condicional:</strong> sobre la columna <em>flag_outlier_consumo</em> → <em>Iconos → Reglas</em>: semáforo rojo si "Alto", amarillo si "Normal", verde si "Bajo".</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">5</span><span class="visual-icon">🔵</span>
+            <div><div class="visual-title">Dispersión Km × Gasoil</div><div class="visual-type">Gráfico de dispersión (scatter)</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de dispersión</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Viajes[Km]</code> — cambiar agregación a <em>No resumir</em> (cada punto = 1 viaje)</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>Viajes[Gasoil_Lts]</code> — también <em>No resumir</em></span></div>
+            <div class="visual-step"><span class="step-lbl">Leyenda</span><span class="step-val"><code>Colectivos[Año]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Detalle</span><span class="step-val"><code>Viajes[ID_Viaje]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> activar <em>Análisis → Línea de tendencia</em>. Vas a ver una recta con pendiente que valida la relación Km → Gasoil.</div>
+        </div>
+    </div>
 
     <div class="callout success">
         <div class="cicon">🎯</div>
-        <div class="ctext"><strong>Qué vas a ver:</strong> las unidades ≤2018 con pendiente más pronunciada que las ≥2021. El COL014 (INT-114) aparece como <em>Alto</em> en la tabla de outliers.</div>
+        <div class="ctext">
+            <strong>Qué vas a concluir al observar los visuales:</strong>
+            <ul style="margin: 8px 0 0 20px;">
+                <li><strong>A mayor antigüedad, mayor consumo.</strong> Los colectivos de 2017-2018 gastan unos <strong>30 lts cada 100 km</strong>; los de 2019-2020 unos <strong>27</strong>; los de 2021-2023 apenas <strong>22,5</strong>. En el scatter vas a ver que cada grupo de color dibuja una banda con pendiente propia: más empinada la vieja, más plana la nueva.</li>
+                <li><strong>La flota vieja consume ≈35 % más que la nueva.</strong> No es una opinión, es una diferencia medible en lts/100km — argumento cuantitativo para sustentar el plan de renovación.</li>
+                <li><strong>COL004 (INT-104) es un outlier claro.</strong> Es un Agrale 2017 del parque Urbano que consume unos <strong>36 lts/100km</strong>, varios puntos arriba del promedio de sus pares urbanos 2017-2018 (~30). En el scatter sus viajes quedan sistemáticamente arriba de la nube; en la tabla aparece marcado como <em>"Alto"</em>. No es un mal día: es un problema sostenido → diagnóstico mecánico / calibración.</li>
+                <li><strong>Viajes anómalos puntuales.</strong> Vas a detectar puntos sueltos que se escapan de la recta principal — ya sea con mucho gasoil para poco km (posible carga mal registrada o fraude) o con muy poco gasoil para mucho km (sub-registro de carga). Son candidatos a auditar uno por uno. Probalo haciendo click en un punto "escapado" del scatter: el resto del dashboard se filtra al ID de ese viaje.</li>
+            </ul>
+        </div>
     </div>
 </section>
 
@@ -1090,14 +1428,8 @@ RETURN
     <h3>Preguntas que responde</h3>
     <p><span class="pq">P12</span> <span class="pq">P13</span> <span class="pq">P14</span> <span class="pq">P15</span></p>
 
-    <h3>Medidas</h3>
-
-    <div class="medida">
-        <div class="title">demora_promedio_min</div>
-        <div class="desc">Demora promedio en minutos. Métrica base de calidad de servicio.</div>
-        <pre data-lang="DAX"><code class="language-dax">demora_promedio_min =
-AVERAGE ( Viajes[Demora_Min] )</code></pre>
-    </div>
+    <h3>Medidas específicas de esta página</h3>
+    <p>Usa <code>[pasajeros_por_viaje]</code>, <code>[km_por_viaje]</code>, <code>[demora_promedio_min]</code> y <code>[total_viajes]</code> del <a href="#medidas">Paso 3</a>. Abajo las que se agregan para el análisis de rutas:</p>
 
     <div class="medida">
         <div class="title">viajes_con_demora_mayor_5 · pct_viajes_con_demora_mayor_5</div>
@@ -1109,16 +1441,62 @@ pct_viajes_con_demora_mayor_5 =
 DIVIDE ( [viajes_con_demora_mayor_5], [total_viajes] )</code></pre>
     </div>
 
-    <h3>Visuales</h3>
-    <table>
-        <thead><tr><th>#</th><th>Visual</th><th>Tipo</th><th>Campos / Medida</th></tr></thead>
-        <tbody>
-            <tr><td>1</td><td>Ranking ocupación</td><td>Barras horizontales</td><td>Eje: <code>Nombre_Ruta</code> · Valor: <code>[pasajeros_por_viaje]</code> · Orden desc.</td></tr>
-            <tr><td>2</td><td>Km real vs Base</td><td>Columnas agrupadas</td><td>Eje: <code>Rutas[Nombre_Ruta]</code> · Valores: <code>[km_por_viaje]</code> y <code>Rutas[Km_Base]</code> (usar la columna directamente como valor)</td></tr>
-            <tr><td>3</td><td>Ruta × Turno</td><td>Matriz</td><td>Valores: <code>[pasajeros_por_viaje]</code>, <code>[demora_promedio_min]</code> + formato condicional</td></tr>
-            <tr><td>4</td><td>Scatter Km × Demora</td><td>Dispersión</td><td>X: <code>[km_por_viaje]</code> · Y: <code>[demora_promedio_min]</code> · Leyenda: <code>Rutas[Tipo]</code> · Tamaño: <code>[total_viajes]</code></td></tr>
-        </tbody>
-    </table>
+    <h3>Visuales paso a paso</h3>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">1</span><span class="visual-icon">📊</span>
+            <div><div class="visual-title">Ranking de ocupación por ruta</div><div class="visual-type">Gráfico de barras agrupadas (horizontal)</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de barras agrupadas</strong> (horizontal).</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>Rutas[Nombre_Ruta]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X (valor)</span><span class="step-val"><code>[pasajeros_por_viaje]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> orden descendente por valor (ícono "⋯" arriba a la derecha → <em>Ordenar por pasajeros_por_viaje descendente</em>). Etiquetas de datos activadas.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">2</span><span class="visual-icon">📊</span>
+            <div><div class="visual-title">Km real vs Km_Base</div><div class="visual-type">Gráfico de columnas agrupadas</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de columnas agrupadas</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Rutas[Nombre_Ruta]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y (valores)</span><span class="step-val"><code>[km_por_viaje]</code> y <code>Rutas[Km_Base]</code> (arrastrar la columna al well; Power BI lo trata como <em>Suma</em>, da el mismo km_base por ruta)</span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> colorear <em>km_por_viaje</em> en azul (real) y <em>Km_Base</em> en gris (esperado). Las rutas donde la barra azul supere la gris son las que se desvían del plan.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">3</span><span class="visual-icon">🗂️</span>
+            <div><div class="visual-title">Matriz Ruta × Turno</div><div class="visual-type">Matriz con formato condicional</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Matriz</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Filas</span><span class="step-val"><code>Rutas[Nombre_Ruta]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Columnas</span><span class="step-val"><code>Viajes[Turno]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Valores</span><span class="step-val"><code>[pasajeros_por_viaje]</code> y <code>[demora_promedio_min]</code></span></div>
+            <div class="visual-fmt"><strong>Formato condicional:</strong> sobre <em>demora_promedio_min</em> → <em>Color de fondo</em> con escala verde→rojo. Así se ven de un vistazo las combinaciones Ruta+Turno problemáticas.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">4</span><span class="visual-icon">🔵</span>
+            <div><div class="visual-title">Scatter Km × Demora por ruta</div><div class="visual-type">Gráfico de dispersión</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de dispersión</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>[km_por_viaje]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>[demora_promedio_min]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Leyenda</span><span class="step-val"><code>Rutas[Tipo]</code> (Urbana / Media / Larga)</span></div>
+            <div class="visual-step"><span class="step-lbl">Detalle</span><span class="step-val"><code>Rutas[Nombre_Ruta]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Tamaño</span><span class="step-val"><code>[total_viajes]</code> (bolas más grandes = rutas con más operación)</span></div>
+        </div>
+    </div>
 
     <div class="callout success">
         <div class="cicon">🎯</div>
@@ -1141,17 +1519,8 @@ DIVIDE ( [viajes_con_demora_mayor_5], [total_viajes] )</code></pre>
     <h3>Preguntas que responde</h3>
     <p><span class="pq">P16</span> <span class="pq">P17</span> <span class="pq">P18</span> <span class="pq">P19</span> <span class="pq">P20</span></p>
 
-    <h3>Medidas</h3>
-
-    <div class="medida">
-        <div class="title">pct_puntualidad</div>
-        <div class="desc">Viajes con demora ≤ 5 min / total. Umbral acordado como "a tiempo". KPI comunicable al cliente.</div>
-        <pre data-lang="DAX"><code class="language-dax">viajes_puntuales =
-CALCULATE ( [total_viajes], Viajes[Demora_Min] &lt;= 5 )
-
-pct_puntualidad =
-DIVIDE ( [viajes_puntuales], [total_viajes] )</code></pre>
-    </div>
+    <h3>Medidas específicas de esta página</h3>
+    <p>Usa <code>[pct_puntualidad]</code> y <code>[demora_promedio_min]</code> del <a href="#medidas">Paso 3</a>. Abajo las que se agregan para segmentar por turno:</p>
 
     <div class="medida">
         <div class="title">brecha_demora_turno</div>
@@ -1165,17 +1534,71 @@ CALCULATE ( [demora_promedio_min], Viajes[Turno] = "Tarde" )
 brecha_demora_turno = [demora_prom_tarde] - [demora_prom_manana]</code></pre>
     </div>
 
-    <h3>Visuales</h3>
-    <table>
-        <thead><tr><th>#</th><th>Visual</th><th>Tipo</th><th>Campos</th></tr></thead>
-        <tbody>
-            <tr><td>1</td><td>KPIs</td><td>Tarjeta × 3</td><td><code>[pct_puntualidad]</code>, <code>[demora_promedio_min]</code>, <code>[brecha_demora_turno]</code></td></tr>
-            <tr><td>2</td><td>Evolución puntualidad</td><td>Línea</td><td>Eje: <code>Mes_Nombre</code> · Valor: <code>[pct_puntualidad]</code> · Línea de referencia 85%</td></tr>
-            <tr><td>3</td><td>Demora por Turno</td><td>Columnas</td><td>Eje: <code>Viajes[Turno]</code></td></tr>
-            <tr><td>4</td><td>Demora por Día</td><td>Columnas</td><td>Eje: <code>Día_Semana</code> (ordenado por <code>Día_Semana_Num</code>)</td></tr>
-            <tr><td>5</td><td>Histograma demoras</td><td>Columnas con bins</td><td>Eje: <code>Demora_Min</code> (bin = 2)</td></tr>
-        </tbody>
-    </table>
+    <h3>Visuales paso a paso</h3>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">1</span><span class="visual-icon">🔢</span>
+            <div><div class="visual-title">KPIs (3 tarjetas)</div><div class="visual-type">Tarjeta</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Tarjeta</strong> × 3.</span></div>
+            <div class="visual-step"><span class="step-lbl">Campos</span><span class="step-val"><code>[pct_puntualidad]</code> · <code>[demora_promedio_min]</code> · <code>[brecha_demora_turno]</code></span></div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">2</span><span class="visual-icon">📈</span>
+            <div><div class="visual-title">Evolución mensual de la puntualidad</div><div class="visual-type">Gráfico de líneas</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de líneas</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Calendario[Mes_Nombre]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>[pct_puntualidad]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> <em>Análisis → Línea constante</em>, valor 0.85 (85%), color rojo, etiqueta "Meta 85%". Así ves si cada mes supera o no el objetivo.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">3</span><span class="visual-icon">📊</span>
+            <div><div class="visual-title">Demora por Turno</div><div class="visual-type">Gráfico de columnas agrupadas</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de columnas agrupadas</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Viajes[Turno]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>[demora_promedio_min]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> activar etiquetas de datos con 1 decimal y sufijo " min".</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">4</span><span class="visual-icon">📊</span>
+            <div><div class="visual-title">Demora por Día de Semana</div><div class="visual-type">Gráfico de columnas agrupadas</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de columnas agrupadas</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Calendario[Día_Semana]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>[demora_promedio_min]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> importante ordenar <code>Día_Semana</code> por <code>Día_Semana_Num</code> (Lunes=1, Domingo=7). Si no, aparecen alfabéticamente.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">5</span><span class="visual-icon">📶</span>
+            <div><div class="visual-title">Histograma de demoras</div><div class="visual-type">Gráfico de columnas con bins</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de columnas agrupadas</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Preparar bins</span><span class="step-val">En la vista <em>Datos</em>, clic derecho sobre <code>Viajes[Demora_Min]</code> → <strong>Nuevo grupo</strong> → <em>Tamaño de bin = 2</em>. Crea <code>Demora_Min (bins)</code>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Viajes[Demora_Min (bins)]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>[total_viajes]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> la mayoría de viajes van a caer entre 0 y 4 min, con cola hacia la derecha. Eso es normal; los outliers son los que están en bins &gt;10.</div>
+        </div>
+    </div>
 
     <div class="callout success">
         <div class="cicon">🎯</div>
@@ -1198,14 +1621,8 @@ brecha_demora_turno = [demora_prom_tarde] - [demora_prom_manana]</code></pre>
     <h3>Preguntas que responde</h3>
     <p><span class="pq">P21</span> <span class="pq">P22</span> <span class="pq">P23</span></p>
 
-    <h3>Medidas</h3>
-
-    <div class="medida">
-        <div class="title">pct_siniestralidad</div>
-        <div class="desc">Entre 1% y 3% se considera normal en transporte urbano. Más de 5% dispara revisión de póliza de seguro.</div>
-        <pre data-lang="DAX"><code class="language-dax">pct_siniestralidad =
-DIVIDE ( [total_siniestros], [total_viajes] )</code></pre>
-    </div>
+    <h3>Medidas específicas de esta página</h3>
+    <p>Usa <code>[pct_siniestralidad]</code>, <code>[total_siniestros]</code>, <code>[demora_promedio_min]</code> y <code>[total_viajes]</code> del <a href="#medidas">Paso 3</a>. Abajo las que se agregan para comparar entre categorías y rangos:</p>
 
     <div class="medida">
         <div class="title">gap_siniestralidad_a_vs_c</div>
@@ -1230,18 +1647,84 @@ pct_siniestralidad_expertos =
 CALCULATE ( [pct_siniestralidad], Choferes[rango_antiguedad] = "Experto (&gt;12)" )</code></pre>
     </div>
 
-    <h3>Visuales</h3>
-    <table>
-        <thead><tr><th>#</th><th>Visual</th><th>Tipo</th><th>Campos</th></tr></thead>
-        <tbody>
-            <tr><td>1</td><td>KPIs</td><td>Tarjeta × 3</td><td><code>[pct_siniestralidad]</code>, <code>[gap_siniestralidad_a_vs_c]</code>, <code>[total_siniestros]</code></td></tr>
-            <tr><td>2</td><td>Por Categoría</td><td>Columnas agrupadas</td><td>Eje: <code>Categoría</code> · Valores: <code>[pct_siniestralidad]</code> y <code>[demora_promedio_min]</code></td></tr>
-            <tr><td>3</td><td>Por Antigüedad</td><td>Columnas</td><td>Eje: <code>rango_antiguedad</code> · Valor: <code>[pct_siniestralidad]</code></td></tr>
-            <tr><td>4</td><td>Top 5 Demoras</td><td>Tabla</td><td><code>Nombre</code>, <code>Categoría</code>, <code>[demora_promedio_min]</code> · Top 5 desc.</td></tr>
-            <tr><td>5</td><td>Top 5 Siniestros</td><td>Tabla</td><td><code>Nombre</code>, <code>[total_siniestros]</code>, <code>[pct_siniestralidad]</code></td></tr>
-            <tr><td>6</td><td>Scatter Antigüedad × Siniestralidad</td><td>Dispersión</td><td>X: <code>Antigüedad_Años</code> · Y: <code>[pct_siniestralidad]</code> · Leyenda: <code>Categoría</code> · Tamaño: <code>[total_viajes]</code></td></tr>
-        </tbody>
-    </table>
+    <h3>Visuales paso a paso</h3>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">1</span><span class="visual-icon">🔢</span>
+            <div><div class="visual-title">KPIs (3 tarjetas)</div><div class="visual-type">Tarjeta</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Tarjeta</strong> × 3.</span></div>
+            <div class="visual-step"><span class="step-lbl">Campos</span><span class="step-val"><code>[pct_siniestralidad]</code> · <code>[gap_siniestralidad_a_vs_c]</code> · <code>[total_siniestros]</code></span></div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">2</span><span class="visual-icon">📊</span>
+            <div><div class="visual-title">Desempeño por Categoría</div><div class="visual-type">Líneas y columnas con eje secundario</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de líneas y columnas agrupadas</strong> (combo).</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Choferes[Categoría]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y (columna)</span><span class="step-val"><code>[pct_siniestralidad]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y (línea)</span><span class="step-val"><code>[demora_promedio_min]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> la columna muestra siniestralidad y la línea muestra demora. Cat C va a tener ambas métricas más altas.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">3</span><span class="visual-icon">📊</span>
+            <div><div class="visual-title">Siniestralidad por Rango de Antigüedad</div><div class="visual-type">Gráfico de columnas agrupadas</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de columnas agrupadas</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Choferes[rango_antiguedad]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>[pct_siniestralidad]</code></span></div>
+            <div class="visual-fmt"><strong>Formato:</strong> ordenar los rangos manualmente — Novato → Intermedio → Senior → Experto. Creá una columna <code>orden_rango</code> en Choferes con valores 1-4 y en <em>Ordenar por columna</em> de <code>rango_antiguedad</code> seleccioná esa.</div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">4</span><span class="visual-icon">📋</span>
+            <div><div class="visual-title">Top 5 choferes con más demoras</div><div class="visual-type">Tabla con filtro Top N</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Tabla</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Columnas</span><span class="step-val"><code>Choferes[Nombre]</code> · <code>Choferes[Categoría]</code> · <code>[demora_promedio_min]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Filtro Top N</span><span class="step-val">Panel <em>Filtros</em> → arrastrar <code>Choferes[Nombre]</code> a <em>Filtros en este objeto visual</em> → <em>Tipo de filtro: N principales</em>, N = 5, <em>Por valor</em>: <code>[demora_promedio_min]</code>.</span></div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">5</span><span class="visual-icon">📋</span>
+            <div><div class="visual-title">Top 5 choferes con más siniestros</div><div class="visual-type">Tabla con filtro Top N</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Tabla</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Columnas</span><span class="step-val"><code>Choferes[Nombre]</code> · <code>[total_siniestros]</code> · <code>[pct_siniestralidad]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Filtro Top N</span><span class="step-val">Igual que el anterior, pero <em>Por valor</em>: <code>[total_siniestros]</code>.</span></div>
+        </div>
+    </div>
+
+    <div class="visual">
+        <div class="visual-head">
+            <span class="visual-num">6</span><span class="visual-icon">🔵</span>
+            <div><div class="visual-title">Antigüedad vs Siniestralidad (por chofer)</div><div class="visual-type">Gráfico de dispersión</div></div>
+        </div>
+        <div class="visual-body">
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de dispersión</strong>.</span></div>
+            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>Choferes[Antigüedad_Años]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>[pct_siniestralidad]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Leyenda</span><span class="step-val"><code>Choferes[Categoría]</code> (A verde · B naranja · C rojo)</span></div>
+            <div class="visual-step"><span class="step-lbl">Detalle</span><span class="step-val"><code>Choferes[Nombre]</code> (un punto por chofer)</span></div>
+            <div class="visual-step"><span class="step-lbl">Tamaño</span><span class="step-val"><code>[total_viajes]</code> (los choferes con más viajes pesan más)</span></div>
+        </div>
+    </div>
 
     <div class="callout success">
         <div class="cicon">🎯</div>
@@ -1328,7 +1811,7 @@ CALCULATE ( [pct_siniestralidad], Choferes[rango_antiguedad] = "Experto (&gt;12)
             <tr><td>2</td><td><strong>Pax/viaje crece 29%:</strong> los colectivos van más llenos.</td><td>Evaluar aumentar frecuencia en rutas más cargadas.</td></tr>
             <tr><td>3</td><td><strong>Turno Tarde duplica demora</strong> y concentra más siniestros.</td><td>Refuerzo operativo en turno tarde.</td></tr>
             <tr><td>4</td><td><strong>Flota vieja consume 35% más:</strong> 30 vs 22.5 lts/100km.</td><td>Plan de renovación priorizado por antigüedad.</td></tr>
-            <tr><td>5</td><td><strong>COL014 (INT-114) es outlier</strong> claro de consumo.</td><td>Ingreso a taller para diagnóstico mecánico.</td></tr>
+            <tr><td>5</td><td><strong>COL004 (INT-104) es outlier</strong> claro de consumo.</td><td>Ingreso a taller para diagnóstico mecánico.</td></tr>
             <tr><td>6</td><td><strong>R001 (Centro)</strong> recorre más km que Km_Base en hora pico.</td><td>Revisar recorrido o sumar al Km_Base oficial.</td></tr>
             <tr><td>7</td><td><strong>R006 (Malargüe)</strong> es la peor en puntualidad.</td><td>Revisar horarios y puntos de demora.</td></tr>
             <tr><td>8</td><td><strong>R008 (Rincón)</strong> baja ocupación sistemática.</td><td>Reducir frecuencia o reasignar unidades.</td></tr>
