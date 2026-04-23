@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía Práctica — Dashboard ISELIN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/styles/atom-one-dark.min.css">
+<style>
+:root {
+    --font: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', Consolas, monospace;
+    --primary: #3B82F6;
+    --blue-ink: #1E40AF;
+    --blue-soft: #EFF6FF;
+    --teal: #0D9488;
+    --teal-soft: #F0FDFA;
+    --orange: #EA580C;
+    --orange-soft: #FFF7ED;
+    --green: #059669;
+    --green-soft: #ECFDF5;
+    --red: #DC2626;
+    --red-soft: #FEF2F2;
+    --yellow: #D97706;
+    --yellow-soft: #FEFCE8;
+    --purple: #6366F1;
+    --purple-soft: #EEF2FF;
+    --ink: #0F172A;
+    --ink2: #334155;
+    --ink3: #475569;
+    --ink4: #64748B;
+    --ink5: #94A3B8;
+    --bg: #F5F7FA;
+    --surface: #FFFFFF;
+    --border: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --r: 14px;
+    --r-sm: 8px;
+    --shadow-sm: 0 1px 3px rgba(15,23,42,0.04), 0 1px 2px rgba(15,23,42,0.06);
+    --shadow: 0 4px 16px rgba(15,23,42,0.05), 0 1px 4px rgba(15,23,42,0.04);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink2);
+    line-height: 1.7;
+    font-size: 16px;
+}
+
+/* ── BOTÓN VOLVER ── */
+.back-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 100;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink4);
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+.back-btn:hover { color: var(--primary); border-color: var(--primary); }
+
+/* ── PROGRESS BAR ── */
+.progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, #3B82F6, #6366F1, #0D9488);
+    z-index: 200;
+    transition: width 0.1s linear;
+}
+
+/* ── HEADER ── */
+header.hero {
+    background: linear-gradient(160deg, #0E1525 0%, #162032 40%, #1A2744 100%);
+    color: white;
+    padding: 4.5rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+header.hero::before {
+    content: ''; position: absolute;
+    top: -120px; right: -60px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+header.hero::after {
+    content: ''; position: absolute;
+    bottom: -80px; left: -60px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(20,184,166,0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+header.hero .inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+header.hero .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #3B82F6, #6366F1);
+    color: white; font-size: 11px; font-weight: 700;
+    padding: 5px 16px; border-radius: 20px;
+    letter-spacing: 0.12em; margin-bottom: 1.2rem;
+}
+header.hero h1 {
+    font-size: 3rem; font-weight: 900;
+    letter-spacing: -0.035em; line-height: 1.1;
+    margin-bottom: 1rem; color: #F8FAFC;
+}
+header.hero p.subtitle {
+    font-size: 1.15rem; color: #94A3B8;
+    max-width: 720px; margin: 0 auto; line-height: 1.55;
+}
+.hero-stats {
+    display: flex; justify-content: center; gap: 3rem;
+    margin-top: 2.5rem; flex-wrap: wrap;
+}
+.hero-stat .num {
+    font-size: 2.2rem; font-weight: 800;
+    color: #F8FAFC; display: block; line-height: 1;
+    letter-spacing: -0.02em;
+}
+.hero-stat .label {
+    font-size: 11px; color: #94A3B8;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin-top: 6px; font-weight: 600;
+}
+
+/* ── NAV STICKY ── */
+nav.topnav {
+    position: sticky; top: 0.75rem; z-index: 90;
+    display: flex; justify-content: center;
+    padding: 1.25rem 1rem 0.5rem;
+}
+nav.topnav ul {
+    display: flex; list-style: none; gap: 0.3rem;
+    flex-wrap: wrap;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(12px);
+    padding: 0.5rem 0.9rem; border-radius: 50px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+}
+nav.topnav a {
+    text-decoration: none; color: var(--ink3);
+    font-weight: 600; padding: 0.4rem 0.9rem;
+    border-radius: 2rem; font-size: 13px;
+    transition: all 0.2s ease;
+}
+nav.topnav a:hover { color: var(--primary); background: var(--blue-soft); }
+nav.topnav a.active {
+    background: linear-gradient(135deg, #3B82F6, #6366F1);
+    color: white;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.28);
+}
+
+/* ── MAIN ── */
+main {
+    max-width: 1180px;
+    margin: 2rem auto 4rem;
+    padding: 0 2rem;
+    position: relative;
+}
+
+/* ── SIDE TOC (Notion style, muy sutil, derecha) ── */
+aside.side-toc {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    padding: 20px 16px 20px 24px;
+    background: transparent;
+    max-height: 70vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    transition: opacity 0.3s ease;
+}
+aside.side-toc a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 0;
+    text-decoration: none;
+    color: transparent;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+aside.side-toc a::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 2px;
+    background: var(--border-strong);
+    border-radius: 1px;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+aside.side-toc a:hover {
+    color: var(--ink3);
+}
+aside.side-toc a:hover::before {
+    width: 28px;
+    background: var(--ink4);
+}
+aside.side-toc a.active {
+    color: var(--ink);
+    font-weight: 600;
+}
+aside.side-toc a.active::before {
+    width: 32px;
+    background: var(--primary);
+    height: 2px;
+}
+aside.side-toc:hover a {
+    color: var(--ink3);
+}
+aside.side-toc:hover a.active {
+    color: var(--ink);
+}
+aside.side-toc::-webkit-scrollbar { width: 0; }
+
+/* ── SECTIONS ── */
+section {
+    background: var(--surface);
+    border-radius: var(--r);
+    padding: 3rem 3.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    transition: box-shadow 0.25s ease;
+    scroll-margin-top: 1rem;
+}
+section:hover { box-shadow: var(--shadow); }
+
+h2 {
+    color: var(--ink);
+    font-size: 1.95rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    scroll-margin-top: 80px;
+}
+h2::after {
+    content: ''; position: absolute;
+    bottom: 0; left: 0;
+    width: 48px; height: 3px;
+    background: linear-gradient(135deg, var(--primary), var(--teal));
+    border-radius: 2px;
+}
+h3 {
+    color: var(--ink);
+    font-size: 1.25rem;
+    margin: 2rem 0 0.8rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    scroll-margin-top: 80px;
+}
+h4 {
+    color: var(--ink2);
+    font-size: 1rem;
+    margin: 1.4rem 0 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+}
+
+p { margin-bottom: 1rem; color: var(--ink2); }
+ul, ol { margin: 0 0 1.2rem 1.5rem; }
+li { margin-bottom: 0.5rem; color: var(--ink2); }
+strong { color: var(--ink); font-weight: 700; }
+em { color: var(--ink2); font-style: italic; }
+
+a { color: var(--primary); text-decoration: none; font-weight: 500; }
+a:hover { text-decoration: underline; }
+
+/* ── CALLOUTS ── */
+.callout {
+    border-radius: 10px;
+    padding: 16px 22px;
+    margin: 1.5rem 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    border-left: 4px solid;
+    font-size: 14px;
+    line-height: 1.6;
+}
+.callout .cicon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout .ctext { flex: 1; }
+.callout .ctext p:last-child { margin-bottom: 0; }
+.callout.info { background: var(--blue-soft); border-color: var(--primary); color: var(--ink2); }
+.callout.warn { background: var(--yellow-soft); border-color: var(--yellow); color: var(--ink2); }
+.callout.success { background: var(--green-soft); border-color: var(--green); color: var(--ink2); }
+.callout.tip { background: var(--purple-soft); border-color: var(--purple); color: var(--ink2); }
+
+/* ── CARDS ── */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+    position: relative;
+    transition: all 0.2s ease;
+}
+.card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+.card .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 9px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+.card h4 {
+    color: var(--ink);
+    font-size: 1rem;
+    text-transform: none;
+    letter-spacing: 0;
+    margin: 0 0 6px 0;
+    font-weight: 700;
+}
+.card p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--ink3);
+    line-height: 1.55;
+}
+
+/* Tag colors */
+.tag.blue    { background: var(--blue-soft);   color: var(--blue-ink); }
+.tag.yellow  { background: var(--yellow-soft); color: var(--yellow); }
+.tag.green   { background: var(--green-soft);  color: var(--green); }
+.tag.orange  { background: var(--orange-soft); color: var(--orange); }
+.tag.red     { background: var(--red-soft);    color: var(--red); }
+.tag.purple  { background: var(--purple-soft); color: var(--purple); }
+.tag.teal    { background: var(--teal-soft);   color: var(--teal); }
+
+/* ── TABLE ── */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1.5rem 0;
+    font-size: 14px;
+    background: var(--surface);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+}
+thead { background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%); }
+th {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--border-strong);
+}
+td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--ink2);
+    line-height: 1.55;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: #FAFBFC; }
+
+/* Pregunta ID badge */
+.pq {
+    display: inline-block;
+    background: linear-gradient(135deg, #3B82F6, #6366F1);
+    color: white;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.03em;
+}
+.pq.alt { background: linear-gradient(135deg, #0D9488, #0891B2); }
+
+/* ── CÓDIGO ── */
+:not(pre) > code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    background: #F1F5F9;
+    color: #BE185D;
+    padding: 2px 7px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    font-weight: 500;
+    white-space: nowrap;
+}
+pre {
+    background: #0E1525;
+    color: #E2E8F0;
+    padding: 20px 24px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 1rem 0 1.5rem;
+    font-size: 13.5px;
+    line-height: 1.6;
+    position: relative;
+    border: 1px solid #1E293B;
+    box-shadow: var(--shadow-sm);
+}
+pre[data-lang]::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 10px; right: 14px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748B;
+    letter-spacing: 0.15em;
+    background: rgba(255,255,255,0.05);
+    padding: 3px 9px;
+    border-radius: 4px;
+}
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+    font-family: var(--mono);
+    border: none;
+    white-space: pre;
+}
+.hljs-comment { color: #64748B !important; font-style: italic; }
+.hljs-keyword { color: #C084FC !important; font-weight: 600; }
+.hljs-string { color: #86EFAC !important; }
+.hljs-number { color: #FBBF24 !important; }
+.hljs-symbol { color: #60A5FA !important; }
+.hljs-type { color: #F472B6 !important; }
+
+/* Diagramas ASCII */
+pre.ascii {
+    background: #0B1020;
+    color: #94A3B8;
+    font-size: 12.5px;
+    line-height: 1.4;
+}
+pre.ascii::before { content: 'LAYOUT'; color: #475569; }
+
+/* ── MEDIDA CARD ── */
+.medida {
+    margin: 1.2rem 0 1.8rem;
+}
+.medida .title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--blue-soft);
+    padding: 6px 14px;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    margin-bottom: 0;
+}
+.medida .desc {
+    font-size: 13.5px;
+    color: var(--ink3);
+    background: #F8FAFC;
+    padding: 10px 16px;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    font-style: italic;
+}
+.medida pre {
+    margin-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+/* ── BLOQUE TEMÁTICO ── */
+.bloque-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    border-radius: 10px;
+    margin: 1.5rem 0 1rem;
+    font-weight: 700;
+}
+.bloque-header .emoji { font-size: 20px; }
+.bloque-header .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink4);
+    font-weight: 700;
+}
+.bloque-header .title {
+    color: var(--ink);
+    font-size: 17px;
+    font-weight: 800;
+    margin-top: 2px;
+}
+.bloque-header.home     { background: var(--blue-soft); }
+.bloque-header.flota    { background: var(--yellow-soft); }
+.bloque-header.rutas    { background: var(--green-soft); }
+.bloque-header.punt     { background: var(--orange-soft); }
+.bloque-header.chof     { background: var(--red-soft); }
+.bloque-header.corr     { background: var(--purple-soft); }
+
+/* ── DATA PILLS en hero ── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+.kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+}
+.kpi .lbl {
+    font-size: 11px;
+    color: var(--ink4);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.kpi .val {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+}
+.kpi .sub {
+    font-size: 12px;
+    color: var(--ink4);
+    margin-top: 2px;
+}
+.kpi.up .val { color: var(--green); }
+.kpi.down .val { color: var(--red); }
+
+/* ── TABS navegación páginas dashboard ── */
+.pagina-intro {
+    background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+}
+.pagina-intro .role {
+    font-size: 11px;
+    color: var(--ink4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.pagina-intro .title {
+    color: var(--ink);
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.pagina-intro .quote {
+    font-style: italic;
+    color: var(--ink3);
+    font-size: 15px;
+}
+
+/* ── FOOTER ── */
+footer {
+    max-width: 1180px;
+    margin: 3rem auto 0;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--ink4);
+    border-top: 1px solid var(--border);
+}
+footer .logo { font-weight: 800; font-size: 16px; }
+footer .logo .da { color: #94A3B8; }
+footer .logo .oi { color: #14B8A6; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1200px) {
+    aside.side-toc { display: none; }
+}
+@media (max-width: 800px) {
+    header.hero { padding: 3rem 1.2rem 2rem; }
+    header.hero h1 { font-size: 2rem; }
+    header.hero p.subtitle { font-size: 1rem; }
+    section { padding: 1.8rem 1.4rem; }
+    main { padding: 0 1rem; }
+    .hero-stats { gap: 1.5rem; }
+    .hero-stat .num { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<a href="../index.html" class="back-btn">← Inicio</a>
+
+<header class="hero">
+    <div class="inner">
+        <div class="badge">PRÁCTICA E3 · DASHBOARD</div>
+        <h1>Guía Práctica<br>Dashboard ISELIN</h1>
+        <p class="subtitle">Caso real paso a paso: desde la historia del negocio hasta las medidas DAX comentadas y el diseño visual de cada página del reporte.</p>
+    </div>
+</header>
+
+<main>
+
+<!-- ============================================================
+     SECCIÓN 1 — EL CASO ISELIN
+     ============================================================ -->
+<section id="caso">
+    <h2>1. El caso ISELIN</h2>
+    <p>ISELIN es una empresa de transporte de pasajeros con base en <strong>San Rafael, Mendoza</strong>. Opera con una flota de <strong>20 colectivos</strong> sobre <strong>8 rutas</strong> que cubren el microcentro de San Rafael (rutas urbanas) y servicios de media y larga distancia hacia Alvear, Malargüe, Mendoza Capital y Rincón. La empresa cuenta con <strong>15 choferes</strong> categorizados en A, B y C según su experiencia y evaluación de desempeño.</p>
+
+    <h3>El problema</h3>
+    <p>En la reunión de gerencia del último trimestre, la Dirección planteó tres preocupaciones:</p>
+
+    <div class="card-grid">
+        <div class="card">
+            <span class="tag blue">Visibilidad</span>
+            <h4>"No sabemos cómo vamos"</h4>
+            <p>Se mira la facturación al cierre de mes, pero no hay una vista operativa unificada. No saben si ciertos meses crecen o caen, ni en qué días se concentra la operación.</p>
+        </div>
+        <div class="card">
+            <span class="tag orange">Costos</span>
+            <h4>"Gastamos mucho en gasoil y no entendemos por qué"</h4>
+            <p>El combustible es el principal costo variable. Hay sospechas de que algunas unidades viejas consumen más de lo razonable y que algún colectivo tiene un problema mecánico, pero nadie lo puede cuantificar.</p>
+        </div>
+        <div class="card">
+            <span class="tag red">Seguridad</span>
+            <h4>"Tenemos demoras y siniestros, pero no sabemos dónde se concentran"</h4>
+            <p>El área de Seguridad Vial quiere saber si la categorización A/B/C refleja el desempeño de cada chofer, y si los novatos (&lt;2 años) generan más incidentes que el resto.</p>
+        </div>
+    </div>
+
+    <p>La Dirección te pidió construir <strong>un dashboard en Power BI</strong> que responda estas preguntas con datos y que sirva como herramienta de seguimiento semanal.</p>
+
+    <h3>Lo que vas a construir</h3>
+    <p>Un reporte de <strong>6 páginas</strong> donde cada rol encuentra la información que necesita:</p>
+
+    <table>
+        <thead>
+            <tr><th>Página</th><th>Rol objetivo</th><th>Pregunta que responde</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Home / Resumen</strong></td><td>Dirección</td><td>¿Cómo vamos globalmente este mes?</td></tr>
+            <tr><td><strong>Flota</strong></td><td>Gerente de Flota y Mantenimiento</td><td>¿Qué colectivos son eficientes y cuáles no?</td></tr>
+            <tr><td><strong>Rutas</strong></td><td>Planificación Comercial</td><td>¿Qué rutas llevan más pasajeros y cuáles tienen demoras?</td></tr>
+            <tr><td><strong>Puntualidad</strong></td><td>Operaciones</td><td>¿Cumplimos los horarios? ¿Dónde está el problema?</td></tr>
+            <tr><td><strong>Choferes</strong></td><td>RRHH y Seguridad Vial</td><td>¿Quiénes son nuestros mejores choferes? ¿Los novatos son un riesgo?</td></tr>
+            <tr><td><strong>Correlaciones</strong></td><td>Analítica</td><td>¿Qué variables explican el consumo, la demora y los siniestros?</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Los datos disponibles</h3>
+    <p>Tenés el archivo <code>datos_iselin.xlsx</code> con estas tablas:</p>
+    <table>
+        <thead>
+            <tr><th>Tabla</th><th>Qué contiene</th><th>Registros</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Calendario</strong></td><td>Fechas con día de semana, mes, trimestre, si es hábil</td><td>731 días</td></tr>
+            <tr><td><strong>Choferes</strong></td><td>ID, nombre, categoría (A/B/C) y antigüedad en años</td><td>15</td></tr>
+            <tr><td><strong>Rutas</strong></td><td>ID, nombre, tipo (Urbana/Media/Larga Distancia) y km base esperados</td><td>8</td></tr>
+            <tr><td><strong>Colectivos</strong></td><td>ID, interno, modelo, año, estado (Activo/En Taller/Baja) y parque</td><td>20</td></tr>
+            <tr><td><strong>Viajes</strong></td><td>Cada viaje realizado entre ene-abr 2026 con km, gasoil, pasajeros, demora y si tuvo siniestro</td><td>2.119</td></tr>
+        </tbody>
+    </table>
+    <div class="callout info">
+        <div class="cicon">💡</div>
+        <div class="ctext">La tabla <strong>Viajes</strong> es la tabla de hechos. Todas las demás son <strong>dimensiones</strong> que le dan contexto.</div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 2 — PREGUNTAS DE NEGOCIO
+     ============================================================ -->
+<section id="preguntas">
+    <h2>2. Las 23 preguntas de negocio</h2>
+    <p>Estas son las preguntas que la Dirección espera ver respondidas en el dashboard. Cada una tiene un <strong>ID</strong> referenciado en las páginas. <strong>Todo visual que construyas debe responder al menos una de estas preguntas</strong>. Si un visual no responde ninguna, sobra.</p>
+
+    <div class="bloque-header home">
+        <span class="emoji">🟦</span>
+        <div><div class="label">Bloque 1 · Página Home</div><div class="title">Volumen y actividad</div></div>
+    </div>
+    <table>
+        <thead><tr><th>ID</th><th>Pregunta</th><th>Por qué importa</th><th>Visual</th></tr></thead>
+        <tbody>
+            <tr><td><span class="pq">P1</span></td><td>¿Cuántos viajes hicimos en total y cuántos en el mes actual?</td><td>Métrica fundamental de producción.</td><td>KPI <code>total_viajes</code></td></tr>
+            <tr><td><span class="pq">P2</span></td><td>¿Cómo evolucionó la cantidad de viajes y pasajeros mes a mes?</td><td>Detectar tendencias y quiebres.</td><td>Gráfico combinado mensual</td></tr>
+            <tr><td><span class="pq">P3</span></td><td>¿Cuántos pasajeros transportamos y cuál es la ocupación?</td><td>Métrica cara al cliente y comercial.</td><td>KPIs Total Pasajeros y Pax/Viaje</td></tr>
+            <tr><td><span class="pq">P4</span></td><td>¿La actividad es distinta en días hábiles vs. fines de semana?</td><td>Planificación de flota y choferes.</td><td>Columnas agrupadas</td></tr>
+            <tr><td><span class="pq">P5</span></td><td>¿En qué días y meses se concentra la operación?</td><td>Refuerzos operativos puntuales.</td><td>Mapa de calor Día × Mes</td></tr>
+            <tr><td><span class="pq">P6</span></td><td>¿Cómo se reparten los viajes entre Mañana y Tarde?</td><td>Asignación de turnos.</td><td>Gráfico de dona</td></tr>
+        </tbody>
+    </table>
+
+    <div class="bloque-header flota">
+        <span class="emoji">🟨</span>
+        <div><div class="label">Bloque 2 · Página Flota</div><div class="title">Eficiencia de la flota</div></div>
+    </div>
+    <table>
+        <thead><tr><th>ID</th><th>Pregunta</th><th>Por qué importa</th><th>Visual</th></tr></thead>
+        <tbody>
+            <tr><td><span class="pq">P7</span></td><td>¿Qué % de la flota está operativa?</td><td>Cada unidad en taller son ingresos no generados.</td><td>KPI <code>pct_disponibilidad_flota</code></td></tr>
+            <tr><td><span class="pq">P8</span></td><td>¿Cuánto consumimos por cada 100 km?</td><td>Métrica estándar de eficiencia.</td><td>KPI Lts/100 km</td></tr>
+            <tr><td><span class="pq">P9</span></td><td>¿Cuánto más consume la flota vieja comparada con la nueva?</td><td>Justificar plan de renovación.</td><td>Barras por año + <code>brecha_consumo_vieja_nueva</code></td></tr>
+            <tr><td><span class="pq">P10</span></td><td>¿Qué colectivos se desvían del consumo de su parque?</td><td>Detección de fallas mecánicas.</td><td>Tabla de outliers con semáforo</td></tr>
+            <tr><td><span class="pq">P11</span></td><td>¿La relación Km-Gasoil se comporta igual en toda la flota?</td><td>Validar ley lineal y detectar anómalos.</td><td>Scatter Km × Gasoil</td></tr>
+        </tbody>
+    </table>
+
+    <div class="bloque-header rutas">
+        <span class="emoji">🟩</span>
+        <div><div class="label">Bloque 3 · Página Rutas</div><div class="title">Rutas y ocupación</div></div>
+    </div>
+    <table>
+        <thead><tr><th>ID</th><th>Pregunta</th><th>Por qué importa</th><th>Visual</th></tr></thead>
+        <tbody>
+            <tr><td><span class="pq">P12</span></td><td>¿Qué rutas transportan más pasajeros por viaje? ¿Cuáles están subutilizadas?</td><td>Frecuencia y rediseño de recorridos.</td><td>Ranking barras horizontales</td></tr>
+            <tr><td><span class="pq">P13</span></td><td>¿Las rutas recorren más km de los previstos (Km_Base)?</td><td>Sobrecostos ocultos por tráfico.</td><td>Columnas reales vs base</td></tr>
+            <tr><td><span class="pq">P14</span></td><td>¿Qué rutas acumulan más demoras y en qué turno?</td><td>Impacto en satisfacción del cliente.</td><td>Matriz Ruta × Turno</td></tr>
+            <tr><td><span class="pq">P15</span></td><td>¿La demora crece con la longitud de la ruta o hay outliers?</td><td>Identificar rutas problemáticas.</td><td>Scatter Km × Demora</td></tr>
+        </tbody>
+    </table>
+
+    <div class="bloque-header punt">
+        <span class="emoji">🟧</span>
+        <div><div class="label">Bloque 4 · Página Puntualidad</div><div class="title">Calidad de servicio</div></div>
+    </div>
+    <table>
+        <thead><tr><th>ID</th><th>Pregunta</th><th>Por qué importa</th><th>Visual</th></tr></thead>
+        <tbody>
+            <tr><td><span class="pq">P16</span></td><td>¿Cuál es nuestro % de puntualidad (demora ≤ 5 min)?</td><td>KPI comunicable y potencial SLA.</td><td>KPI <code>pct_puntualidad</code></td></tr>
+            <tr><td><span class="pq">P17</span></td><td>¿Estamos mejorando la puntualidad a lo largo del tiempo?</td><td>Validar que el plan operativo funciona.</td><td>Línea mensual de <code>pct_puntualidad</code></td></tr>
+            <tr><td><span class="pq">P18</span></td><td>¿El turno Tarde es más problemático que el Mañana?</td><td>Refuerzos operativos por franja.</td><td>Columnas por turno</td></tr>
+            <tr><td><span class="pq">P19</span></td><td>¿Qué día tiene peor puntualidad?</td><td>Refuerzos específicos.</td><td>Columnas por día</td></tr>
+            <tr><td><span class="pq">P20</span></td><td>¿Cómo se distribuyen las demoras?</td><td>Elegir si atacar outliers o mover la media.</td><td>Histograma</td></tr>
+        </tbody>
+    </table>
+
+    <div class="bloque-header chof">
+        <span class="emoji">🟥</span>
+        <div><div class="label">Bloque 5 · Página Choferes</div><div class="title">Desempeño y seguridad vial</div></div>
+    </div>
+    <table>
+        <thead><tr><th>ID</th><th>Pregunta</th><th>Por qué importa</th><th>Visual</th></tr></thead>
+        <tbody>
+            <tr><td><span class="pq">P21</span></td><td>¿La categorización A/B/C refleja el desempeño real?</td><td>Valida el sistema de categorización.</td><td>Columnas por Categoría + <code>gap_siniestralidad_a_vs_c</code></td></tr>
+            <tr><td><span class="pq">P22</span></td><td>¿Los novatos (≤2 años) tienen más siniestros?</td><td>Sustenta plan de acompañamiento.</td><td>Barras por rango_antiguedad + scatter</td></tr>
+            <tr><td><span class="pq">P23</span></td><td>¿Quiénes son los 5 choferes con más demoras y siniestros?</td><td>Detección temprana para capacitación 1-a-1.</td><td>Tablas Top 5</td></tr>
+        </tbody>
+    </table>
+
+    <div class="bloque-header corr">
+        <span class="emoji">🔎</span>
+        <div><div class="label">Bloque 6 · Página Correlaciones</div><div class="title">Análisis avanzado</div></div>
+    </div>
+    <p>La página 6 no introduce preguntas nuevas: <strong>valida con scatter plots</strong> las hipótesis subyacentes a las preguntas anteriores:</p>
+    <ul>
+        <li><em>¿La relación Km-Gasoil es realmente lineal?</em> → valida <span class="pq">P11</span></li>
+        <li><em>¿El año de fabricación explica el consumo?</em> → valida <span class="pq">P9</span></li>
+        <li><em>¿La antigüedad explica la demora y los siniestros?</em> → valida <span class="pq">P21</span> y <span class="pq">P22</span></li>
+        <li><em>¿Más pasajeros causan más demora?</em> → valida <span class="pq">P14</span> y <span class="pq">P18</span></li>
+    </ul>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 3 — DATOS
+     ============================================================ -->
+<section id="datos">
+    <h2>3. Paso 1 · Cargar los datos</h2>
+    <ol>
+        <li>Abrí Power BI Desktop → <strong>Obtener datos → Excel</strong>.</li>
+        <li>Elegí <code>datos_iselin.xlsx</code> y seleccioná las 5 hojas: <em>Calendario, Choferes, Rutas, Colectivos, Viajes</em>.</li>
+        <li>Clic en <strong>Transformar datos</strong> para abrir Power Query.</li>
+        <li>Verificá los tipos de dato:
+            <ul>
+                <li><code>Calendario[Fecha]</code> y <code>Viajes[Fecha]</code> → Fecha</li>
+                <li><code>Viajes[Km]</code> y <code>Viajes[Gasoil_Lts]</code> → Número decimal</li>
+                <li><code>Viajes[Pasajeros]</code> y <code>Viajes[Demora_Min]</code> → Número entero</li>
+                <li><code>Colectivos[Año]</code> y <code>Choferes[Antigüedad_Años]</code> → Número entero</li>
+            </ul>
+        </li>
+        <li><strong>Cerrar y aplicar</strong>.</li>
+    </ol>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 4 — MODELO
+     ============================================================ -->
+<section id="modelo">
+    <h2>4. Paso 2 · Modelo de datos (estrella)</h2>
+    <h3>Relaciones</h3>
+    <p>Power BI puede detectar algunas automáticamente, pero verificá en la vista <strong>Modelo</strong> que queden así:</p>
+<pre class="ascii" data-lang="ESQUEMA">             Calendario
+                  │
+                  │ (Fecha)
+                  ▼
+  Choferes ──▶ Viajes ◀── Rutas
+                  ▲
+                  │
+              Colectivos</pre>
+    <ul>
+        <li><code>Viajes[Fecha]</code> → <code>Calendario[Fecha]</code></li>
+        <li><code>Viajes[ID_Chofer]</code> → <code>Choferes[ID_Chofer]</code></li>
+        <li><code>Viajes[ID_Ruta]</code> → <code>Rutas[ID_Ruta]</code></li>
+        <li><code>Viajes[ID_Colectivo]</code> → <code>Colectivos[ID_Colectivo]</code></li>
+    </ul>
+    <p>Todas son relaciones <strong>uno a muchos</strong> desde la dimensión hacia Viajes, con <strong>dirección de filtrado única</strong>.</p>
+
+    <h3>Marcar Calendario como tabla de fechas</h3>
+    <p>En la vista Modelo: clic derecho sobre <code>Calendario</code> → <strong>Marcar como tabla de fechas</strong> → seleccionar <code>Fecha</code>. Esto permite hacer análisis temporales por mes, trimestre y día de la semana sobre toda la tabla de hechos.</p>
+
+    <h3>Columna calculada: rango_antiguedad</h3>
+    <p>Panel <strong>Datos</strong> → clic derecho sobre <code>Choferes</code> → <strong>Nueva columna</strong>:</p>
+    <pre data-lang="DAX"><code class="language-dax">rango_antiguedad =
+-- Agrupa a los choferes en 4 categorías según cuántos años lleven
+-- trabajando. Se usa para cruzar antigüedad con siniestralidad y
+-- demoras en visuales agregados.
+SWITCH ( TRUE (),
+    Choferes[Antigüedad_Años] &lt;= 2,  "Novato (≤2)",
+    Choferes[Antigüedad_Años] &lt;= 7,  "Intermedio (3-7)",
+    Choferes[Antigüedad_Años] &lt;= 12, "Senior (8-12)",
+    "Experto (&gt;12)"
+)</code></pre>
+    <div class="callout warn">
+        <div class="cicon">⚠️</div>
+        <div class="ctext">Si la creás como <strong>medida</strong> recibís el error <em>"No se puede determinar un valor único para Antigüedad_Años"</em>. Tiene que ser <strong>columna calculada</strong> (la medida no tiene contexto de fila).</div>
+    </div>
+
+    <h3>Tabla _Medidas</h3>
+    <p>Pestaña <em>Modelado</em> → <strong>Nueva tabla</strong> → <code>_Medidas = {1}</code>. Ocultá la columna que se genera. Cuando crees medidas en los próximos pasos, movelas a esta tabla para mantener el modelo limpio.</p>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 5 — MEDIDAS BASE
+     ============================================================ -->
+<section id="medidas">
+    <h2>5. Paso 3 · Medidas base</h2>
+    <p>Estas medidas son la materia prima de todas las demás. Las vas a usar una y otra vez.</p>
+
+    <div class="medida">
+        <div class="title">total_viajes</div>
+        <div class="desc">Cuenta la cantidad de viajes del contexto actual. Métrica fundamental de volumen de producción.</div>
+        <pre data-lang="DAX"><code class="language-dax">total_viajes =
+COUNTROWS ( Viajes )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">total_km</div>
+        <div class="desc">Suma los kilómetros recorridos por todos los viajes filtrados. Base del consumo, desgaste y costeo.</div>
+        <pre data-lang="DAX"><code class="language-dax">total_km =
+SUM ( Viajes[Km] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">total_pasajeros</div>
+        <div class="desc">Suma el total de pasajeros transportados. Métrica cara al cliente y al área comercial.</div>
+        <pre data-lang="DAX"><code class="language-dax">total_pasajeros =
+SUM ( Viajes[Pasajeros] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">total_gasoil</div>
+        <div class="desc">Litros totales consumidos. Input de todas las métricas de eficiencia energética.</div>
+        <pre data-lang="DAX"><code class="language-dax">total_gasoil =
+SUM ( Viajes[Gasoil_Lts] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">total_siniestros</div>
+        <div class="desc">Cuenta solo los viajes donde hubo siniestro (caída de pasajero, choque, colisión, etc.).</div>
+        <pre data-lang="DAX"><code class="language-dax">total_siniestros =
+CALCULATE ( [total_viajes], Viajes[Siniestro] = "Sí" )</code></pre>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 6 — HOME
+     ============================================================ -->
+<section id="home">
+    <h2>6. Paso 4 · Página Home / Resumen ejecutivo</h2>
+
+    <div class="pagina-intro">
+        <div class="role">Rol objetivo · Dirección</div>
+        <div class="title">Vista de 3 segundos para quien abre el reporte</div>
+        <div class="quote">"¿Cómo está andando la operación?"</div>
+    </div>
+
+    <h3>Preguntas que responde</h3>
+    <p><span class="pq">P1</span> <span class="pq">P2</span> <span class="pq">P3</span> <span class="pq">P4</span> <span class="pq">P5</span> <span class="pq">P6</span></p>
+
+    <h3>Medidas nuevas</h3>
+
+    <div class="medida">
+        <div class="title">km_por_viaje</div>
+        <div class="desc">Promedio de km por viaje. Si sube el volumen pero baja km/viaje, estamos acortando recorridos.</div>
+        <pre data-lang="DAX"><code class="language-dax">km_por_viaje =
+DIVIDE ( [total_km], [total_viajes] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">pasajeros_por_viaje</div>
+        <div class="desc">Ocupación promedio. Si sube el número de viajes pero baja la ocupación, estamos sobre-ofertando frecuencia.</div>
+        <pre data-lang="DAX"><code class="language-dax">pasajeros_por_viaje =
+DIVIDE ( [total_pasajeros], [total_viajes] )</code></pre>
+    </div>
+
+    <h3>Layout sugerido</h3>
+<pre class="ascii" data-lang="LAYOUT">┌─────────────────────────────────────────────────────────────┐
+│  [Título]                          [Slicer: Mes]            │
+├─────────────────────────────────────────────────────────────┤
+│  [total_viajes] [Km] [Pasajeros] [Pax/Viaje] [Lts/100km] ...    │
+├───────────────────────────┬─────────────────────────────────┤
+│  Evolución mensual        │  Comparativo hábil vs no hábil  │
+│  (columna + línea)        │  (columnas agrupadas)           │
+├───────────────────────────┼─────────────────────────────────┤
+│  Mapa de calor            │  Distribución por turno         │
+│  Día × Mes (matriz)       │  (dona)                         │
+└───────────────────────────┴─────────────────────────────────┘</pre>
+
+    <h3>Visuales uno por uno</h3>
+    <table>
+        <thead><tr><th>#</th><th>Visual</th><th>Tipo</th><th>Campos / Medida</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>KPIs fila superior</td><td>Tarjeta × 7</td><td><code>[total_viajes]</code>, <code>[total_km]</code>, <code>[total_pasajeros]</code>, <code>[pasajeros_por_viaje]</code>, <code>[lts_por_100km]</code>, <code>[pct_puntualidad]</code>, <code>[pct_siniestralidad]</code></td></tr>
+            <tr><td>2</td><td>Evolución mensual</td><td>Combinado col + línea</td><td>Eje: <code>Calendario[Mes_Nombre]</code> · Columna: <code>[total_viajes]</code> · Línea: <code>[total_pasajeros]</code></td></tr>
+            <tr><td>3</td><td>Hábil vs No Hábil</td><td>Columnas agrupadas</td><td>Eje: <code>Calendario[Es_Hábil]</code> · Valores: <code>[total_viajes]</code> y <code>[total_pasajeros]</code></td></tr>
+            <tr><td>4</td><td>Mapa de calor</td><td>Matriz + formato condicional</td><td>Filas: <code>Día_Semana</code> · Columnas: <code>Mes_Nombre</code> · Valor: <code>[total_viajes]</code></td></tr>
+            <tr><td>5</td><td>Turnos</td><td>Dona</td><td>Leyenda: <code>Viajes[Turno]</code> · Valor: <code>[total_viajes]</code></td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 7 — FLOTA
+     ============================================================ -->
+<section id="flota">
+    <h2>7. Paso 5 · Página Flota</h2>
+
+    <div class="pagina-intro">
+        <div class="role">Rol objetivo · Gerente de Flota</div>
+        <div class="title">Eficiencia y disponibilidad de las unidades</div>
+        <div class="quote">"¿Qué colectivos son eficientes y cuáles hay que revisar?"</div>
+    </div>
+
+    <h3>Preguntas que responde</h3>
+    <p><span class="pq">P7</span> <span class="pq">P8</span> <span class="pq">P9</span> <span class="pq">P10</span> <span class="pq">P11</span></p>
+
+    <h3>Medidas</h3>
+
+    <div class="medida">
+        <div class="title">colectivos_activos</div>
+        <div class="desc">Unidades efectivamente operando (no en taller ni de baja). Se recalcula dinámicamente.</div>
+        <pre data-lang="DAX"><code class="language-dax">total_colectivos = COUNTROWS ( Colectivos )
+
+colectivos_activos =
+CALCULATE ( [total_colectivos], Colectivos[Estado] = "Activo" )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">pct_disponibilidad_flota</div>
+        <div class="desc">Porcentaje de la flota operativa. KPI clave: cada unidad en taller son ingresos que no se generan.</div>
+        <pre data-lang="DAX"><code class="language-dax">pct_disponibilidad_flota =
+DIVIDE ( [colectivos_activos], [total_colectivos] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">lts_por_100km</div>
+        <div class="desc">Consumo estandarizado: litros cada 100 km. LA métrica de eficiencia de una flota de transporte. Permite comparar contra benchmarks de la industria.</div>
+        <pre data-lang="DAX"><code class="language-dax">lts_por_100km =
+DIVIDE ( [total_gasoil], [total_km] ) * 100</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">brecha_consumo_vieja_nueva</div>
+        <div class="desc">Diferencia de consumo entre flota vieja (≤2018) y nueva (≥2021). Si es &gt;5 lts/100km, la renovación se paga sola en pocos años.</div>
+        <pre data-lang="DAX"><code class="language-dax">lts_100km_flota_vieja =
+CALCULATE ( [lts_por_100km], Colectivos[Año] &lt;= 2018 )
+
+lts_100km_flota_nueva =
+CALCULATE ( [lts_por_100km], Colectivos[Año] &gt;= 2021 )
+
+brecha_consumo_vieja_nueva =
+[lts_100km_flota_vieja] - [lts_100km_flota_nueva]</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">consumo_prom_parque · desvio_consumo_vs_parque · flag_outlier_consumo</div>
+        <div class="desc">Calcula el consumo promedio del PARQUE al que pertenece el colectivo (con <code>ALLEXCEPT</code> manteniendo solo el filtro de Parque), el desvío individual y un flag semáforo para la tabla de outliers.</div>
+        <pre data-lang="DAX"><code class="language-dax">consumo_prom_parque =
+CALCULATE (
+    [lts_por_100km],
+    ALLEXCEPT ( Colectivos, Colectivos[Parque] )
+)
+
+desvio_consumo_vs_parque =
+[lts_por_100km] - [consumo_prom_parque]
+
+flag_outlier_consumo =
+VAR desvio = [desvio_consumo_vs_parque]
+RETURN
+    SWITCH ( TRUE (),
+        desvio &gt;  3, "Alto",
+        desvio &lt; -3, "Bajo",
+        "Normal"
+    )</code></pre>
+    </div>
+
+    <h3>Layout</h3>
+<pre class="ascii" data-lang="LAYOUT">┌─────────────────────────────────────────────────────────────┐
+│  [Flota y Eficiencia]       [Slicer: Parque] [Slicer: Mes]  │
+├──────────────┬──────────────┬──────────────┬───────────────┤
+│ %Disponibil. │ Lts/100km    │ Brecha V-N   │ # Activos     │
+├──────────────┴──────────────┴──────────────┴───────────────┤
+│ Consumo por Año de colectivo (barras horizontales)          │
+├─────────────────────────────┬───────────────────────────────┤
+│ Estados de la flota         │ Top Outliers (tabla)          │
+│ (columnas apiladas)         │                               │
+├─────────────────────────────┴───────────────────────────────┤
+│ Scatter: Km vs Gasoil (color = Año del colectivo)           │
+└─────────────────────────────────────────────────────────────┘</pre>
+
+    <div class="callout success">
+        <div class="cicon">🎯</div>
+        <div class="ctext"><strong>Qué vas a ver:</strong> las unidades ≤2018 con pendiente más pronunciada que las ≥2021. El COL014 (INT-114) aparece como <em>Alto</em> en la tabla de outliers.</div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 8 — RUTAS
+     ============================================================ -->
+<section id="rutas">
+    <h2>8. Paso 6 · Página Rutas</h2>
+
+    <div class="pagina-intro">
+        <div class="role">Rol objetivo · Planificación Comercial</div>
+        <div class="title">Ocupación y eficiencia por recorrido</div>
+        <div class="quote">"¿Qué rutas rinden y cuáles hay que revisar?"</div>
+    </div>
+
+    <h3>Preguntas que responde</h3>
+    <p><span class="pq">P12</span> <span class="pq">P13</span> <span class="pq">P14</span> <span class="pq">P15</span></p>
+
+    <h3>Medidas</h3>
+
+    <div class="medida">
+        <div class="title">demora_promedio_min</div>
+        <div class="desc">Demora promedio en minutos. Métrica base de calidad de servicio.</div>
+        <pre data-lang="DAX"><code class="language-dax">demora_promedio_min =
+AVERAGE ( Viajes[Demora_Min] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">viajes_con_demora_mayor_5 · pct_viajes_con_demora_mayor_5</div>
+        <div class="desc">Viajes que superaron el umbral de 5 min. Se considera que a partir de ahí la demora impacta al pasajero.</div>
+        <pre data-lang="DAX"><code class="language-dax">viajes_con_demora_mayor_5 =
+CALCULATE ( [total_viajes], Viajes[Demora_Min] &gt; 5 )
+
+pct_viajes_con_demora_mayor_5 =
+DIVIDE ( [viajes_con_demora_mayor_5], [total_viajes] )</code></pre>
+    </div>
+
+    <h3>Visuales</h3>
+    <table>
+        <thead><tr><th>#</th><th>Visual</th><th>Tipo</th><th>Campos / Medida</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Ranking ocupación</td><td>Barras horizontales</td><td>Eje: <code>Nombre_Ruta</code> · Valor: <code>[pasajeros_por_viaje]</code> · Orden desc.</td></tr>
+            <tr><td>2</td><td>Km real vs Base</td><td>Columnas agrupadas</td><td>Eje: <code>Rutas[Nombre_Ruta]</code> · Valores: <code>[km_por_viaje]</code> y <code>Rutas[Km_Base]</code> (usar la columna directamente como valor)</td></tr>
+            <tr><td>3</td><td>Ruta × Turno</td><td>Matriz</td><td>Valores: <code>[pasajeros_por_viaje]</code>, <code>[demora_promedio_min]</code> + formato condicional</td></tr>
+            <tr><td>4</td><td>Scatter Km × Demora</td><td>Dispersión</td><td>X: <code>[km_por_viaje]</code> · Y: <code>[demora_promedio_min]</code> · Leyenda: <code>Rutas[Tipo]</code> · Tamaño: <code>[total_viajes]</code></td></tr>
+        </tbody>
+    </table>
+
+    <div class="callout success">
+        <div class="cicon">🎯</div>
+        <div class="ctext"><strong>Qué vas a ver:</strong> R001 arriba del ranking de ocupación, R008 abajo (candidata a reducir frecuencia). R006 Malargüe aparece como outlier arriba-derecha en el scatter.</div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 9 — PUNTUALIDAD
+     ============================================================ -->
+<section id="puntualidad">
+    <h2>9. Paso 7 · Página Puntualidad</h2>
+
+    <div class="pagina-intro">
+        <div class="role">Rol objetivo · Operaciones</div>
+        <div class="title">Calidad de servicio y cumplimiento de horarios</div>
+        <div class="quote">"¿Estamos mejorando en puntualidad?"</div>
+    </div>
+
+    <h3>Preguntas que responde</h3>
+    <p><span class="pq">P16</span> <span class="pq">P17</span> <span class="pq">P18</span> <span class="pq">P19</span> <span class="pq">P20</span></p>
+
+    <h3>Medidas</h3>
+
+    <div class="medida">
+        <div class="title">pct_puntualidad</div>
+        <div class="desc">Viajes con demora ≤ 5 min / total. Umbral acordado como "a tiempo". KPI comunicable al cliente.</div>
+        <pre data-lang="DAX"><code class="language-dax">viajes_puntuales =
+CALCULATE ( [total_viajes], Viajes[Demora_Min] &lt;= 5 )
+
+pct_puntualidad =
+DIVIDE ( [viajes_puntuales], [total_viajes] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">brecha_demora_turno</div>
+        <div class="desc">Cuánto peor puntúa la tarde que la mañana. Un valor &gt;1.5 min sugiere refuerzo operativo en turno Tarde.</div>
+        <pre data-lang="DAX"><code class="language-dax">demora_prom_manana =
+CALCULATE ( [demora_promedio_min], Viajes[Turno] = "Mañana" )
+
+demora_prom_tarde =
+CALCULATE ( [demora_promedio_min], Viajes[Turno] = "Tarde" )
+
+brecha_demora_turno = [demora_prom_tarde] - [demora_prom_manana]</code></pre>
+    </div>
+
+    <h3>Visuales</h3>
+    <table>
+        <thead><tr><th>#</th><th>Visual</th><th>Tipo</th><th>Campos</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>KPIs</td><td>Tarjeta × 3</td><td><code>[pct_puntualidad]</code>, <code>[demora_promedio_min]</code>, <code>[brecha_demora_turno]</code></td></tr>
+            <tr><td>2</td><td>Evolución puntualidad</td><td>Línea</td><td>Eje: <code>Mes_Nombre</code> · Valor: <code>[pct_puntualidad]</code> · Línea de referencia 85%</td></tr>
+            <tr><td>3</td><td>Demora por Turno</td><td>Columnas</td><td>Eje: <code>Viajes[Turno]</code></td></tr>
+            <tr><td>4</td><td>Demora por Día</td><td>Columnas</td><td>Eje: <code>Día_Semana</code> (ordenado por <code>Día_Semana_Num</code>)</td></tr>
+            <tr><td>5</td><td>Histograma demoras</td><td>Columnas con bins</td><td>Eje: <code>Demora_Min</code> (bin = 2)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="callout success">
+        <div class="cicon">🎯</div>
+        <div class="ctext"><strong>Qué vas a ver:</strong> línea de puntualidad creciendo ene→abr (plan operativo funciona). Turno Tarde casi duplica la demora de Mañana. Lunes y viernes peores días.</div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 10 — CHOFERES
+     ============================================================ -->
+<section id="choferes">
+    <h2>10. Paso 8 · Página Choferes</h2>
+
+    <div class="pagina-intro">
+        <div class="role">Rol objetivo · RRHH y Seguridad Vial</div>
+        <div class="title">Desempeño individual y categorización</div>
+        <div class="quote">"¿Nuestras categorías reflejan el desempeño? ¿Los novatos son un riesgo?"</div>
+    </div>
+
+    <h3>Preguntas que responde</h3>
+    <p><span class="pq">P21</span> <span class="pq">P22</span> <span class="pq">P23</span></p>
+
+    <h3>Medidas</h3>
+
+    <div class="medida">
+        <div class="title">pct_siniestralidad</div>
+        <div class="desc">Entre 1% y 3% se considera normal en transporte urbano. Más de 5% dispara revisión de póliza de seguro.</div>
+        <pre data-lang="DAX"><code class="language-dax">pct_siniestralidad =
+DIVIDE ( [total_siniestros], [total_viajes] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">gap_siniestralidad_a_vs_c</div>
+        <div class="desc">Diferencia entre la mejor y peor categoría. Si es alta, confirma que la categorización distingue bien el riesgo.</div>
+        <pre data-lang="DAX"><code class="language-dax">pct_siniestralidad_cat_a =
+CALCULATE ( [pct_siniestralidad], Choferes[Categoría] = "A" )
+
+pct_siniestralidad_cat_c =
+CALCULATE ( [pct_siniestralidad], Choferes[Categoría] = "C" )
+
+gap_siniestralidad_a_vs_c =
+[pct_siniestralidad_cat_c] - [pct_siniestralidad_cat_a]</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">pct_siniestralidad_novatos · pct_siniestralidad_expertos</div>
+        <div class="desc">Compara novatos vs expertos para sustentar un plan de acompañamiento a los nuevos.</div>
+        <pre data-lang="DAX"><code class="language-dax">pct_siniestralidad_novatos =
+CALCULATE ( [pct_siniestralidad], Choferes[rango_antiguedad] = "Novato (≤2)" )
+
+pct_siniestralidad_expertos =
+CALCULATE ( [pct_siniestralidad], Choferes[rango_antiguedad] = "Experto (&gt;12)" )</code></pre>
+    </div>
+
+    <h3>Visuales</h3>
+    <table>
+        <thead><tr><th>#</th><th>Visual</th><th>Tipo</th><th>Campos</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>KPIs</td><td>Tarjeta × 3</td><td><code>[pct_siniestralidad]</code>, <code>[gap_siniestralidad_a_vs_c]</code>, <code>[total_siniestros]</code></td></tr>
+            <tr><td>2</td><td>Por Categoría</td><td>Columnas agrupadas</td><td>Eje: <code>Categoría</code> · Valores: <code>[pct_siniestralidad]</code> y <code>[demora_promedio_min]</code></td></tr>
+            <tr><td>3</td><td>Por Antigüedad</td><td>Columnas</td><td>Eje: <code>rango_antiguedad</code> · Valor: <code>[pct_siniestralidad]</code></td></tr>
+            <tr><td>4</td><td>Top 5 Demoras</td><td>Tabla</td><td><code>Nombre</code>, <code>Categoría</code>, <code>[demora_promedio_min]</code> · Top 5 desc.</td></tr>
+            <tr><td>5</td><td>Top 5 Siniestros</td><td>Tabla</td><td><code>Nombre</code>, <code>[total_siniestros]</code>, <code>[pct_siniestralidad]</code></td></tr>
+            <tr><td>6</td><td>Scatter Antigüedad × Siniestralidad</td><td>Dispersión</td><td>X: <code>Antigüedad_Años</code> · Y: <code>[pct_siniestralidad]</code> · Leyenda: <code>Categoría</code> · Tamaño: <code>[total_viajes]</code></td></tr>
+        </tbody>
+    </table>
+
+    <div class="callout success">
+        <div class="cicon">🎯</div>
+        <div class="ctext"><strong>Qué vas a ver:</strong> nube descendente en el scatter (más antigüedad, menos siniestros). Cat C agrupados arriba-izquierda. Cat A ≈2.7% vs Cat C ≈13% de siniestralidad.</div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 11 — CORRELACIONES
+     ============================================================ -->
+<section id="correlaciones">
+    <h2>11. Paso 9 · Página Correlaciones</h2>
+
+    <div class="pagina-intro">
+        <div class="role">Rol objetivo · Analítica</div>
+        <div class="title">Validar hipótesis con scatter plots</div>
+        <div class="quote">"¿Qué variables explican el consumo, la demora y los siniestros?"</div>
+    </div>
+
+    <p>Esta página es <strong>100% scatter plots</strong>. Cada dispersión valida una hipótesis de negocio.</p>
+
+    <div class="card-grid">
+        <div class="card">
+            <span class="tag blue">Correlación +0.99</span>
+            <h4>Km vs Gasoil</h4>
+            <p><strong>Hipótesis:</strong> a mayor km, mayor consumo lineal.<br><strong>Visual:</strong> X=Km · Y=Gasoil_Lts · Leyenda=<code>Año</code> · Detalle=ID_Viaje.<br><strong>Acción:</strong> puntos fuera de la recta son viajes anómalos.</p>
+        </div>
+        <div class="card">
+            <span class="tag yellow">Correlación −0.91</span>
+            <h4>Año colectivo vs Lts/100km</h4>
+            <p><strong>Hipótesis:</strong> los colectivos nuevos consumen menos.<br><strong>Visual:</strong> X=<code>Año</code> · Y=<code>[lts_por_100km]</code> · Leyenda=<code>Parque</code> · Tamaño=<code>[total_km]</code>.<br><strong>Acción:</strong> proyección de ahorro anual por reemplazar flota vieja.</p>
+        </div>
+        <div class="card">
+            <span class="tag red">Correlación −0.32</span>
+            <h4>Antigüedad vs Demora</h4>
+            <p><strong>Hipótesis:</strong> choferes con más experiencia son más puntuales.<br><strong>Visual:</strong> X=<code>Antigüedad_Años</code> · Y=<code>[demora_promedio_min]</code> · Leyenda=<code>Categoría</code>.<br><strong>Acción:</strong> plan de formación para novatos.</p>
+        </div>
+        <div class="card">
+            <span class="tag red">Riesgo vial</span>
+            <h4>Antigüedad vs Siniestralidad</h4>
+            <p><strong>Visual:</strong> igual al anterior con Y=<code>[pct_siniestralidad]</code>.<br><strong>Acción:</strong> identificar novatos con siniestralidad alta para capacitación 1-a-1.</p>
+        </div>
+        <div class="card">
+            <span class="tag green">Correlación +0.23</span>
+            <h4>Pasajeros vs Demora</h4>
+            <p><strong>Hipótesis:</strong> más pasajeros = más paradas = más demora.<br><strong>Visual:</strong> X=Pasajeros · Y=Demora_Min · Leyenda=<code>Rutas[Tipo]</code>.<br><strong>Acción:</strong> urbanas con alta correlación → aumentar frecuencia.</p>
+        </div>
+    </div>
+
+    <h3>Layout</h3>
+<pre class="ascii" data-lang="LAYOUT">┌─────────────────────────────────────────────────────────────┐
+│  [Correlaciones]          [Slicers: Parque | Tipo Ruta]     │
+├──────────────────────────────┬──────────────────────────────┤
+│  Km vs Gasoil                │  Año vs Lts/100km            │
+├──────────────────────────────┼──────────────────────────────┤
+│  Antigüedad vs Demora        │  Antigüedad vs % Siniestros  │
+├──────────────────────────────┴──────────────────────────────┤
+│  Pasajeros vs Demora (por Tipo de Ruta)                     │
+└─────────────────────────────────────────────────────────────┘</pre>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 12 — CHEQUEOS
+     ============================================================ -->
+<section id="chequeos">
+    <h2>12. Chequeos de calidad · Insights esperados</h2>
+    <p>Si el dashboard está bien construido, los siguientes <strong>12 insights</strong> tienen que aparecer naturalmente. Si alguno no aparece, revisá las medidas y los filtros.</p>
+
+    <div class="kpi-grid">
+        <div class="kpi up"><div class="lbl">Volumen mensual</div><div class="val">+60%</div><div class="sub">403 → 646 viajes (ene→abr)</div></div>
+        <div class="kpi up"><div class="lbl">Total pasajeros</div><div class="val">+106%</div><div class="sub">12.8k → 26.5k</div></div>
+        <div class="kpi up"><div class="lbl">Pax por viaje</div><div class="val">+29%</div><div class="sub">32 → 41</div></div>
+        <div class="kpi down"><div class="lbl">Turno Tarde vs Mañana</div><div class="val">2×</div><div class="sub">5.6 vs 3.9 min demora</div></div>
+        <div class="kpi down"><div class="lbl">Flota ≤2018 vs ≥2021</div><div class="val">+35%</div><div class="sub">consumo extra</div></div>
+        <div class="kpi down"><div class="lbl">Siniestralidad Cat C vs A</div><div class="val">5×</div><div class="sub">13% vs 2.7%</div></div>
+        <div class="kpi"><div class="lbl">Correlación Km-Gasoil</div><div class="val">+0.99</div><div class="sub">ley lineal validada</div></div>
+        <div class="kpi"><div class="lbl">Correlación Año-Consumo</div><div class="val">−0.91</div><div class="sub">justifica renovación</div></div>
+    </div>
+
+    <table>
+        <thead><tr><th>#</th><th>Insight</th><th>Acción sugerida</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td><strong>Volumen creciente:</strong> # viajes +60% y pasajeros +106% en 4 meses.</td><td>Validar con comercial si es temporada o efecto de campaña.</td></tr>
+            <tr><td>2</td><td><strong>Pax/viaje crece 29%:</strong> los colectivos van más llenos.</td><td>Evaluar aumentar frecuencia en rutas más cargadas.</td></tr>
+            <tr><td>3</td><td><strong>Turno Tarde duplica demora</strong> y concentra más siniestros.</td><td>Refuerzo operativo en turno tarde.</td></tr>
+            <tr><td>4</td><td><strong>Flota vieja consume 35% más:</strong> 30 vs 22.5 lts/100km.</td><td>Plan de renovación priorizado por antigüedad.</td></tr>
+            <tr><td>5</td><td><strong>COL014 (INT-114) es outlier</strong> claro de consumo.</td><td>Ingreso a taller para diagnóstico mecánico.</td></tr>
+            <tr><td>6</td><td><strong>R001 (Centro)</strong> recorre más km que Km_Base en hora pico.</td><td>Revisar recorrido o sumar al Km_Base oficial.</td></tr>
+            <tr><td>7</td><td><strong>R006 (Malargüe)</strong> es la peor en puntualidad.</td><td>Revisar horarios y puntos de demora.</td></tr>
+            <tr><td>8</td><td><strong>R008 (Rincón)</strong> baja ocupación sistemática.</td><td>Reducir frecuencia o reasignar unidades.</td></tr>
+            <tr><td>9</td><td><strong>Cat C ≈ 5× siniestros de Cat A.</strong></td><td>Valida categorización y dispara capacitación.</td></tr>
+            <tr><td>10</td><td><strong>Km-Gasoil correlación +0.99</strong> (ley lineal validada).</td><td>Los puntos fuera de la recta son viajes anómalos.</td></tr>
+            <tr><td>11</td><td><strong>Año-Consumo correlación −0.91.</strong></td><td>Argumento cuantitativo para el plan de renovación.</td></tr>
+            <tr><td>12</td><td><strong>Puntualidad mejora mes a mes.</strong></td><td>El plan operativo está funcionando.</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 13 — APÉNDICE
+     ============================================================ -->
+<section id="apendices">
+    <h2>13. Apéndice · Convenciones</h2>
+
+    <h3>Slicers globales sugeridos</h3>
+    <div class="card-grid">
+        <div class="card"><span class="tag blue">Tiempo</span><p><code>Mes_Nombre</code>, <code>Trimestre</code>, <code>Es_Hábil</code></p></div>
+        <div class="card"><span class="tag green">Ruta</span><p><code>Tipo</code>, <code>Nombre_Ruta</code></p></div>
+        <div class="card"><span class="tag yellow">Colectivo</span><p><code>Parque</code>, <code>Año</code>, <code>Estado</code></p></div>
+        <div class="card"><span class="tag red">Chofer</span><p><code>Categoría</code>, <code>rango_antiguedad</code></p></div>
+        <div class="card"><span class="tag purple">Viaje</span><p><code>Turno</code>, <code>Siniestro</code></p></div>
+    </div>
+
+    <h3>Convenciones de nombres de medidas</h3>
+    <p>Usamos <strong>snake_case</strong> (todo minúsculas, palabras separadas con guión bajo) para que los nombres sean identificadores limpios y consistentes.</p>
+    <ul>
+        <li>Prefijo <code>total_</code> → agregaciones totales (<code>total_viajes</code>, <code>total_siniestros</code>, <code>total_km</code>)</li>
+        <li>Prefijo <code>pct_</code> → porcentajes (<code>pct_puntualidad</code>, <code>pct_siniestralidad</code>, <code>pct_disponibilidad_flota</code>)</li>
+        <li>Prefijo <code>brecha_</code> / <code>gap_</code> → diferencias entre segmentos (<code>brecha_demora_turno</code>, <code>gap_siniestralidad_a_vs_c</code>)</li>
+        <li>Prefijo <code>flag_</code> → clasificaciones cualitativas (<code>flag_outlier_consumo</code>)</li>
+    </ul>
+
+    <h3>Paleta de colores</h3>
+    <table>
+        <thead><tr><th>Color</th><th>Hex</th><th>Uso</th></tr></thead>
+        <tbody>
+            <tr><td>Azul ISELIN</td><td><code>#1F3A5F</code></td><td>Métricas operativas, volumen</td></tr>
+            <tr><td>Verde</td><td><code>#2E7D32</code></td><td>Indicadores positivos (puntualidad, disponibilidad)</td></tr>
+            <tr><td>Rojo</td><td><code>#C62828</code></td><td>Indicadores negativos (siniestros, outliers, demoras)</td></tr>
+            <tr><td>Naranja</td><td><code>#EF6C00</code></td><td>Alertas, KPIs intermedios</td></tr>
+            <tr><td>Gris</td><td><code>#546E7A</code></td><td>Bordes, contexto</td></tr>
+        </tbody>
+    </table>
+</section>
+
+</main>
+
+<footer>
+    <div class="logo"><span class="da">data </span><span class="oi">oilers</span></div>
+    <span>ISELIN · Capacitación en Análisis de Datos · Abril 2026</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+<script>
+// Registrar sintaxis DAX
+const DAX_KEYWORDS = ['CALCULATE','SUM','SUMX','COUNTROWS','COUNT','DISTINCTCOUNT','DIVIDE','AVERAGE','AVERAGEX','MAX','MIN','DATEADD','TOTALYTD','TOTALQTD','TOTALMTD','SELECTEDVALUE','SWITCH','TRUE','FALSE','VAR','RETURN','ALL','ALLEXCEPT','FILTER','IF','ISBLANK','RANKX','DESC','ASC','MONTH','YEAR','DAY','QUARTER','RELATED','VALUES','HASONEVALUE','ROUND','NOT'];
+hljs.registerLanguage('dax', () => ({
+    case_insensitive: false,
+    keywords: DAX_KEYWORDS.join(' '),
+    contains: [
+        hljs.COMMENT('--', '$'),
+        hljs.QUOTE_STRING_MODE,
+        { className: 'number', begin: '\\b\\d+(\\.\\d+)?\\b' },
+        { className: 'symbol', begin: '\\[[^\\]]+\\]' },
+        { className: 'type', begin: '\\b[A-Z][a-zA-Záéíóúñ_][a-zA-Záéíóúñ_0-9]*\\[', end: '\\]' }
+    ]
+}));
+document.querySelectorAll('pre code.language-dax').forEach(el => hljs.highlightElement(el));
+
+// Progress bar
+const bar = document.getElementById('progressBar');
+window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    bar.style.width = ((h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100) + '%';
+}, { passive: true });
+</script>
+
+</body>
+</html>

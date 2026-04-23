@@ -259,7 +259,7 @@ body {
 /* ── RESOURCES GRID ── */
 .resources {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-bottom: 48px;
 }
@@ -345,6 +345,7 @@ footer .logo {
     .encounters { grid-template-columns: repeat(2, 1fr); }
     .resources { grid-template-columns: 1fr; }
     .hero h1 { font-size: 36px; }
+    .res-card { flex-direction: column; gap: 12px; }
 }
 
 @media (max-width: 600px) {
@@ -430,6 +431,15 @@ footer .logo {
                 <h3>Manual de Análisis de Datos</h3>
                 <p>Guía completa con fundamentos, pirámide DIKW, ETL, calidad de datos, niveles de madurez analítica y glosario.</p>
                 <div class="action">Explorar manual</div>
+            </div>
+        </a>
+
+        <a href="demo_pbi/guia_practica.html" class="res-card">
+            <div class="icon" style="background: linear-gradient(135deg, #3B82F6, #6366F1);">🛠️</div>
+            <div>
+                <h3>Guía práctica — Dashboard ISELIN</h3>
+                <p>Caso paso a paso: 23 preguntas de negocio, medidas DAX comentadas y diseño visual de las 6 páginas del dashboard.</p>
+                <div class="action">Abrir guía práctica</div>
             </div>
         </a>
 
