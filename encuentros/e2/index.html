@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E2 — Modelo de Datos, Power Query y Primeras Visualizaciones | ISELIN</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════ */
+:root {
+    --font: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+
+    --bg: #F5F7FA;
+    --surface: #FFFFFF;
+    --surface-alt: #F0F3F8;
+    --surface-dark: #0E1525;
+
+    --border: #E2E8F0;
+    --border-hover: #CBD5E1;
+
+    --ink: #0F172A;
+    --ink2: #334155;
+    --ink3: #475569;
+    --ink4: #64748B;
+
+    --blue: #3B82F6;
+    --blue-soft: #EFF6FF;
+    --blue-mid: #BFDBFE;
+    --teal: #0D9488;
+    --teal-soft: #F0FDFA;
+    --orange: #EA580C;
+    --orange-soft: #FFF7ED;
+    --green: #059669;
+    --green-soft: #ECFDF5;
+    --purple: #7C3AED;
+    --purple-soft: #F5F3FF;
+    --red: #DC2626;
+
+    --grad-blue: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+    --grad-teal: linear-gradient(135deg, #0D9488 0%, #0891B2 100%);
+    --grad-warm: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%);
+    --grad-green: linear-gradient(135deg, #059669 0%, #0D9488 100%);
+    --grad-purple: linear-gradient(135deg, #7C3AED 0%, #6366F1 100%);
+    --grad-cover: linear-gradient(160deg, #0E1525 0%, #162032 40%, #1A2744 100%);
+
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow: 0 4px 16px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.08);
+
+    --r: 14px;
+    --r-sm: 8px;
+    --r-lg: 20px;
+}
+
+/* ═══ REVEAL CORE ═══ */
+.reveal-viewport { background: var(--bg); }
+.reveal { font-family: var(--font); font-size: 36px; color: var(--ink2); }
+.reveal .slides { text-align: left; }
+.reveal .slides section {
+    padding: 44px 72px 48px;
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: column;
+    height: 720px;
+}
+.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+    font-family: var(--font); color: var(--ink); font-weight: 700;
+    text-transform: none; letter-spacing: -0.025em; line-height: 1.15; margin: 0; text-align: left;
+}
+.reveal h1 { font-size: 2.4em; font-weight: 900; letter-spacing: -0.04em; }
+.reveal h2 { font-size: 1.6em; font-weight: 800; }
+.reveal h3 { font-size: 0.88em; font-weight: 700; }
+.reveal p { margin: 0; line-height: 1.65; }
+.reveal strong { color: var(--ink); font-weight: 600; }
+.reveal .slide-number {
+    font-family: var(--font); font-size: 12px; font-weight: 500;
+    color: var(--ink4); background: none; right: 52px; bottom: 20px;
+}
+.reveal .progress span { background: var(--teal); height: 3px; }
+
+/* HOME BUTTON */
+#home-btn {
+    position: fixed; top: 16px; left: 16px; z-index: 100;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 16px;
+    font-family: var(--font); font-size: 13px; font-weight: 600;
+    color: var(--ink3); text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+}
+#home-btn:hover { color: var(--teal); border-color: var(--teal); transform: translateY(-1px); }
+.reveal .controls { color: var(--teal); }
+.reveal .controls button { opacity: 0.4; }
+.reveal .controls button:hover { opacity: 1; }
+
+/* ═══ LAYOUT HELPERS ═══ */
+.grow { flex: 1; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex: 1; align-content: stretch; }
+
+/* ═══ SECTION LABEL ═══ */
+.label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.4em; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 6px;
+}
+.label::before {
+    content: ''; width: 24px; height: 2px; background: var(--teal); border-radius: 2px;
+}
+.label.blue { color: var(--blue); }
+.label.blue::before { background: var(--blue); }
+.label.green { color: var(--green); }
+.label.green::before { background: var(--green); }
+.label.orange { color: var(--orange); }
+.label.orange::before { background: var(--orange); }
+.label.purple { color: var(--purple); }
+.label.purple::before { background: var(--purple); }
+
+/* ═══ SUBTITLE ═══ */
+.sub { color: var(--ink2); font-size: 0.52em; font-weight: 400; margin-top: 6px; line-height: 1.5; }
+
+/* ═══ BOTTOM QUOTE ═══ */
+.bottom-quote {
+    margin-top: 20px;
+    padding-top: 14px;
+    text-align: center;
+    font-size: 0.42em;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--ink3);
+    border-top: 1px solid var(--border);
+}
+
+/* ═══ CARD ═══ */
+.card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 24px;
+    box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+}
+.card[data-top]::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.card[data-top="blue"]::before { background: var(--grad-blue); }
+.card[data-top="teal"]::before { background: var(--grad-teal); }
+.card[data-top="orange"]::before { background: var(--grad-warm); }
+.card[data-top="green"]::before { background: var(--grad-green); }
+.card[data-top="purple"]::before { background: var(--grad-purple); }
+
+.card h3 { font-size: 0.62em; margin-bottom: 8px; }
+.card p { font-size: 0.5em; color: var(--ink2); line-height: 1.75; }
+.card ul { font-size: 0.5em; color: var(--ink2); line-height: 1.85; padding-left: 1.1em; margin: 8px 0 0; }
+
+.card.soft-blue { background: var(--blue-soft); border-color: var(--blue-mid); }
+.card.soft-teal { background: var(--teal-soft); border-color: #99F6E4; }
+.card.soft-orange { background: var(--orange-soft); border-color: #FED7AA; }
+.card.soft-green { background: var(--green-soft); border-color: #A7F3D0; }
+.card.soft-purple { background: var(--purple-soft); border-color: #DDD6FE; }
+
+/* ═══ BADGE ═══ */
+.badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: var(--r-sm);
+    font-weight: 800; font-size: 0.52em; color: white; flex-shrink: 0;
+}
+.badge.blue { background: var(--grad-blue); }
+.badge.teal { background: var(--grad-teal); }
+.badge.orange { background: var(--grad-warm); }
+.badge.green { background: var(--grad-green); }
+.badge.purple { background: var(--grad-purple); }
+
+/* ═══ PILL ═══ */
+.pill {
+    display: inline-block; font-size: 0.4em; font-weight: 600;
+    padding: 3px 12px; border-radius: 20px;
+    background: var(--surface-alt); color: var(--ink3); border: 1px solid var(--border);
+}
+
+/* ═══ AGENDA ═══ */
+.agenda { display: flex; flex-direction: column; gap: 7px; flex: 1; margin-top: 14px; justify-content: center; }
+.ag {
+    display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 13px 24px;
+    position: relative; overflow: hidden;
+}
+.ag::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.ag:nth-child(1)::before, .ag:nth-child(3)::before, .ag:nth-child(5)::before { background: var(--teal); }
+.ag:nth-child(2)::before, .ag:nth-child(4)::before, .ag:nth-child(6)::before { background: var(--blue); }
+.ag .t { font-size: 0.44em; color: var(--ink3); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ag .n { font-size: 0.52em; color: var(--ink); font-weight: 600; }
+.ag .d { font-size: 0.42em; color: var(--ink3); text-align: right; }
+
+/* ═══ FLOW ═══ */
+.flow { display: flex; align-items: stretch; gap: 0; flex: 1; margin-top: 16px; min-height: 0; }
+.flow-step {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 28px 22px; text-align: center;
+    display: flex; flex-direction: column; align-items: center;
+}
+.flow-step h3 { text-align: center; margin: 10px 0 8px; }
+.flow-step p { text-align: center; font-size: 0.46em; }
+.flow-step .detail {
+    font-size: 0.4em; color: var(--ink3); margin-top: auto;
+    padding-top: 14px; border-top: 1px solid var(--border);
+    width: 100%;
+}
+.flow-arrow {
+    display: flex; align-items: center; padding: 0 8px;
+    font-size: 1.4em; color: var(--ink4); flex-shrink: 0;
+}
+
+/* ═══ TIMELINE ═══ */
+.tl { display: flex; gap: 0; flex: 1; margin-top: 28px; position: relative; align-items: flex-start; }
+.tl::before {
+    content: ''; position: absolute; top: 80px; left: 10%; right: 10%;
+    height: 2px; background: var(--border);
+}
+.tl-item { flex: 1; text-align: center; position: relative; z-index: 1; }
+.tl-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 18px 16px; margin: 0 10px 18px;
+    box-shadow: var(--shadow-sm);
+}
+.tl-card.done { border-color: var(--green); background: var(--green-soft); }
+.tl-card.active { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-soft), var(--shadow); }
+.tl-dot { width: 14px; height: 14px; border-radius: 50%; margin: 0 auto 16px; background: var(--ink4); }
+.tl-dot.done { background: var(--green); }
+.tl-dot.active { background: var(--teal); box-shadow: 0 0 0 4px var(--teal-soft); }
+.tl-dot.blue { background: var(--blue); }
+.tl-item h4 { font-size: 0.48em; text-align: center; }
+.tl-item p { font-size: 0.4em; color: var(--ink2); text-align: center; margin-top: 4px; }
+
+/* ═══ CODE BLOCKS (DAX / M) ═══ */
+.code {
+    background: #0E1525; color: #E2E8F0;
+    border-radius: var(--r-sm); padding: 20px 24px;
+    font-family: var(--mono); font-size: 0.46em; line-height: 1.7;
+    overflow-x: auto;
+}
+.code .k { color: #7DD3FC; font-weight: 600; }      /* keyword / function */
+.code .t { color: #C4B5FD; }                         /* table */
+.code .c { color: #94A3B8; font-style: italic; }     /* comment */
+.code .s { color: #FCA5A5; }                         /* string */
+.code .o { color: #FDBA74; }                         /* operator */
+.code .n { color: #6EE7B7; }                         /* number */
+.code .v { color: #F9A8D4; }                         /* variable name */
+
+/* ═══ ENTREGABLES ═══ */
+.ent { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.ent .title { font-size: 0.5em; color: var(--ink); font-weight: 600; }
+.ent .desc { font-size: 0.42em; color: var(--ink3); }
+
+/* ═══ ERROR LIST ═══ */
+.err-list { display: flex; flex-direction: column; gap: 10px; flex: 1; margin-top: 14px; justify-content: center; }
+.err {
+    display: grid; grid-template-columns: 40px 1fr 1fr; align-items: center; gap: 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: var(--r-sm); padding: 14px 20px;
+}
+.err .num {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--orange-soft); color: var(--red);
+    font-weight: 800; font-size: 0.5em;
+}
+.err .t { font-size: 0.5em; color: var(--ink); font-weight: 600; }
+.err .f { font-size: 0.42em; color: var(--ink3); }
+
+/* ═══ OP GRID (Power Query ops) ═══ */
+.op-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; margin-top: 14px; align-content: center; }
+.op {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    min-height: 112px;
+}
+.op .ic {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: white; font-weight: 800;
+}
+.op .ic.b { background: var(--grad-blue); }
+.op .ic.t { background: var(--grad-teal); }
+.op .ic.o { background: var(--grad-warm); }
+.op .ic.g { background: var(--grad-green); }
+.op h4 { font-size: 0.44em; margin: 0; line-height: 1.25; }
+.op p { font-size: 0.36em; color: var(--ink3); margin: 0; line-height: 1.4; }
+
+/* ═══ TABLE MERGE DIAGRAM ═══ */
+.merge-wrap { display: flex; align-items: center; justify-content: center; gap: 28px; flex: 1; margin-top: 14px; }
+.mtable {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 0; overflow: hidden;
+    box-shadow: var(--shadow-sm); min-width: 220px;
+}
+.mtable .hd { background: var(--blue-soft); color: var(--blue); font-weight: 700; padding: 8px 14px; font-size: 0.42em; border-bottom: 1px solid var(--blue-mid); }
+.mtable.teal .hd { background: var(--teal-soft); color: var(--teal); border-bottom-color: #99F6E4; }
+.mtable.green .hd { background: var(--green-soft); color: var(--green); border-bottom-color: #A7F3D0; }
+.mtable table { width: 100%; border-collapse: collapse; font-size: 0.38em; }
+.mtable th, .mtable td { padding: 7px 14px; text-align: left; border-bottom: 1px solid var(--border); color: var(--ink2); }
+.mtable th { background: var(--surface-alt); color: var(--ink3); font-weight: 700; font-size: 0.95em; }
+.mtable tr:last-child td { border-bottom: none; }
+.mtable .key { color: var(--orange); font-weight: 700; }
+.merge-op {
+    width: 62px; height: 62px; border-radius: 50%;
+    background: var(--grad-teal); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.56em; flex-shrink: 0;
+    box-shadow: var(--shadow);
+}
+
+/* ═══ RELATIONS DIAGRAM ═══ */
+.rel-diag { display: flex; justify-content: center; align-items: center; flex: 1; margin-top: 14px; position: relative; }
+.rel-center, .rel-side {
+    background: var(--surface); border-radius: var(--r-sm);
+    padding: 14px 20px; text-align: center;
+    box-shadow: var(--shadow-sm);
+    min-width: 160px;
+}
+.rel-center {
+    border: 2px solid var(--orange);
+    background: var(--orange-soft);
+}
+.rel-side { border: 1px solid var(--border); }
+.rel-center h4 { color: var(--orange); font-size: 0.52em; margin: 0; }
+.rel-center p { font-size: 0.38em; color: var(--ink3); margin-top: 4px; }
+.rel-side h4 { color: var(--ink); font-size: 0.46em; margin: 0; }
+.rel-side p { font-size: 0.36em; color: var(--ink3); margin-top: 4px; }
+
+/* ═══ ANATOMY ═══ */
+.anatomy {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 32px 40px;
+    margin-top: 20px;
+}
+.anatomy .line {
+    font-family: var(--mono); font-size: 1em;
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+}
+.anatomy .tk {
+    padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.7em;
+}
+.anatomy .tk.name { background: #FCE7F3; color: #BE185D; }
+.anatomy .tk.eq { color: var(--ink3); font-size: 0.8em; }
+.anatomy .tk.fn { background: #DBEAFE; color: #1D4ED8; }
+.anatomy .tk.tbl { background: #EDE9FE; color: #6D28D9; }
+.anatomy .tk.col { background: #FEF3C7; color: #B45309; }
+.anatomy .anno {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    margin-top: 28px;
+}
+.anatomy .anno div { font-size: 0.42em; color: var(--ink3); line-height: 1.5; }
+.anatomy .anno strong { display: block; margin-bottom: 4px; font-size: 1.05em; }
+
+/* ═══ VIZ GRID ═══ */
+.viz-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; flex: 1; margin-top: 14px; align-content: center; }
+.viz {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 16px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+    text-align: center;
+}
+.viz svg { width: 100%; height: 60px; }
+.viz h4 { font-size: 0.46em; margin: 0; text-align: center; }
+.viz p { font-size: 0.36em; color: var(--ink3); margin: 0; text-align: center; line-height: 1.4; }
+
+/* ═══ DECISION MATRIX ═══ */
+.dm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; flex: 1; margin-top: 14px; align-content: center; }
+.dm {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 18px 22px;
+    display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center;
+}
+.dm .q { font-size: 0.5em; color: var(--ink); font-weight: 600; }
+.dm .arrow { font-size: 0.42em; color: var(--ink4); }
+.dm .a {
+    font-size: 0.48em; font-weight: 700;
+    padding: 6px 14px; border-radius: 8px;
+    color: white; white-space: nowrap;
+}
+.dm .a.blue { background: var(--grad-blue); }
+.dm .a.teal { background: var(--grad-teal); }
+.dm .a.orange { background: var(--grad-warm); }
+.dm .a.green { background: var(--grad-green); }
+.dm .a.purple { background: var(--grad-purple); }
+
+/* ═══ COVER / CLOSING SLIDES ═══ */
+.cover {
+    background: var(--grad-cover) !important;
+    color: white;
+    justify-content: center !important;
+    position: relative;
+}
+.cover h1, .cover h2, .cover h3 { color: #F1F5F9; }
+.cover p { color: #94A3B8; }
+.cover .side {
+    position: absolute; left: 0; top: 0; width: 5px; height: 100%;
+    background: linear-gradient(180deg, #0D9488, #3B82F6, #7C3AED);
+}
+.cover .logo { font-size: 0.7em; font-weight: 800; margin-bottom: 48px; }
+.cover .logo .da { color: #94A3B8; }
+.cover .logo .oi { color: #14B8A6; }
+.cover .enc {
+    display: inline-block; font-size: 0.42em; font-weight: 700;
+    padding: 5px 20px; border-radius: 24px; letter-spacing: 0.12em;
+    background: var(--grad-teal); color: white; margin-bottom: 16px;
+}
+.cover .meta { font-size: 0.46em; color: #4B5F7A; margin-top: 48px; }
+.cover .bottom-quote { color: #4B5F7A; border-top-color: rgba(255,255,255,0.08); }
+</style>
+</head>
+<body>
+<a href="../../index.html" id="home-btn" title="Volver al inicio">← Inicio</a>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══ 1. PORTADA ═══ -->
+<section class="cover">
+    <div class="side"></div>
+    <div class="logo"><span class="da">data </span><span class="oi">oilers</span></div>
+    <div class="enc">ENCUENTRO 2 DE 4</div>
+    <h1>Modelo de Datos,<br>Power Query y<br>Primeras Visualizaciones</h1>
+    <p style="font-size:0.68em;color:#CBD5E1;margin-top:12px">Capacitaci&oacute;n en An&aacute;lisis de Datos</p>
+    <p style="font-size:0.52em;color:#14B8A6;margin-top:8px;font-weight:600;letter-spacing:0.05em">ISELIN &middot; TRANSPORTE</p>
+    <p class="meta">Martes 21 de abril de 2026 &middot; Virtual</p>
+    <div class="bottom-quote">"Datos desordenados cuentan mentiras. Datos bien modelados cuentan la verdad."</div>
+</section>
+
+<!-- ═══ 2. ¿DÓNDE QUEDAMOS? ═══ -->
+<section>
+    <div class="label">Recap</div>
+    <h2>&iquest;D&oacute;nde quedamos?</h2>
+    <p class="sub">Un repaso r&aacute;pido antes de avanzar</p>
+    <div class="tl">
+        <div class="tl-item">
+            <div class="tl-card done"><h4 style="color:var(--green);font-size:0.56em">E1 &check;</h4><p style="font-size:0.44em;color:var(--ink4)">16/04 &middot; Presencial</p></div>
+            <div class="tl-dot done"></div>
+            <p>Fundamentos,<br>Calidad y primer<br>contacto con PBI</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card active"><h4 style="color:var(--teal);font-size:0.56em">E2 &middot; Hoy</h4><p style="font-size:0.44em;color:var(--ink4)">21/04 &middot; Virtual</p></div>
+            <div class="tl-dot active"></div>
+            <p>Modelo de datos,<br>Power Query y<br>visualizaciones</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card"><h4 style="color:var(--blue);font-size:0.56em">E3</h4><p style="font-size:0.44em;color:var(--ink4)">23/04 &middot; Virtual</p></div>
+            <div class="tl-dot blue"></div>
+            <p>F&oacute;rmulas DAX,<br>dashboards y<br>storytelling</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card"><h4 style="color:var(--ink4);font-size:0.56em">E4</h4><p style="font-size:0.44em;color:var(--ink4)">30/04 &middot; Presencial</p></div>
+            <div class="tl-dot"></div>
+            <p>Interpretaci&oacute;n,<br>publicaci&oacute;n y<br>actualizaci&oacute;n</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Cada encuentro es un escal&oacute;n m&aacute;s cerca del dashboard final."</div>
+</section>
+
+<!-- ═══ 3. ERRORES FRECUENTES ═══ -->
+<section>
+    <div class="label orange">Recap</div>
+    <h2>Errores frecuentes al cargar un Excel</h2>
+    <p class="sub">Lo que suele aparecer cuando uno empieza &mdash; y c&oacute;mo resolverlo</p>
+    <div class="err-list">
+        <div class="err"><div class="num">1</div><div class="t">Encabezados no est&aacute;n en la primera fila</div><div class="f">&rarr; Power Query: "Usar la primera fila como encabezado"</div></div>
+        <div class="err"><div class="num">2</div><div class="t">Celdas combinadas (merged cells)</div><div class="f">&rarr; Desarmarlas en el Excel antes de cargar</div></div>
+        <div class="err"><div class="num">3</div><div class="t">Tipos de datos incorrectos (fechas como texto)</div><div class="f">&rarr; Cambiar tipo en Power Query antes de cerrar</div></div>
+        <div class="err"><div class="num">4</div><div class="t">Filas vac&iacute;as entre los datos</div><div class="f">&rarr; "Quitar filas en blanco" en Power Query</div></div>
+        <div class="err"><div class="num">5</div><div class="t">T&iacute;tulos o logos arriba de la tabla</div><div class="f">&rarr; "Quitar filas superiores" en Power Query</div></div>
+    </div>
+    <div class="bottom-quote">"El 80% de los problemas de un dashboard nacen en el Excel de origen."</div>
+</section>
+
+<!-- ═══ 4. ¿QUÉ ES POWER QUERY? ═══ -->
+<section>
+    <div class="label">Power Query</div>
+    <h2>&iquest;Qu&eacute; es Power Query?</h2>
+    <p class="sub">El taller mec&aacute;nico donde preparamos los datos antes de usarlos</p>
+    <div class="flow">
+        <div class="flow-step" style="border-color:var(--blue-mid);background:var(--blue-soft)">
+            <div class="badge blue" style="width:48px;height:48px;font-size:0.8em">1</div>
+            <h3 style="color:var(--blue)">Extraer</h3>
+            <p>Conectar al Excel, base de datos u otra fuente</p>
+            <div class="detail">Inicio &rarr; Obtener datos</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step" style="border-color:#99F6E4;background:var(--teal-soft)">
+            <div class="badge teal" style="width:48px;height:48px;font-size:0.8em">2</div>
+            <h3 style="color:var(--teal)">Transformar</h3>
+            <p>Limpiar, filtrar, combinar, calcular columnas</p>
+            <div class="detail">En la ventana de Power Query</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step" style="border-color:#A7F3D0;background:var(--green-soft)">
+            <div class="badge green" style="width:48px;height:48px;font-size:0.8em">3</div>
+            <h3 style="color:var(--green)">Cargar</h3>
+            <p>Llevar los datos al modelo de Power BI, listos para visualizar</p>
+            <div class="detail">Inicio &rarr; Cerrar y aplicar</div>
+        </div>
+    </div>
+    <div class="bottom-quote">"Power Query transforma Excel desordenados en datos listos para analizar."</div>
+</section>
+
+<!-- ═══ 5. OPERACIONES CLAVE ═══ -->
+<section>
+    <div class="label">Power Query</div>
+    <h2>Operaciones clave que vas a usar siempre</h2>
+    <p class="sub">El 90% de la limpieza se resuelve con estas 8 operaciones</p>
+    <div class="op-grid">
+        <div class="op"><div class="ic b">1</div><h4>Quitar filas vac&iacute;as</h4><p>Eliminar filas sin datos &uacute;tiles</p></div>
+        <div class="op"><div class="ic b">2</div><h4>Definir encabezados</h4><p>"Usar primera fila como encabezado"</p></div>
+        <div class="op"><div class="ic t">3</div><h4>Cambiar tipo de dato</h4><p>Fecha, n&uacute;mero, texto, moneda</p></div>
+        <div class="op"><div class="ic t">4</div><h4>Quitar columnas</h4><p>Eliminar columnas que no se usan</p></div>
+        <div class="op"><div class="ic o">5</div><h4>Reemplazar valores</h4><p>"NULL" &rarr; 0; corregir errores</p></div>
+        <div class="op"><div class="ic o">6</div><h4>Dividir columna</h4><p>Separar "Juan P&eacute;rez" en Nombre y Apellido</p></div>
+        <div class="op"><div class="ic g">7</div><h4>Combinar tablas (Merge)</h4><p>Cruzar dos tablas por un campo com&uacute;n</p></div>
+        <div class="op"><div class="ic g">8</div><h4>Anexar tablas (Append)</h4><p>Apilar datos de varios meses o archivos</p></div>
+    </div>
+    <div class="bottom-quote">"Cada transformaci&oacute;n se graba como un paso &mdash; y se repite sola cuando llegan datos nuevos."</div>
+</section>
+
+<!-- ═══ 6. CRUZAR TABLAS (MERGE) ═══ -->
+<section>
+    <div class="label">Power Query</div>
+    <h2>Cruzar tablas: <em style="font-style:normal;color:var(--teal)">Merge</em></h2>
+    <p class="sub">Unir dos tablas por un campo en com&uacute;n &mdash; como BUSCARV pero mejor</p>
+    <div class="merge-wrap">
+        <div class="mtable">
+            <div class="hd">Viajes</div>
+            <table>
+                <tr><th>Fecha</th><th>ID_Chofer</th><th>Km</th></tr>
+                <tr><td>21/04</td><td class="key">23</td><td>180</td></tr>
+                <tr><td>21/04</td><td class="key">45</td><td>210</td></tr>
+                <tr><td>21/04</td><td class="key">23</td><td>150</td></tr>
+            </table>
+        </div>
+        <div class="merge-op">&plus;</div>
+        <div class="mtable teal">
+            <div class="hd">Choferes</div>
+            <table>
+                <tr><th>ID_Chofer</th><th>Nombre</th></tr>
+                <tr><td class="key">23</td><td>Juan P&eacute;rez</td></tr>
+                <tr><td class="key">45</td><td>Ana G&oacute;mez</td></tr>
+            </table>
+        </div>
+        <div class="merge-op" style="background:var(--grad-green)">=</div>
+        <div class="mtable green">
+            <div class="hd">Viajes &plus; Chofer</div>
+            <table>
+                <tr><th>Fecha</th><th>Chofer</th><th>Km</th></tr>
+                <tr><td>21/04</td><td>Juan P&eacute;rez</td><td>180</td></tr>
+                <tr><td>21/04</td><td>Ana G&oacute;mez</td><td>210</td></tr>
+                <tr><td>21/04</td><td>Juan P&eacute;rez</td><td>150</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="bottom-quote">"Clave: ambas tablas tienen que compartir un mismo campo (ID_Chofer)."</div>
+</section>
+
+<!-- ═══ 7. APILAR TABLAS (APPEND) ═══ -->
+<section>
+    <div class="label">Power Query</div>
+    <h2>Apilar tablas: <em style="font-style:normal;color:var(--teal)">Append</em></h2>
+    <p class="sub">Juntar datos de varios archivos o meses en una sola tabla</p>
+    <div class="merge-wrap">
+        <div class="mtable">
+            <div class="hd">Viajes_Febrero</div>
+            <table>
+                <tr><th>Fecha</th><th>Ruta</th><th>Km</th></tr>
+                <tr><td>05/02</td><td>R5</td><td>180</td></tr>
+                <tr><td>14/02</td><td>R2</td><td>210</td></tr>
+            </table>
+        </div>
+        <div class="merge-op" style="background:var(--grad-warm)">&plus;</div>
+        <div class="mtable" style="border-color:#FED7AA">
+            <div class="hd" style="background:var(--orange-soft);color:var(--orange);border-bottom-color:#FED7AA">Viajes_Marzo</div>
+            <table>
+                <tr><th>Fecha</th><th>Ruta</th><th>Km</th></tr>
+                <tr><td>03/03</td><td>R1</td><td>160</td></tr>
+                <tr><td>22/03</td><td>R5</td><td>240</td></tr>
+            </table>
+        </div>
+        <div class="merge-op" style="background:var(--grad-green)">=</div>
+        <div class="mtable green">
+            <div class="hd">Viajes_Consolidado</div>
+            <table>
+                <tr><th>Fecha</th><th>Ruta</th><th>Km</th></tr>
+                <tr><td>05/02</td><td>R5</td><td>180</td></tr>
+                <tr><td>14/02</td><td>R2</td><td>210</td></tr>
+                <tr><td>03/03</td><td>R1</td><td>160</td></tr>
+                <tr><td>22/03</td><td>R5</td><td>240</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="bottom-quote">"Merge une columnas &middot; Append apila filas. No confundirlos."</div>
+</section>
+
+<!-- ═══ 8. PASOS APLICADOS ═══ -->
+<section>
+    <div class="label">Power Query</div>
+    <h2>Pasos aplicados: la receta queda grabada</h2>
+    <p class="sub">Cada cambio se registra en orden y se vuelve a aplicar autom&aacute;ticamente cuando el Excel se actualiza</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">As&iacute; se ve en Power Query</h3>
+            <div style="background:var(--surface-alt);border-radius:8px;padding:14px;margin-top:10px;font-family:var(--mono);font-size:0.44em;line-height:1.9">
+                <div style="color:var(--ink3)">&#x2022; Origen</div>
+                <div style="color:var(--ink3)">&#x2022; Navegaci&oacute;n</div>
+                <div style="color:var(--ink3)">&#x2022; Encabezados promovidos</div>
+                <div style="color:var(--ink3)">&#x2022; Tipo cambiado</div>
+                <div style="color:var(--ink3)">&#x2022; Filas vac&iacute;as quitadas</div>
+                <div style="color:var(--teal);font-weight:700">&#x2022; Columna dividida &larr; editable</div>
+                <div style="color:var(--ink3)">&#x2022; Combinada con Choferes</div>
+            </div>
+            <p style="margin-top:12px;font-size:0.44em;color:var(--ink3)">Cada paso se puede editar, reordenar o eliminar.</p>
+        </div>
+        <div class="card soft-teal" data-top="teal">
+            <h3 style="color:var(--teal)">Por qu&eacute; importa</h3>
+            <p style="margin-top:10px"><strong>Repetible:</strong> el pr&oacute;ximo mes pongo el Excel nuevo y todos los pasos se aplican solos.</p>
+            <p style="margin-top:10px"><strong>Auditables:</strong> cualquier persona puede ver qu&eacute; transformaciones se hicieron.</p>
+            <p style="margin-top:10px"><strong>Reversibles:</strong> si un paso qued&oacute; mal, lo borro sin romper los anteriores.</p>
+            <p style="margin-top:10px"><strong>No tocamos el Excel original:</strong> Power Query trabaja con una copia.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Hac&eacute;s la limpieza una vez. Power Query la repite para siempre."</div>
+</section>
+
+<!-- ═══ 9. DEMO POWER QUERY ═══ -->
+<section>
+    <div class="label orange">Demo en vivo</div>
+    <h2>Power Query con datos reales de ISELIN</h2>
+    <p class="sub">Vamos a preparar juntos una tabla desde cero</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card soft-orange" data-top="orange">
+            <h3 style="color:var(--orange)">Archivo de entrada</h3>
+            <p style="margin-top:10px">Excel operativo con:</p>
+            <p>&#x2022; T&iacute;tulo del reporte arriba</p>
+            <p>&#x2022; Encabezados en la fila 4</p>
+            <p>&#x2022; Fechas como texto</p>
+            <p>&#x2022; Columnas vac&iacute;as entre datos</p>
+            <p>&#x2022; Valores "NULL" en algunas celdas</p>
+        </div>
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">Pasos que vamos a hacer</h3>
+            <p style="margin-top:10px">1. Conectar al Excel</p>
+            <p style="margin-top:6px">2. Quitar filas superiores (t&iacute;tulo)</p>
+            <p style="margin-top:6px">3. Promover encabezados</p>
+            <p style="margin-top:6px">4. Cambiar tipo en Fecha y Km</p>
+            <p style="margin-top:6px">5. Reemplazar "NULL" por 0</p>
+            <p style="margin-top:6px">6. Quitar columnas innecesarias</p>
+            <p style="margin-top:6px">7. Cerrar y aplicar</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Si lo ven&iacute;s haciendo en Excel a mano todos los meses, Power Query lo hace solo."</div>
+</section>
+
+<!-- ═══ 10. ¿PARA QUÉ CONECTAR TABLAS? ═══ -->
+<section>
+    <div class="label blue">Modelo de datos</div>
+    <h2>&iquest;Por qu&eacute; no pongo todo en una sola tabla?</h2>
+    <p class="sub">La diferencia entre un Excel gigante y un modelo de datos bien armado</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card soft-orange" data-top="orange">
+            <h3 style="color:var(--orange)">Una sola tabla gigante &mdash; problema</h3>
+            <p style="margin-top:10px">&#x2022; Se repite el nombre del chofer en cada viaje</p>
+            <p style="margin-top:8px">&#x2022; Si un chofer cambia de apellido, hay que corregir 5.000 filas</p>
+            <p style="margin-top:8px">&#x2022; Archivo pesado, lento</p>
+            <p style="margin-top:8px">&#x2022; Dif&iacute;cil mantener la informaci&oacute;n consistente</p>
+        </div>
+        <div class="card soft-teal" data-top="teal">
+            <h3 style="color:var(--teal)">Modelo con tablas conectadas &mdash; soluci&oacute;n</h3>
+            <p style="margin-top:10px">&#x2022; Cada chofer aparece una sola vez (tabla Choferes)</p>
+            <p style="margin-top:8px">&#x2022; Los viajes s&oacute;lo guardan el ID del chofer</p>
+            <p style="margin-top:8px">&#x2022; Cambios de datos maestros en un &uacute;nico lugar</p>
+            <p style="margin-top:8px">&#x2022; Modelo liviano, r&aacute;pido y mantenible</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"En Power BI no se trabaja con una planilla: se trabaja con un modelo."</div>
+</section>
+
+<!-- ═══ 11. MODELO DE ISELIN ═══ -->
+<section>
+    <div class="label blue">Modelo de datos</div>
+    <h2>Las tablas de ISELIN, conectadas</h2>
+    <p class="sub">Una tabla de hechos al centro (Viajes) rodeada de tablas de referencia</p>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;margin-top:14px">
+        <svg viewBox="0 0 780 380" style="width:100%;max-width:860px;height:100%">
+            <defs>
+                <linearGradient id="g-center" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#EA580C"/>
+                </linearGradient>
+            </defs>
+            <!-- connection lines -->
+            <line x1="140" y1="100" x2="340" y2="190" stroke="#CBD5E1" stroke-width="2"/>
+            <line x1="640" y1="100" x2="440" y2="190" stroke="#CBD5E1" stroke-width="2"/>
+            <line x1="140" y1="280" x2="340" y2="210" stroke="#CBD5E1" stroke-width="2"/>
+            <line x1="640" y1="280" x2="440" y2="210" stroke="#CBD5E1" stroke-width="2"/>
+            <!-- "1-to-many" markers -->
+            <circle cx="250" cy="145" r="10" fill="#F1F5F9" stroke="#94A3B8"/>
+            <text x="250" y="150" text-anchor="middle" font-size="11" fill="#475569" font-family="Inter" font-weight="700">1</text>
+            <circle cx="530" cy="145" r="10" fill="#F1F5F9" stroke="#94A3B8"/>
+            <text x="530" y="150" text-anchor="middle" font-size="11" fill="#475569" font-family="Inter" font-weight="700">1</text>
+            <circle cx="250" cy="245" r="10" fill="#F1F5F9" stroke="#94A3B8"/>
+            <text x="250" y="250" text-anchor="middle" font-size="11" fill="#475569" font-family="Inter" font-weight="700">1</text>
+            <circle cx="530" cy="245" r="10" fill="#F1F5F9" stroke="#94A3B8"/>
+            <text x="530" y="250" text-anchor="middle" font-size="11" fill="#475569" font-family="Inter" font-weight="700">1</text>
+            <!-- side tables -->
+            <g>
+                <rect x="30" y="50" width="220" height="100" rx="12" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2"/>
+                <rect x="30" y="50" width="220" height="32" rx="12" fill="#EFF6FF"/>
+                <text x="140" y="72" text-anchor="middle" font-size="16" fill="#1D4ED8" font-family="Inter" font-weight="800">Choferes</text>
+                <text x="50" y="104" font-size="12" fill="#475569" font-family="JetBrains Mono">ID_Chofer (PK)</text>
+                <text x="50" y="124" font-size="12" fill="#475569" font-family="JetBrains Mono">Nombre</text>
+                <text x="50" y="144" font-size="12" fill="#475569" font-family="JetBrains Mono">Base</text>
+            </g>
+            <g>
+                <rect x="530" y="50" width="220" height="100" rx="12" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+                <rect x="530" y="50" width="220" height="32" rx="12" fill="#F0FDFA"/>
+                <text x="640" y="72" text-anchor="middle" font-size="16" fill="#0F766E" font-family="Inter" font-weight="800">Rutas</text>
+                <text x="550" y="104" font-size="12" fill="#475569" font-family="JetBrains Mono">ID_Ruta (PK)</text>
+                <text x="550" y="124" font-size="12" fill="#475569" font-family="JetBrains Mono">Nombre</text>
+                <text x="550" y="144" font-size="12" fill="#475569" font-family="JetBrains Mono">Km_Total</text>
+            </g>
+            <g>
+                <rect x="30" y="230" width="220" height="100" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+                <rect x="30" y="230" width="220" height="32" rx="12" fill="#F5F3FF"/>
+                <text x="140" y="252" text-anchor="middle" font-size="16" fill="#6D28D9" font-family="Inter" font-weight="800">Calendario</text>
+                <text x="50" y="284" font-size="12" fill="#475569" font-family="JetBrains Mono">Fecha (PK)</text>
+                <text x="50" y="304" font-size="12" fill="#475569" font-family="JetBrains Mono">Mes / A&ntilde;o</text>
+                <text x="50" y="324" font-size="12" fill="#475569" font-family="JetBrains Mono">Trimestre</text>
+            </g>
+            <g>
+                <rect x="530" y="230" width="220" height="100" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
+                <rect x="530" y="230" width="220" height="32" rx="12" fill="#ECFDF5"/>
+                <text x="640" y="252" text-anchor="middle" font-size="16" fill="#047857" font-family="Inter" font-weight="800">Colectivos</text>
+                <text x="550" y="284" font-size="12" fill="#475569" font-family="JetBrains Mono">ID_Coche (PK)</text>
+                <text x="550" y="304" font-size="12" fill="#475569" font-family="JetBrains Mono">Patente</text>
+                <text x="550" y="324" font-size="12" fill="#475569" font-family="JetBrains Mono">Modelo</text>
+            </g>
+            <!-- center: facts -->
+            <g>
+                <rect x="310" y="150" width="160" height="110" rx="12" fill="url(#g-center)"/>
+                <text x="390" y="180" text-anchor="middle" font-size="18" fill="white" font-family="Inter" font-weight="900">Viajes</text>
+                <text x="390" y="210" text-anchor="middle" font-size="11" fill="white" font-family="JetBrains Mono">Fecha</text>
+                <text x="390" y="226" text-anchor="middle" font-size="11" fill="white" font-family="JetBrains Mono">ID_Chofer &middot; ID_Ruta</text>
+                <text x="390" y="242" text-anchor="middle" font-size="11" fill="white" font-family="JetBrains Mono">ID_Coche &middot; Km</text>
+            </g>
+            <text x="390" y="285" text-anchor="middle" font-size="11" fill="#64748B" font-family="Inter" font-weight="700" letter-spacing="1">TABLA DE HECHOS</text>
+        </svg>
+    </div>
+    <div class="bottom-quote">"Esquema estrella: una tabla de hechos al centro, tablas de referencia alrededor."</div>
+</section>
+
+<!-- ═══ 12. CREAR UNA RELACIÓN ═══ -->
+<section>
+    <div class="label blue">Modelo de datos</div>
+    <h2>C&oacute;mo crear una relaci&oacute;n entre dos tablas</h2>
+    <p class="sub">Tres clics en la vista Modelo de Power BI</p>
+    <div class="grid-3 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <div class="badge blue">1</div>
+            <h3 style="margin-top:10px;color:var(--blue)">Ir a vista Modelo</h3>
+            <p>Icono a la izquierda en PBI Desktop (tercer bot&oacute;n, parece un diagrama).</p>
+        </div>
+        <div class="card" data-top="teal">
+            <div class="badge teal">2</div>
+            <h3 style="margin-top:10px;color:var(--teal)">Arrastrar campo a campo</h3>
+            <p>Desde <strong>Viajes[ID_Chofer]</strong> hasta <strong>Choferes[ID_Chofer]</strong>. Power BI detecta la relaci&oacute;n autom&aacute;ticamente.</p>
+        </div>
+        <div class="card" data-top="green">
+            <div class="badge green">3</div>
+            <h3 style="margin-top:10px;color:var(--green)">Verificar</h3>
+            <p>Aparece una l&iacute;nea uniendo ambas tablas con un <strong>1</strong> de un lado y <strong>*</strong> del otro (uno-a-muchos).</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Un chofer tiene muchos viajes. Un viaje tiene un solo chofer. Eso es uno-a-muchos."</div>
+</section>
+
+<!-- ═══ 13. BUENAS PRÁCTICAS ═══ -->
+<section>
+    <div class="label blue">Modelo de datos</div>
+    <h2>Buenas pr&aacute;cticas del modelo</h2>
+    <p class="sub">Reglas simples que evitan dolores de cabeza m&aacute;s adelante</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card soft-green" data-top="green">
+            <h3 style="color:var(--green)">Hacer &check;</h3>
+            <p style="margin-top:10px">&#x2022; Usar nombres claros: <strong>Viajes</strong>, <strong>Choferes</strong>, no <em>Tabla1</em></p>
+            <p style="margin-top:8px">&#x2022; Una sola tabla de hechos principal</p>
+            <p style="margin-top:8px">&#x2022; Tener una tabla de <strong>Calendario</strong> dedicada</p>
+            <p style="margin-top:8px">&#x2022; Relaciones de uno-a-muchos siempre que se pueda</p>
+            <p style="margin-top:8px">&#x2022; Documentar qu&eacute; representa cada tabla</p>
+        </div>
+        <div class="card soft-orange" data-top="orange">
+            <h3 style="color:var(--red)">Evitar &times;</h3>
+            <p style="margin-top:10px">&#x2022; Relaciones circulares (A&rarr;B&rarr;C&rarr;A)</p>
+            <p style="margin-top:8px">&#x2022; Una sola tabla enorme con todo adentro</p>
+            <p style="margin-top:8px">&#x2022; Relaciones muchos-a-muchos sin necesidad</p>
+            <p style="margin-top:8px">&#x2022; Nombres en espa&ntilde;ol y en ingl&eacute;s mezclados</p>
+            <p style="margin-top:8px">&#x2022; Tablas hu&eacute;rfanas (sin conexi&oacute;n con el resto)</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Un buen modelo se lee como un plano. Un mal modelo, como un nudo."</div>
+</section>
+
+<!-- ═══ 14. DOS FORMAS DE CALCULAR ═══ -->
+<section>
+    <div class="label purple">DAX</div>
+    <h2>Dos formas de calcular en Power BI</h2>
+    <p class="sub">Cu&aacute;ndo alcanza con arrastrar un campo y cu&aacute;ndo conviene escribir una f&oacute;rmula</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card soft-blue" data-top="blue">
+            <h3 style="color:var(--blue)">A) C&aacute;lculo autom&aacute;tico</h3>
+            <p style="margin-top:10px">Arrastr&aacute;s un campo al visual y Power BI resuelve solo.</p>
+            <p style="margin-top:10px"><strong>Ejemplo:</strong> arrastro <em>Km</em> a una tarjeta y muestra la suma.</p>
+            <p style="margin-top:10px" class="pill">R&aacute;pido, pero poco flexible</p>
+        </div>
+        <div class="card soft-purple" data-top="purple">
+            <h3 style="color:var(--purple)">B) Medida propia (DAX)</h3>
+            <p style="margin-top:10px">Escrib&iacute;s una f&oacute;rmula que Power BI calcula de forma din&aacute;mica seg&uacute;n los filtros del reporte.</p>
+            <p style="margin-top:10px"><strong>Ejemplo:</strong> <em>Total Viajes</em>, <em>% de cumplimiento</em>, <em>variaci&oacute;n mes anterior</em>.</p>
+            <p style="margin-top:10px" class="pill">Potente, reutilizable, profesional</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Las medidas son el cerebro de un dashboard profesional."</div>
+</section>
+
+<!-- ═══ 15. FÓRMULAS BÁSICAS ═══ -->
+<section>
+    <div class="label purple">DAX</div>
+    <h2>Las 6 funciones b&aacute;sicas</h2>
+    <p class="sub">Con estas seis resolv&eacute;s la gran mayor&iacute;a de los KPIs</p>
+    <div class="grid-3 grow" style="margin-top:16px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue);font-family:var(--mono);font-size:0.7em">SUM()</h3>
+            <p style="margin-top:8px">Suma una columna num&eacute;rica</p>
+            <p style="margin-top:10px;font-size:0.44em;color:var(--ink3)">Total Km = SUM(Viajes[Km])</p>
+        </div>
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue);font-family:var(--mono);font-size:0.7em">COUNT()</h3>
+            <p style="margin-top:8px">Cuenta filas con valor</p>
+            <p style="margin-top:10px;font-size:0.44em;color:var(--ink3)">Total Viajes = COUNT(Viajes[ID_Viaje])</p>
+        </div>
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal);font-family:var(--mono);font-size:0.7em">AVERAGE()</h3>
+            <p style="margin-top:8px">Promedio de una columna</p>
+            <p style="margin-top:10px;font-size:0.44em;color:var(--ink3)">Km Promedio = AVERAGE(Viajes[Km])</p>
+        </div>
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal);font-family:var(--mono);font-size:0.7em">DISTINCTCOUNT()</h3>
+            <p style="margin-top:8px">Cuenta valores &uacute;nicos</p>
+            <p style="margin-top:10px;font-size:0.44em;color:var(--ink3)">Choferes Activos = DISTINCTCOUNT(Viajes[ID_Chofer])</p>
+        </div>
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange);font-family:var(--mono);font-size:0.7em">MIN() / MAX()</h3>
+            <p style="margin-top:8px">Valor m&iacute;nimo o m&aacute;ximo</p>
+            <p style="margin-top:10px;font-size:0.44em;color:var(--ink3)">Viaje M&aacute;s Largo = MAX(Viajes[Km])</p>
+        </div>
+        <div class="card" data-top="green">
+            <h3 style="color:var(--green);font-family:var(--mono);font-size:0.7em">DIVIDE()</h3>
+            <p style="margin-top:8px">Divide y maneja el error de divisi&oacute;n por cero</p>
+            <p style="margin-top:10px;font-size:0.44em;color:var(--ink3)">Km/Viaje = DIVIDE([Total Km], [Total Viajes])</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Dominar estas seis te deja construir casi cualquier KPI de ISELIN."</div>
+</section>
+
+<!-- ═══ 16. ANATOMÍA DE UNA MEDIDA ═══ -->
+<section>
+    <div class="label purple">DAX</div>
+    <h2>Anatom&iacute;a de una medida</h2>
+    <p class="sub">Cada pieza tiene un rol espec&iacute;fico</p>
+    <div class="anatomy">
+        <div class="line">
+            <span class="tk name">Total Km</span>
+            <span class="tk eq">=</span>
+            <span class="tk fn">SUM</span>
+            <span class="tk eq">(</span>
+            <span class="tk tbl">Viajes</span>
+            <span class="tk eq">[</span>
+            <span class="tk col">Km</span>
+            <span class="tk eq">] )</span>
+        </div>
+        <div class="anno">
+            <div><strong style="color:#BE185D">Nombre</strong>C&oacute;mo la vas a ver en el panel de campos. Us&aacute; nombres claros y en tu idioma.</div>
+            <div><strong style="color:#1D4ED8">Funci&oacute;n</strong>Qu&eacute; operaci&oacute;n hace. Aqu&iacute; SUM suma valores.</div>
+            <div><strong style="color:#6D28D9">Tabla</strong>De qu&eacute; tabla saca los datos. Siempre entre comillas si tiene espacios.</div>
+            <div><strong style="color:#B45309">Columna</strong>Qu&eacute; columna espec&iacute;fica usa. Siempre entre corchetes.</div>
+        </div>
+    </div>
+    <div class="bottom-quote">"Una medida bien nombrada se entiende sin necesidad de leer la f&oacute;rmula."</div>
+</section>
+
+<!-- ═══ 17. CALCULATE ═══ -->
+<section>
+    <div class="label purple">DAX</div>
+    <h2><code style="font-family:var(--mono);font-size:0.8em;color:var(--purple)">CALCULATE()</code>: la funci&oacute;n estrella</h2>
+    <p class="sub">Hace el mismo c&aacute;lculo de siempre, pero aplicando un filtro extra</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="card soft-purple" data-top="purple">
+                <h3 style="color:var(--purple)">La idea</h3>
+                <p style="margin-top:10px">CALCULATE toma una medida y le dice:</p>
+                <p style="margin-top:8px"><strong>"Calcul&aacute; esto, pero s&oacute;lo para estas filas."</strong></p>
+            </div>
+            <div class="card" data-top="purple">
+                <h3 style="color:var(--ink3)">Sintaxis</h3>
+                <p style="margin-top:10px;font-family:var(--mono);font-size:0.5em;color:var(--ink)">CALCULATE( expresi&oacute;n, filtro1, filtro2, ... )</p>
+            </div>
+        </div>
+        <div class="code">
+            <span class="c">-- Total de viajes en la Ruta 5</span><br>
+            <span class="v">Viajes Ruta 5</span> <span class="o">=</span><br>
+            &nbsp;&nbsp;<span class="k">CALCULATE</span>(<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="k">COUNT</span>( <span class="t">Viajes</span>[<span class="col">ID_Viaje</span>] ),<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">Rutas</span>[<span class="col">Nombre</span>] <span class="o">=</span> <span class="s">"Ruta 5"</span><br>
+            &nbsp;&nbsp;)
+        </div>
+    </div>
+    <div class="bottom-quote">"Si alguna vez escribiste SUMAR.SI en Excel, ya sabes lo que hace CALCULATE."</div>
+</section>
+
+<!-- ═══ 18. EJEMPLOS ISELIN ═══ -->
+<section>
+    <div class="label purple">DAX</div>
+    <h2>Tres medidas para el dashboard de ISELIN</h2>
+    <p class="sub">Casos reales que vamos a construir en la demo</p>
+    <div style="display:flex;flex-direction:column;gap:14px;flex:1;margin-top:16px">
+        <div class="code">
+            <span class="c">-- Cu&aacute;ntos viajes hicimos en total</span><br>
+            <span class="v">Total Viajes</span> <span class="o">=</span> <span class="k">COUNT</span>( <span class="t">Viajes</span>[<span class="col">ID_Viaje</span>] )
+        </div>
+        <div class="code">
+            <span class="c">-- Kil&oacute;metros promedio por chofer</span><br>
+            <span class="v">Km Prom Chofer</span> <span class="o">=</span> <span class="k">DIVIDE</span>( <span class="k">SUM</span>(<span class="t">Viajes</span>[<span class="col">Km</span>]), <span class="k">DISTINCTCOUNT</span>(<span class="t">Viajes</span>[<span class="col">ID_Chofer</span>]) )
+        </div>
+        <div class="code">
+            <span class="c">-- Viajes del mes actual</span><br>
+            <span class="v">Viajes Mes Actual</span> <span class="o">=</span><br>
+            &nbsp;&nbsp;<span class="k">CALCULATE</span>(<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;[<span class="v">Total Viajes</span>],<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="t">Calendario</span>[<span class="col">Mes</span>] <span class="o">=</span> <span class="k">MONTH</span>( <span class="k">TODAY</span>() )<br>
+            &nbsp;&nbsp;)
+        </div>
+    </div>
+    <div class="bottom-quote">"Las medidas se reutilizan: una vez creadas, se combinan entre s&iacute; en otras f&oacute;rmulas."</div>
+</section>
+
+<!-- ═══ 19. DÓNDE SE ESCRIBEN ═══ -->
+<section>
+    <div class="label purple">DAX</div>
+    <h2>&iquest;D&oacute;nde se escriben las medidas?</h2>
+    <p class="sub">Dos caminos equivalentes para llegar al mismo lugar</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue)">Camino 1 &middot; Men&uacute; superior</h3>
+            <p style="margin-top:10px">1. Pesta&ntilde;a <strong>Inicio</strong></p>
+            <p style="margin-top:6px">2. Clic en <strong>Nueva medida</strong></p>
+            <p style="margin-top:6px">3. Escrib&iacute; la f&oacute;rmula en la barra</p>
+            <p style="margin-top:6px">4. Enter para guardar</p>
+        </div>
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">Camino 2 &middot; Panel de campos</h3>
+            <p style="margin-top:10px">1. Clic derecho sobre la tabla</p>
+            <p style="margin-top:6px">2. Elegir <strong>Nueva medida</strong></p>
+            <p style="margin-top:6px">3. La medida queda guardada en esa tabla</p>
+            <p style="margin-top:6px">4. Aparece con un &iacute;cono de calculadora</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Agrupar todas las medidas en una tabla dedicada (&apos;Medidas&apos;) ayuda a mantener el orden."</div>
+</section>
+
+<!-- ═══ 20. MATRIZ DE DECISIÓN ═══ -->
+<section>
+    <div class="label green">Visualizaciones</div>
+    <h2>&iquest;Qu&eacute; gr&aacute;fico uso para cada pregunta?</h2>
+    <p class="sub">La decisi&oacute;n no es est&eacute;tica: depende de lo que quer&eacute;s mostrar</p>
+    <div class="dm-grid">
+        <div class="dm"><div class="q">Un solo n&uacute;mero clave</div><span class="arrow">&rarr;</span><div class="a blue">Tarjeta</div></div>
+        <div class="dm"><div class="q">Comparar categor&iacute;as</div><span class="arrow">&rarr;</span><div class="a teal">Barras</div></div>
+        <div class="dm"><div class="q">Evoluci&oacute;n en el tiempo</div><span class="arrow">&rarr;</span><div class="a orange">L&iacute;neas</div></div>
+        <div class="dm"><div class="q">Detalle con desglose</div><span class="arrow">&rarr;</span><div class="a purple">Tabla / Matriz</div></div>
+        <div class="dm"><div class="q">Participaci&oacute;n del total (pocas categor&iacute;as)</div><span class="arrow">&rarr;</span><div class="a green">Circular</div></div>
+        <div class="dm"><div class="q">Relaci&oacute;n entre dos variables</div><span class="arrow">&rarr;</span><div class="a blue">Dispersi&oacute;n</div></div>
+    </div>
+    <div class="bottom-quote">"Si el gr&aacute;fico no responde una pregunta concreta, est&aacute; sobrando."</div>
+</section>
+
+<!-- ═══ 21. LOS 5 VISUALES CLAVE ═══ -->
+<section>
+    <div class="label green">Visualizaciones</div>
+    <h2>Los 5 visuales que cubren el 90% de los casos</h2>
+    <p class="sub">Antes que buscar el gr&aacute;fico "m&aacute;s lindo", domin&aacute; estos cinco</p>
+    <div class="viz-grid">
+        <div class="viz">
+            <svg viewBox="0 0 100 60"><rect x="18" y="18" width="64" height="24" rx="4" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/><text x="50" y="34" text-anchor="middle" font-size="10" fill="#1D4ED8" font-family="Inter" font-weight="800">1.250</text></svg>
+            <h4 style="color:var(--blue)">Tarjeta</h4>
+            <p>Un KPI &uacute;nico. Total viajes, facturaci&oacute;n del mes.</p>
+        </div>
+        <div class="viz">
+            <svg viewBox="0 0 100 60"><rect x="10" y="35" width="12" height="20" fill="#0D9488"/><rect x="28" y="20" width="12" height="35" fill="#0D9488"/><rect x="46" y="25" width="12" height="30" fill="#0D9488"/><rect x="64" y="15" width="12" height="40" fill="#0D9488"/><rect x="82" y="30" width="12" height="25" fill="#0D9488"/></svg>
+            <h4 style="color:var(--teal)">Barras</h4>
+            <p>Comparar categor&iacute;as: viajes por ruta, gasoil por base.</p>
+        </div>
+        <div class="viz">
+            <svg viewBox="0 0 100 60"><polyline points="8,45 25,30 42,35 60,18 78,22 92,10" fill="none" stroke="#EA580C" stroke-width="2.5"/><circle cx="8" cy="45" r="2.5" fill="#EA580C"/><circle cx="25" cy="30" r="2.5" fill="#EA580C"/><circle cx="42" cy="35" r="2.5" fill="#EA580C"/><circle cx="60" cy="18" r="2.5" fill="#EA580C"/><circle cx="78" cy="22" r="2.5" fill="#EA580C"/><circle cx="92" cy="10" r="2.5" fill="#EA580C"/></svg>
+            <h4 style="color:var(--orange)">L&iacute;neas</h4>
+            <p>Tendencia en el tiempo: viajes mensuales, evoluci&oacute;n anual.</p>
+        </div>
+        <div class="viz">
+            <svg viewBox="0 0 100 60"><rect x="10" y="10" width="80" height="44" rx="3" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1"/><line x1="10" y1="22" x2="90" y2="22" stroke="#7C3AED" stroke-width="1"/><line x1="10" y1="32" x2="90" y2="32" stroke="#E2E8F0"/><line x1="10" y1="42" x2="90" y2="42" stroke="#E2E8F0"/><line x1="40" y1="10" x2="40" y2="54" stroke="#E2E8F0"/><line x1="65" y1="10" x2="65" y2="54" stroke="#E2E8F0"/></svg>
+            <h4 style="color:var(--purple)">Tabla / Matriz</h4>
+            <p>Detalle con desglose: viajes por chofer y mes.</p>
+        </div>
+        <div class="viz">
+            <svg viewBox="0 0 100 60"><circle cx="50" cy="30" r="22" fill="#059669"/><path d="M 50,30 L 50,8 A 22,22 0 0,1 72,30 Z" fill="#34D399"/><path d="M 50,30 L 72,30 A 22,22 0 0,1 60,50 Z" fill="#6EE7B7"/></svg>
+            <h4 style="color:var(--green)">Circular</h4>
+            <p>Participaci&oacute;n del total. M&aacute;ximo 5-6 categor&iacute;as.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"La creatividad est&aacute; en la pregunta que se responde, no en el tipo de gr&aacute;fico."</div>
+</section>
+
+<!-- ═══ 22. SEGMENTADORES ═══ -->
+<section>
+    <div class="label green">Visualizaciones</div>
+    <h2>Segmentadores (slicers): filtros interactivos</h2>
+    <p class="sub">El usuario elige y el dashboard entero se actualiza</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card" data-top="green">
+            <h3 style="color:var(--green)">C&oacute;mo se agrega</h3>
+            <p style="margin-top:10px">1. En el panel de visualizaciones, clic en el &iacute;cono de <strong>Segmentaci&oacute;n</strong></p>
+            <p style="margin-top:8px">2. Arrastr&aacute; el campo al segmentador (Fecha, Ruta, Chofer...)</p>
+            <p style="margin-top:8px">3. Elegi el estilo: lista, desplegable, rango de fechas</p>
+            <p style="margin-top:8px">4. Los dem&aacute;s visuales se filtran en conjunto</p>
+        </div>
+        <div class="card soft-green" data-top="green">
+            <h3 style="color:var(--green)">Segmentadores recomendados para ISELIN</h3>
+            <p style="margin-top:10px">&#x2022; <strong>Rango de fechas</strong> &mdash; filtrar por mes o per&iacute;odo</p>
+            <p style="margin-top:8px">&#x2022; <strong>Ruta</strong> &mdash; aislar una ruta espec&iacute;fica</p>
+            <p style="margin-top:8px">&#x2022; <strong>Base / Agencia</strong> &mdash; ver s&oacute;lo una localidad</p>
+            <p style="margin-top:8px">&#x2022; <strong>Tipo de servicio</strong> &mdash; urbano, larga distancia, etc.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Un dashboard con buenos slicers responde decenas de preguntas con la misma p&aacute;gina."</div>
+</section>
+
+<!-- ═══ 23. FORMATO BÁSICO ═══ -->
+<section>
+    <div class="label green">Visualizaciones</div>
+    <h2>Formato b&aacute;sico: consistencia antes que decoraci&oacute;n</h2>
+    <p class="sub">Un dashboard ordenado se lee m&aacute;s r&aacute;pido &mdash; y genera m&aacute;s confianza</p>
+    <div class="grid-3 grow" style="margin-top:16px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue)">Colores</h3>
+            <p style="margin-top:10px">M&aacute;ximo 3-4 colores por dashboard. Us&aacute; la paleta corporativa de ISELIN.</p>
+            <p style="margin-top:10px"><strong>Verde = bueno</strong>, <strong>rojo = alerta</strong>. Que el color siempre signifique lo mismo.</p>
+        </div>
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">T&iacute;tulos</h3>
+            <p style="margin-top:10px">Un t&iacute;tulo descriptivo en cada visual: <em>"Viajes por ruta &middot; Abril 2026"</em>.</p>
+            <p style="margin-top:10px">Evit&aacute; "Gr&aacute;fico 1" o "Tabla nueva".</p>
+        </div>
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">Etiquetas y ejes</h3>
+            <p style="margin-top:10px">Mostr&aacute; etiquetas de datos en los gr&aacute;ficos clave. Formato <strong>m&eacute;trico</strong>: "2.500 km", no "2500".</p>
+            <p style="margin-top:10px">Separadores de miles &mdash; siempre.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Menos es m&aacute;s. Cada elemento del dashboard debe justificar su presencia."</div>
+</section>
+
+<!-- ═══ 24. DEMO DASHBOARD ═══ -->
+<section>
+    <div class="label orange">Demo en vivo</div>
+    <h2>Primer dashboard de ISELIN</h2>
+    <p class="sub">Armamos una p&aacute;gina completa con los datos que acabamos de modelar</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card soft-orange" data-top="orange">
+            <h3 style="color:var(--orange)">Lo que vamos a construir</h3>
+            <p style="margin-top:10px">&#x2022; <strong>3 tarjetas</strong> con KPIs: Total viajes, Km totales, Choferes activos</p>
+            <p style="margin-top:8px">&#x2022; <strong>Gr&aacute;fico de barras</strong>: viajes por ruta</p>
+            <p style="margin-top:8px">&#x2022; <strong>Gr&aacute;fico de l&iacute;neas</strong>: viajes por mes</p>
+            <p style="margin-top:8px">&#x2022; <strong>Tabla</strong>: detalle por chofer</p>
+            <p style="margin-top:8px">&#x2022; <strong>Segmentadores</strong>: mes y ruta</p>
+        </div>
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">Pasos</h3>
+            <p style="margin-top:10px">1. Crear las 3 medidas (Total Viajes, Total Km, Choferes Activos)</p>
+            <p style="margin-top:6px">2. Arrastrar cada una a una tarjeta</p>
+            <p style="margin-top:6px">3. Agregar gr&aacute;fico de barras (Ruta &times; Total Viajes)</p>
+            <p style="margin-top:6px">4. Agregar gr&aacute;fico de l&iacute;neas (Mes &times; Total Viajes)</p>
+            <p style="margin-top:6px">5. Agregar tabla con el detalle</p>
+            <p style="margin-top:6px">6. Sumar segmentadores y probar filtros</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Al final del encuentro cada uno se lleva su primer dashboard funcional."</div>
+</section>
+
+<!-- ═══ 25. TAREA ═══ -->
+<section>
+    <div class="label">Cierre</div>
+    <h2>Tarea para el Encuentro 3</h2>
+    <p class="sub">Para practicar antes del jueves 23/04</p>
+    <div class="grid-2 grow" style="margin-top:16px;align-items:stretch">
+        <div class="card soft-teal" data-top="teal" style="display:flex;flex-direction:column">
+            <h3 style="color:var(--teal)">Sobre tu .pbix personal</h3>
+            <p>1. Conectar al menos <strong>2 tablas</strong> por un campo com&uacute;n</p>
+            <p style="margin-top:6px">2. Crear <strong>1 medida nueva</strong> usando DAX</p>
+            <p style="margin-top:6px">3. Agregar <strong>1 gr&aacute;fico nuevo</strong> y <strong>1 segmentador</strong></p>
+            <p style="margin-top:6px">4. Anotar las dudas que te surjan para revisarlas en E3</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="card" style="flex-shrink:0">
+                <h3 style="color:var(--ink3)">Si te trab&aacute;s</h3>
+                <p>Mand&aacute; tu archivo por el canal de consultas y revisamos el error en el pr&oacute;ximo encuentro. <strong>No avances sin entender el paso anterior.</strong></p>
+            </div>
+            <div style="flex:1">
+                <h3 style="font-size:0.64em;margin-bottom:12px">Entregables de E2</h3>
+                <div class="ent"><div class="badge blue">1</div><div><div class="title">.pbix con tablas conectadas</div><div class="desc">3-4 tablas relacionadas, medidas y visualizaciones</div></div></div>
+                <div class="ent"><div class="badge teal">2</div><div><div class="title">Gu&iacute;a de Power Query</div><div class="desc">Operaciones de limpieza con capturas</div></div></div>
+                <div class="ent"><div class="badge green">3</div><div><div class="title">Gu&iacute;a de relaciones y modelo</div><div class="desc">C&oacute;mo se conectan las tablas de ISELIN</div></div></div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-quote">"No hay forma de aprender DAX sin escribir DAX."</div>
+</section>
+
+<!-- ═══ 26. CIERRE ═══ -->
+<section class="cover">
+    <div class="side"></div>
+    <div class="logo"><span class="da">data </span><span class="oi">oilers</span></div>
+    <div style="width:48px;height:3px;background:var(--grad-blue);border-radius:4px;margin-bottom:24px"></div>
+    <h1 style="font-size:3.2em">&iexcl;Gracias!</h1>
+    <p style="color:#CBD5E1;font-size:0.72em;margin-top:12px">Nos vemos en el Encuentro 3 &mdash; Jueves 23 de abril</p>
+    <p style="color:#60A5FA;font-size:0.58em;margin-top:8px">F&oacute;rmulas DAX, Dashboards Avanzados y Storytelling con Datos</p>
+    <div class="bottom-quote">"Con un buen modelo, todo lo que viene despu&eacute;s es m&aacute;s f&aacute;cil."</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script>
+Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'fade',
+    transitionSpeed: 'default',
+    backgroundTransition: 'fade',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0,
+    controls: true,
+    controlsLayout: 'edges',
+    progress: true,
+    history: true,
+});
+</script>
+</body>
+</html>
