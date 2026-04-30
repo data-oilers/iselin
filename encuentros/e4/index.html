@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E4 — Interpretación de Datos, Publicación y Actualización Automática | ISELIN</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --font: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --bg: #F5F7FA;
+    --surface: #FFFFFF;
+    --surface-alt: #F0F3F8;
+    --surface-dark: #0E1525;
+    --border: #E2E8F0;
+    --border-hover: #CBD5E1;
+    --ink: #0F172A;
+    --ink2: #334155;
+    --ink3: #475569;
+    --ink4: #64748B;
+    --blue: #3B82F6;
+    --blue-soft: #EFF6FF;
+    --blue-mid: #BFDBFE;
+    --teal: #0D9488;
+    --teal-soft: #F0FDFA;
+    --orange: #EA580C;
+    --orange-soft: #FFF7ED;
+    --green: #059669;
+    --green-soft: #ECFDF5;
+    --purple: #7C3AED;
+    --purple-soft: #F5F3FF;
+    --red: #DC2626;
+    --grad-blue: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+    --grad-teal: linear-gradient(135deg, #0D9488 0%, #0891B2 100%);
+    --grad-warm: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%);
+    --grad-green: linear-gradient(135deg, #059669 0%, #0D9488 100%);
+    --grad-purple: linear-gradient(135deg, #7C3AED 0%, #6366F1 100%);
+    --grad-cover: linear-gradient(160deg, #0E1525 0%, #162032 40%, #1A2744 100%);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow: 0 4px 16px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.08);
+    --r: 14px;
+    --r-sm: 8px;
+    --r-lg: 20px;
+}
+.reveal-viewport { background: var(--bg); }
+.reveal { font-family: var(--font); font-size: 36px; color: var(--ink2); }
+.reveal .slides { text-align: left; }
+.reveal .slides section {
+    padding: 44px 72px 48px;
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: column;
+    height: 720px;
+}
+.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+    font-family: var(--font); color: var(--ink); font-weight: 700;
+    text-transform: none; letter-spacing: -0.025em; line-height: 1.15; margin: 0; text-align: left;
+}
+.reveal h1 { font-size: 2.4em; font-weight: 900; letter-spacing: -0.04em; }
+.reveal h2 { font-size: 1.6em; font-weight: 800; }
+.reveal h3 { font-size: 0.88em; font-weight: 700; }
+.reveal p { margin: 0; line-height: 1.65; }
+.reveal strong { color: var(--ink); font-weight: 600; }
+.reveal .slide-number {
+    font-family: var(--font); font-size: 12px; font-weight: 500;
+    color: var(--ink4); background: none; right: 52px; bottom: 20px;
+}
+.reveal .progress span { background: var(--green); height: 3px; }
+
+#home-btn {
+    position: fixed; top: 16px; left: 16px; z-index: 100;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 16px;
+    font-family: var(--font); font-size: 13px; font-weight: 600;
+    color: var(--ink3); text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+}
+#home-btn:hover { color: var(--green); border-color: var(--green); transform: translateY(-1px); }
+.reveal .controls { color: var(--green); }
+.reveal .controls button { opacity: 0.4; }
+.reveal .controls button:hover { opacity: 1; }
+
+.grow { flex: 1; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex: 1; align-content: stretch; }
+
+.label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.4em; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--green); margin-bottom: 6px;
+}
+.label::before {
+    content: ''; width: 24px; height: 2px; background: var(--green); border-radius: 2px;
+}
+.label.blue { color: var(--blue); } .label.blue::before { background: var(--blue); }
+.label.teal { color: var(--teal); } .label.teal::before { background: var(--teal); }
+.label.orange { color: var(--orange); } .label.orange::before { background: var(--orange); }
+.label.purple { color: var(--purple); } .label.purple::before { background: var(--purple); }
+
+.sub { color: var(--ink2); font-size: 0.52em; font-weight: 400; margin-top: 6px; line-height: 1.5; }
+.bottom-quote {
+    margin-top: 20px; padding-top: 14px; text-align: center;
+    font-size: 0.42em; font-weight: 500; font-style: italic;
+    color: var(--ink3); border-top: 1px solid var(--border);
+}
+
+.card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 24px;
+    box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+}
+.card[data-top]::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.card[data-top="blue"]::before { background: var(--grad-blue); }
+.card[data-top="teal"]::before { background: var(--grad-teal); }
+.card[data-top="orange"]::before { background: var(--grad-warm); }
+.card[data-top="green"]::before { background: var(--grad-green); }
+.card[data-top="purple"]::before { background: var(--grad-purple); }
+.card h3 { font-size: 0.62em; margin-bottom: 8px; }
+.card p { font-size: 0.5em; color: var(--ink2); line-height: 1.75; }
+.card ul { font-size: 0.5em; color: var(--ink2); line-height: 1.85; padding-left: 1.1em; margin: 8px 0 0; }
+.card.soft-blue { background: var(--blue-soft); border-color: var(--blue-mid); }
+.card.soft-teal { background: var(--teal-soft); border-color: #99F6E4; }
+.card.soft-orange { background: var(--orange-soft); border-color: #FED7AA; }
+.card.soft-green { background: var(--green-soft); border-color: #A7F3D0; }
+.card.soft-purple { background: var(--purple-soft); border-color: #DDD6FE; }
+
+.badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: var(--r-sm);
+    font-weight: 800; font-size: 0.52em; color: white; flex-shrink: 0;
+}
+.badge.blue { background: var(--grad-blue); }
+.badge.teal { background: var(--grad-teal); }
+.badge.orange { background: var(--grad-warm); }
+.badge.green { background: var(--grad-green); }
+.badge.purple { background: var(--grad-purple); }
+
+.agenda { display: flex; flex-direction: column; gap: 7px; flex: 1; margin-top: 14px; justify-content: center; }
+.ag {
+    display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 13px 24px;
+    position: relative; overflow: hidden;
+}
+.ag::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.ag:nth-child(1)::before, .ag:nth-child(3)::before, .ag:nth-child(5)::before, .ag:nth-child(7)::before { background: var(--green); }
+.ag:nth-child(2)::before, .ag:nth-child(4)::before, .ag:nth-child(6)::before { background: var(--blue); }
+.ag .t { font-size: 0.44em; color: var(--ink3); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ag .n { font-size: 0.52em; color: var(--ink); font-weight: 600; }
+.ag .d { font-size: 0.42em; color: var(--ink3); text-align: right; }
+
+.tl { display: flex; gap: 0; flex: 1; margin-top: 28px; position: relative; align-items: flex-start; }
+.tl::before {
+    content: ''; position: absolute; top: 80px; left: 10%; right: 10%;
+    height: 2px; background: var(--border);
+}
+.tl-item { flex: 1; text-align: center; position: relative; z-index: 1; }
+.tl-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 18px 16px; margin: 0 10px 18px;
+    box-shadow: var(--shadow-sm);
+}
+.tl-card.done { border-color: var(--green); background: var(--green-soft); }
+.tl-card.active { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft), var(--shadow); background: white; }
+.tl-dot { width: 14px; height: 14px; border-radius: 50%; margin: 0 auto 16px; background: var(--ink4); }
+.tl-dot.done { background: var(--green); }
+.tl-dot.active { background: var(--green); box-shadow: 0 0 0 4px var(--green-soft); }
+.tl-item h4 { font-size: 0.48em; text-align: center; }
+.tl-item p { font-size: 0.4em; color: var(--ink2); text-align: center; margin-top: 4px; }
+
+.ent { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.ent .title { font-size: 0.5em; color: var(--ink); font-weight: 600; }
+.ent .desc { font-size: 0.42em; color: var(--ink3); }
+
+.cover {
+    background: var(--grad-cover) !important;
+    color: white;
+    justify-content: center !important;
+    position: relative;
+}
+.cover h1, .cover h2, .cover h3 { color: #F1F5F9; }
+.cover p { color: #94A3B8; }
+.cover .side {
+    position: absolute; left: 0; top: 0; width: 5px; height: 100%;
+    background: linear-gradient(180deg, #059669, #0D9488, #3B82F6);
+}
+.cover .logo { font-size: 0.7em; font-weight: 800; margin-bottom: 48px; }
+.cover .logo .da { color: #94A3B8; }
+.cover .logo .oi { color: #14B8A6; }
+.cover .enc {
+    display: inline-block; font-size: 0.42em; font-weight: 700;
+    padding: 5px 20px; border-radius: 24px; letter-spacing: 0.12em;
+    background: var(--grad-green); color: white; margin-bottom: 16px;
+}
+.cover .meta { font-size: 0.46em; color: #4B5F7A; margin-top: 48px; }
+.cover .bottom-quote { color: #4B5F7A; border-top-color: rgba(255,255,255,0.08); }
+
+/* ═══ E4-SPECIFIC ═══ */
+
+/* Scatter mock (correlation) */
+.scatter-mock {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 18px;
+    flex: 1; margin-top: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+}
+.scatter-mock .ttl { font-size: 0.5em; font-weight: 600; color: var(--ink); }
+.scatter-mock svg { width: 100%; flex: 1; }
+
+/* Forecast band */
+.forecast-mock {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 18px;
+    flex: 1; margin-top: 14px;
+}
+.forecast-mock svg { width: 100%; height: 100%; }
+
+/* Cloud flow */
+.cloud-flow {
+    display: flex; align-items: stretch; gap: 0; flex: 1; margin-top: 16px; min-height: 0;
+}
+.cloud-step {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 22px 18px; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.cloud-step h3 { text-align: center; margin: 4px 0 0; }
+.cloud-step p { text-align: center; font-size: 0.42em; }
+.cloud-step .ic {
+    width: 52px; height: 52px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.85em; font-weight: 800;
+}
+.cloud-step.b .ic { background: var(--grad-blue); }
+.cloud-step.t .ic { background: var(--grad-teal); }
+.cloud-step.g .ic { background: var(--grad-green); }
+.cloud-step.o .ic { background: var(--grad-warm); }
+.cloud-arrow {
+    display: flex; align-items: center; padding: 0 8px;
+    font-size: 1.4em; color: var(--ink4); flex-shrink: 0;
+}
+
+/* Compare cards */
+.compare {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    flex: 1; margin-top: 14px; align-items: stretch;
+}
+.compare-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 20px;
+    display: flex; flex-direction: column;
+}
+.compare-card .top {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+}
+.compare-card .top .ic {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 800; font-size: 0.5em;
+}
+.compare-card .top h4 { font-size: 0.6em; }
+.compare-card.report .top .ic { background: var(--grad-blue); }
+.compare-card.dash .top .ic { background: var(--grad-warm); }
+.compare-card ul { font-size: 0.46em; color: var(--ink2); line-height: 1.85; padding-left: 1.1em; margin: 0; }
+
+/* Roadmap timeline */
+.roadmap { display: flex; gap: 0; flex: 1; margin-top: 18px; align-items: stretch; }
+.rm-col {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 18px; margin: 0 6px;
+    display: flex; flex-direction: column; gap: 10px;
+    border-top: 4px solid;
+}
+.rm-col.first { border-top-color: var(--blue); }
+.rm-col.second { border-top-color: var(--teal); }
+.rm-col.third { border-top-color: var(--green); }
+.rm-col .when {
+    font-size: 0.42em; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.rm-col.first .when { color: var(--blue); }
+.rm-col.second .when { color: var(--teal); }
+.rm-col.third .when { color: var(--green); }
+.rm-col h4 { font-size: 0.56em; margin-bottom: 8px; }
+.rm-col ul { font-size: 0.42em; color: var(--ink2); line-height: 1.7; padding-left: 1em; margin: 0; }
+
+/* Roles grid */
+.roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; flex: 1; margin-top: 14px; align-items: stretch; }
+.role-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 18px;
+    display: flex; flex-direction: column;
+}
+.role-card .top {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
+.role-card .top .ic {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.58em; font-weight: 800;
+}
+.role-card.b .top .ic { background: var(--grad-blue); }
+.role-card.t .top .ic { background: var(--grad-teal); }
+.role-card.g .top .ic { background: var(--grad-green); }
+.role-card h4 { font-size: 0.5em; line-height: 1.2; }
+.role-card .who { font-size: 0.38em; color: var(--ink4); margin-top: 2px; }
+.role-card p { font-size: 0.42em; color: var(--ink2); line-height: 1.6; }
+
+/* Code block (inherited) */
+.code {
+    background: #0E1525; color: #E2E8F0;
+    border-radius: var(--r-sm); padding: 20px 24px;
+    font-family: var(--mono); font-size: 0.46em; line-height: 1.7;
+}
+.code .k { color: #7DD3FC; font-weight: 600; }
+.code .t { color: #C4B5FD; }
+.code .c { color: #94A3B8; font-style: italic; }
+.code .s { color: #FCA5A5; }
+.code .o { color: #FDBA74; }
+.code .n { color: #6EE7B7; }
+.code .v { color: #F9A8D4; }
+
+/* Outlier callout */
+.outlier-row {
+    display: flex; align-items: center; gap: 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: var(--r-sm); padding: 14px 20px;
+    margin-bottom: 10px;
+}
+.outlier-row .num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #FEF2F2; color: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.6em;
+}
+.outlier-row .text { font-size: 0.46em; color: var(--ink2); flex: 1; }
+.outlier-row .text strong { color: var(--ink); }
+
+/* Refresh status mock */
+.status-row {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 14px;
+    align-items: center; padding: 12px 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); margin-bottom: 8px;
+}
+.status-row .dot { width: 10px; height: 10px; border-radius: 50%; }
+.status-row .dot.green { background: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+.status-row .dot.red { background: var(--red); box-shadow: 0 0 0 3px #FEF2F2; }
+.status-row .dot.gray { background: var(--ink4); box-shadow: 0 0 0 3px var(--surface-alt); }
+.status-row .info { font-size: 0.46em; color: var(--ink); }
+.status-row .info span { font-size: 0.85em; color: var(--ink3); display: block; margin-top: 2px; }
+.status-row .time { font-size: 0.42em; color: var(--ink4); font-family: var(--mono); }
+
+/* Best practice rows */
+.bp-list { display: flex; flex-direction: column; gap: 10px; flex: 1; margin-top: 14px; justify-content: center; }
+.bp {
+    display: grid; grid-template-columns: 32px 1fr; gap: 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 12px 18px; align-items: center;
+}
+.bp .check {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--green-soft); color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.5em;
+}
+.bp .text { font-size: 0.48em; color: var(--ink); }
+.bp .text strong { color: var(--ink); }
+.bp .text span { color: var(--ink3); font-size: 0.85em; }
+</style>
+</head>
+<body>
+<a href="../../index.html" id="home-btn" title="Volver al inicio">← Inicio</a>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══ 1. PORTADA ═══ -->
+<section class="cover">
+    <div class="side"></div>
+    <div class="logo"><span class="da">data </span><span class="oi">oilers</span></div>
+    <div class="enc">ENCUENTRO 4 DE 4 · CIERRE</div>
+    <h1>Interpretación,<br>Publicación y<br>Actualización Automática</h1>
+    <p style="font-size:0.68em;color:#CBD5E1;margin-top:12px">Capacitación en Análisis de Datos</p>
+    <p style="font-size:0.52em;color:#10B981;margin-top:8px;font-weight:600;letter-spacing:0.05em">ISELIN · TRANSPORTE</p>
+    <p class="meta">Jueves 30 de abril de 2026 · Presencial · 2 horas</p>
+    <div class="bottom-quote">"Un dashboard que nadie consulta es solo un archivo en una carpeta."</div>
+</section>
+
+<!-- ═══ 2. ¿DÓNDE QUEDAMOS? ═══ -->
+<section>
+    <div class="label">Recap</div>
+    <h2>El último encuentro · ¿qué llevamos hecho?</h2>
+    <p class="sub">Tres encuentros para llegar acá: hoy publicamos lo construido</p>
+    <div class="tl">
+        <div class="tl-item">
+            <div class="tl-card done"><h4 style="color:var(--green);font-size:0.56em">E1 ✓</h4><p style="font-size:0.44em;color:var(--ink4)">16/04 · Presencial</p></div>
+            <div class="tl-dot done"></div>
+            <p>Fundamentos,<br>Calidad y primer<br>contacto con PBI</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card done"><h4 style="color:var(--green);font-size:0.56em">E2 ✓</h4><p style="font-size:0.44em;color:var(--ink4)">21/04 · Virtual</p></div>
+            <div class="tl-dot done"></div>
+            <p>Modelo de datos,<br>Power Query y<br>visualizaciones</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card done"><h4 style="color:var(--green);font-size:0.56em">E3 ✓</h4><p style="font-size:0.44em;color:var(--ink4)">23/04 · Virtual</p></div>
+            <div class="tl-dot done"></div>
+            <p>Fórmulas DAX,<br>dashboards y<br>storytelling</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card active"><h4 style="color:var(--green);font-size:0.56em">E4 · Hoy</h4><p style="font-size:0.44em;color:var(--ink4)">30/04 · Presencial</p></div>
+            <div class="tl-dot active"></div>
+            <p>Interpretación,<br>publicación y<br>actualización</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"De Excel desordenados a dashboards publicados en la nube — en 4 encuentros."</div>
+</section>
+
+<!-- ═══ 3. AGENDA ═══ -->
+<section>
+    <div class="label blue">Agenda</div>
+    <h2>De qué se trata el encuentro de hoy</h2>
+    <p class="sub">6 bloques · 2 horas · objetivo: dejar tu dashboard publicado y actualizándose solo</p>
+    <div class="agenda">
+        <div class="ag"><div class="t">5 min</div><div class="n">Recap y estado de los dashboards</div><div class="d">Bloque 1</div></div>
+        <div class="ag"><div class="t">15 min</div><div class="n">Números clave: PBI ya los muestra</div><div class="d">Bloque 2</div></div>
+        <div class="ag"><div class="t">25 min</div><div class="n">Interpretar: tendencias, proyecciones, datos atípicos</div><div class="d">Bloque 3</div></div>
+        <div class="ag"><div class="t">25 min</div><div class="n">Publicación en Power BI Service</div><div class="d">Bloque 4</div></div>
+        <div class="ag"><div class="t">20 min</div><div class="n">Actualización programada (refresh)</div><div class="d">Bloque 5</div></div>
+        <div class="ag"><div class="t">20 min</div><div class="n">Cierre · hoja de ruta y buenas prácticas</div><div class="d">Bloque 6</div></div>
+    </div>
+</section>
+
+<!-- ═══ 4. NÚMEROS CLAVE EN PBI ═══ -->
+<section>
+    <div class="label teal">Números clave</div>
+    <h2>PBI ya muestra los números clave (sin escribir DAX)</h2>
+    <p class="sub">Promedio, mediana, mínimo, máximo, suma — todo a un click de distancia</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card soft-teal" data-top="teal">
+            <h3 style="color:var(--teal)">Cómo se cambia la agregación</h3>
+            <p style="margin-top:8px">Arrastrás un campo numérico al visual. Click sobre el campo → cambiás de "Suma" a <strong>Promedio · Mediana · Mín · Máx · Recuento</strong>.</p>
+            <p style="margin-top:8px">No requiere fórmula. Útil para tarjetas de KPI directas.</p>
+        </div>
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">Promedio vs. Mediana — cuándo cada uno</h3>
+            <p style="margin-top:8px"><strong>Promedio</strong>: cuando los datos son "normales" (no hay valores extremos).</p>
+            <p style="margin-top:6px"><strong>Mediana</strong>: cuando hay outliers que distorsionan. Ej: <em>tiempo de demora</em> — un viaje con 30 min infla el promedio.</p>
+            <p style="margin-top:6px;color:var(--ink3);font-size:0.46em"><em>En ISELIN: demora promedio = 4,5 min; mediana = 3,8 min. La mediana cuenta mejor la realidad típica.</em></p>
+        </div>
+    </div>
+    <div class="bottom-quote">"El promedio miente cuando hay valores extremos. La mediana es más honesta."</div>
+</section>
+
+<!-- ═══ 5. MEDIDAS RÁPIDAS ═══ -->
+<section>
+    <div class="label teal">Números clave</div>
+    <h2>Medidas rápidas: DAX sin escribir DAX</h2>
+    <p class="sub">PBI te genera la fórmula a partir de un menú</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue)">Cómo se accede</h3>
+            <p style="margin-top:8px">Click derecho sobre la tabla en el panel de campos → <strong>"Nueva medida rápida"</strong> → elegir tipo de cálculo.</p>
+            <p style="margin-top:8px">PBI te muestra el resultado y te <strong>genera la fórmula DAX automáticamente</strong> — podés copiarla y aprender de ella.</p>
+        </div>
+        <div class="card soft-blue" data-top="blue">
+            <h3 style="color:var(--blue)">Tipos disponibles</h3>
+            <ul style="font-size:0.46em">
+                <li>Total acumulado del año (YTD)</li>
+                <li>Diferencia respecto al período anterior</li>
+                <li>% del total / % del subtotal</li>
+                <li>Promedio móvil (3, 6 o 12 períodos)</li>
+                <li>Ranking de un campo</li>
+            </ul>
+        </div>
+    </div>
+    <div class="bottom-quote">"Las medidas rápidas son el atajo perfecto cuando no recordás la sintaxis exacta."</div>
+</section>
+
+<!-- ═══ 6. CORRELACIÓN ═══ -->
+<section>
+    <div class="label">Interpretación</div>
+    <h2>Cuando dos variables se mueven juntas</h2>
+    <p class="sub">Lo que en Power BI se ve con un gráfico de dispersión (scatter)</p>
+    <div class="scatter-mock">
+        <div class="ttl">Km recorridos vs. Gasoil consumido — datos ISELIN</div>
+        <svg viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet">
+            <line x1="40" y1="180" x2="580" y2="180" stroke="#CBD5E1" stroke-width="1"/>
+            <line x1="40" y1="20" x2="40" y2="180" stroke="#CBD5E1" stroke-width="1"/>
+            <text x="300" y="198" font-size="9" fill="#64748B" text-anchor="middle">Km recorridos →</text>
+            <text x="20" y="100" font-size="9" fill="#64748B" text-anchor="middle" transform="rotate(-90 20 100)">Gasoil (lts) →</text>
+            <line x1="40" y1="170" x2="580" y2="40" stroke="#0D9488" stroke-width="2" stroke-dasharray="4 4"/>
+            <g fill="#3B82F6" opacity="0.6">
+                <circle cx="60" cy="165" r="3"/><circle cx="80" cy="160" r="3"/><circle cx="110" cy="148" r="3"/>
+                <circle cx="140" cy="140" r="3"/><circle cx="170" cy="125" r="3"/><circle cx="200" cy="120" r="3"/>
+                <circle cx="230" cy="110" r="3"/><circle cx="260" cy="100" r="3"/><circle cx="290" cy="92" r="3"/>
+                <circle cx="320" cy="84" r="3"/><circle cx="350" cy="76" r="3"/><circle cx="380" cy="70" r="3"/>
+                <circle cx="410" cy="62" r="3"/><circle cx="440" cy="58" r="3"/><circle cx="470" cy="52" r="3"/>
+                <circle cx="500" cy="48" r="3"/><circle cx="530" cy="44" r="3"/><circle cx="560" cy="40" r="3"/>
+                <circle cx="180" cy="135" r="3"/><circle cx="220" cy="118" r="3"/><circle cx="270" cy="98" r="3"/>
+                <circle cx="320" cy="90" r="3"/><circle cx="380" cy="68" r="3"/><circle cx="450" cy="56" r="3"/>
+            </g>
+            <circle cx="200" cy="60" r="5" fill="#DC2626" opacity="0.85"/>
+            <text x="210" y="55" font-size="9" fill="#DC2626" font-weight="700">outlier</text>
+        </svg>
+        <div style="font-size:0.4em;color:var(--ink3)">Correlación positiva: a más km, más consumo. La línea de tendencia (verde punteada) lo resume. El punto rojo es un viaje atípico — gasta más gasoil de lo esperado.</div>
+    </div>
+</section>
+
+<!-- ═══ 7. CORRELACIÓN ≠ CAUSALIDAD ═══ -->
+<section>
+    <div class="label orange">Interpretación · Cuidado</div>
+    <h2>Correlación ≠ Causalidad</h2>
+    <p class="sub">El error más común al interpretar datos</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="green">
+            <h3 style="color:var(--green)">Sí: causalidad</h3>
+            <p style="margin-top:10px"><strong>Más km → más gasoil.</strong> Hay una relación física: el motor consume cuando el colectivo se mueve.</p>
+            <p style="margin-top:8px;font-size:0.46em">La correlación está respaldada por una explicación lógica.</p>
+        </div>
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">No: solo coincidencia</h3>
+            <p style="margin-top:10px"><strong>"Más viajes en marzo → más siniestros en marzo".</strong> Pueden subir juntos no porque uno cause el otro, sino porque un tercer factor (clima, vendimia, vacaciones) afecta a los dos.</p>
+            <p style="margin-top:8px;font-size:0.46em;color:var(--red)"><strong>Antes de afirmar "X causa Y", preguntá: ¿hay una explicación lógica?</strong></p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Que dos variables se muevan juntas no significa que una mueva a la otra."</div>
+</section>
+
+<!-- ═══ 8. LÍNEAS DE TENDENCIA ═══ -->
+<section>
+    <div class="label teal">Interpretación</div>
+    <h2>Líneas de tendencia: qué dirección llevan los datos</h2>
+    <p class="sub">PBI las agrega con un par de clicks — y le dan contexto al lector</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">Cómo agregarla</h3>
+            <p style="margin-top:8px">En cualquier gráfico de líneas o dispersión: panel <em>Análisis</em> → <strong>Línea de tendencia</strong> → activar.</p>
+            <p style="margin-top:8px">PBI calcula la línea que mejor "atraviesa" la nube de puntos. Podés mostrarla por categoría (ej: una línea por Tipo de ruta).</p>
+        </div>
+        <div class="card soft-teal" data-top="teal">
+            <h3 style="color:var(--teal)">Qué nos dice</h3>
+            <ul style="font-size:0.46em">
+                <li><strong>Pendiente positiva:</strong> los datos suben con el tiempo</li>
+                <li><strong>Pendiente negativa:</strong> bajan</li>
+                <li><strong>Línea casi horizontal:</strong> no hay tendencia clara</li>
+                <li><strong>Puntos lejos de la línea:</strong> períodos atípicos</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 9. PROYECCIÓN AUTOMÁTICA ═══ -->
+<section>
+    <div class="label teal">Interpretación</div>
+    <h2>Proyección automática: PBI mira al futuro</h2>
+    <p class="sub">Forecasting nativo a partir de los datos históricos</p>
+    <div class="forecast-mock">
+        <svg viewBox="0 0 600 200" preserveAspectRatio="xMidYMid meet">
+            <line x1="40" y1="180" x2="580" y2="180" stroke="#CBD5E1" stroke-width="1"/>
+            <line x1="40" y1="20" x2="40" y2="180" stroke="#CBD5E1" stroke-width="1"/>
+            <text x="60" y="195" font-size="9" fill="#64748B">ene</text>
+            <text x="160" y="195" font-size="9" fill="#64748B">feb</text>
+            <text x="260" y="195" font-size="9" fill="#64748B">mar</text>
+            <text x="360" y="195" font-size="9" fill="#64748B">abr</text>
+            <text x="450" y="195" font-size="9" fill="#94A3B8">may</text>
+            <text x="540" y="195" font-size="9" fill="#94A3B8">jun</text>
+            <line x1="395" y1="20" x2="395" y2="180" stroke="#CBD5E1" stroke-dasharray="4 4"/>
+            <text x="404" y="35" font-size="9" fill="#94A3B8" font-style="italic">proyección →</text>
+            <polyline points="60,150 160,135 260,118 360,95" fill="none" stroke="#0D9488" stroke-width="2.5"/>
+            <circle cx="60" cy="150" r="4" fill="#0D9488"/>
+            <circle cx="160" cy="135" r="4" fill="#0D9488"/>
+            <circle cx="260" cy="118" r="4" fill="#0D9488"/>
+            <circle cx="360" cy="95" r="4" fill="#0D9488"/>
+            <path d="M 360 95 L 460 80 L 560 64 L 560 38 L 460 56 L 360 95 Z" fill="#0D9488" opacity="0.18"/>
+            <polyline points="360,95 460,68 560,52" fill="none" stroke="#0D9488" stroke-width="2" stroke-dasharray="6 4" opacity="0.7"/>
+        </svg>
+        <div style="font-size:0.4em;color:var(--ink3);margin-top:6px"><strong>Línea sólida</strong>: histórico de viajes por mes. <strong>Línea punteada</strong>: proyección de los próximos 2 meses. <strong>Banda gris</strong>: rango probable (95% de confianza).</div>
+    </div>
+</section>
+
+<!-- ═══ 10. DATOS ATÍPICOS ═══ -->
+<section>
+    <div class="label orange">Interpretación</div>
+    <h2>Datos atípicos: el regalo escondido del análisis</h2>
+    <p class="sub">Los puntos fuera de lo normal suelen ser los más valiosos</p>
+    <div style="display:flex;flex-direction:column;gap:10px;flex:1;margin-top:14px;justify-content:center">
+        <div class="outlier-row">
+            <div class="num">1</div>
+            <div class="text"><strong>Cómo detectarlos:</strong> visualmente en un scatter o gráfico de líneas — son los puntos que se escapan de la nube o tienen un pico inesperado.</div>
+        </div>
+        <div class="outlier-row">
+            <div class="num">2</div>
+            <div class="text"><strong>Caso ISELIN:</strong> un viaje del colectivo INT-104 con 36 lts/100km cuando el promedio del parque es 28 → desvío de +29%. Investigarlo derivó en problema mecánico real.</div>
+        </div>
+        <div class="outlier-row">
+            <div class="num">3</div>
+            <div class="text"><strong>Qué hacer cuando aparecen:</strong> nunca borrarlos sin entender. Pueden ser errores de carga, eventos reales (clima, evento masivo) o el dato más importante del análisis.</div>
+        </div>
+    </div>
+    <div class="bottom-quote">"Los outliers no son ruido: son las preguntas que el negocio no sabía que tenía."</div>
+</section>
+
+<!-- ═══ 11. DE DESKTOP A LA NUBE ═══ -->
+<section>
+    <div class="label blue">Publicación</div>
+    <h2>De Power BI Desktop a Power BI Service</h2>
+    <p class="sub">El flujo completo: del .pbix de tu máquina al dashboard que cualquier referente puede abrir</p>
+    <div class="cloud-flow">
+        <div class="cloud-step b">
+            <div class="ic">1</div>
+            <h3 style="color:var(--blue)">Construir</h3>
+            <p>En Power BI Desktop · diseño, medidas, visuales</p>
+        </div>
+        <div class="cloud-arrow">→</div>
+        <div class="cloud-step t">
+            <div class="ic">2</div>
+            <h3 style="color:var(--teal)">Publicar</h3>
+            <p>Un click: "Publicar" → elegir Workspace de destino</p>
+        </div>
+        <div class="cloud-arrow">→</div>
+        <div class="cloud-step g">
+            <div class="ic">3</div>
+            <h3 style="color:var(--green)">Compartir</h3>
+            <p>Permisos a usuarios o agrupar en una App por área</p>
+        </div>
+        <div class="cloud-arrow">→</div>
+        <div class="cloud-step o">
+            <div class="ic">4</div>
+            <h3 style="color:var(--orange)">Refrescar</h3>
+            <p>Actualización programada · datos siempre al día</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Publicar es el paso que convierte tu archivo en un servicio."</div>
+</section>
+
+<!-- ═══ 12. WORKSPACES ═══ -->
+<section>
+    <div class="label blue">Publicación</div>
+    <h2>Workspaces: el espacio compartido por área</h2>
+    <p class="sub">Es como una carpeta de equipo, pero con permisos y refresh automático</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue)">Cómo organizarlo en ISELIN</h3>
+            <p style="margin-top:8px">Recomendamos un workspace por área:</p>
+            <ul style="font-size:0.46em">
+                <li><strong>Logística</strong> · viajes, rutas, choferes</li>
+                <li><strong>Mantenimiento</strong> · flota, consumo, taller</li>
+                <li><strong>Calidad</strong> · siniestros, puntualidad</li>
+                <li><strong>Comercial</strong> · pasajeros, ocupación</li>
+                <li><strong>Dirección</strong> · resumen ejecutivo</li>
+            </ul>
+        </div>
+        <div class="card soft-blue" data-top="blue">
+            <h3 style="color:var(--blue)">Roles dentro del workspace</h3>
+            <p style="margin-top:8px"><strong>Admin:</strong> gestiona todo el workspace.</p>
+            <p style="margin-top:6px"><strong>Miembro:</strong> publica y edita reportes.</p>
+            <p style="margin-top:6px"><strong>Colaborador:</strong> edita pero no publica.</p>
+            <p style="margin-top:6px"><strong>Visor:</strong> solo consulta.</p>
+            <p style="margin-top:8px;font-size:0.46em;color:var(--ink3)"><em>Tip: la mayoría de usuarios serán "Visor" — eso alcanza para abrir y filtrar.</em></p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 13. REPORT VS DASHBOARD ═══ -->
+<section>
+    <div class="label blue">Publicación</div>
+    <h2>Reporte vs. Dashboard: la diferencia clave</h2>
+    <p class="sub">En Power BI Service son dos cosas distintas — y se confunden seguido</p>
+    <div class="compare">
+        <div class="compare-card report">
+            <div class="top">
+                <div class="ic">R</div>
+                <h4 style="color:var(--blue)">Reporte (Report)</h4>
+            </div>
+            <ul>
+                <li>Lo que publicás desde PBI Desktop</li>
+                <li>Puede tener varias páginas</li>
+                <li>Interactivo: filtros, drillthrough, tooltips</li>
+                <li>Conectado a un modelo de datos (semantic model)</li>
+                <li>Los datos vienen del .pbix que publicaste</li>
+            </ul>
+        </div>
+        <div class="compare-card dash">
+            <div class="top">
+                <div class="ic">D</div>
+                <h4 style="color:var(--orange)">Dashboard</h4>
+            </div>
+            <ul>
+                <li>Se arma <em>en Power BI Service</em> (no en Desktop)</li>
+                <li>Una sola página con tiles "fijados"</li>
+                <li>Puede combinar visuales de varios reportes</li>
+                <li>Pensado para vista de un golpe — no interactivo</li>
+                <li>Soporta alertas de datos (umbrales)</li>
+            </ul>
+        </div>
+    </div>
+    <div class="bottom-quote">"En esta capacitación trabajamos siempre con Reportes. Los Dashboards quedan para una etapa posterior."</div>
+</section>
+
+<!-- ═══ 14. COMPARTIR Y APPS ═══ -->
+<section>
+    <div class="label blue">Publicación</div>
+    <h2>Compartir el reporte: dos caminos</h2>
+    <p class="sub">Para 1-2 personas o para todo el equipo, el método cambia</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">Compartir directo · pocos usuarios</h3>
+            <p style="margin-top:8px">Botón <strong>"Compartir"</strong> en el reporte → ingresás emails → elegís permisos.</p>
+            <p style="margin-top:6px;font-size:0.46em"><strong>Permisos:</strong> Lectura · Lectura + Reshare · Construir.</p>
+            <p style="margin-top:8px;font-size:0.46em;color:var(--ink3)"><em>Ideal para revisión interna o alguien específico que necesita el dato puntualmente.</em></p>
+        </div>
+        <div class="card" data-top="purple">
+            <h3 style="color:var(--purple)">Apps · distribución masiva</h3>
+            <p style="margin-top:8px">Empaquetás <strong>todos los reportes del workspace</strong> en una App.</p>
+            <p style="margin-top:6px;font-size:0.46em">Le das un nombre, una imagen, y la "instalás" para los usuarios. Aparece en su panel como una aplicación corporativa.</p>
+            <p style="margin-top:8px;font-size:0.46em;color:var(--ink3)"><em>Ideal cuando todos los referentes de un área deben tener acceso al mismo set de reportes.</em></p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 15. ALERTAS DE DATOS ═══ -->
+<section>
+    <div class="label blue">Publicación</div>
+    <h2>Alertas de datos: que el dashboard te avise</h2>
+    <p class="sub">Notificación por email o Teams cuando un KPI cruza un umbral</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card soft-orange" data-top="orange">
+            <h3 style="color:var(--orange)">Cómo se configura</h3>
+            <p style="margin-top:8px">1. Solo funciona sobre <strong>tarjetas (cards) y velocímetros</strong> que estén "fijadas" a un Dashboard.</p>
+            <p style="margin-top:6px">2. Click en el tile → ícono de campana → <strong>Administrar alertas</strong>.</p>
+            <p style="margin-top:6px">3. Definís: condición (&gt; o &lt;), umbral, frecuencia (max una vez/día o cada hora).</p>
+        </div>
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">Ejemplos para ISELIN</h3>
+            <ul style="font-size:0.46em">
+                <li>Disponibilidad de flota cae de <strong>85%</strong></li>
+                <li>Siniestralidad mensual supera <strong>6%</strong></li>
+                <li>Puntualidad cae bajo <strong>70%</strong></li>
+                <li>Refresh del dashboard falla &gt; 2 veces seguidas</li>
+            </ul>
+        </div>
+    </div>
+    <div class="bottom-quote">"El mejor dashboard es el que te llama por teléfono cuando hay un problema."</div>
+</section>
+
+<!-- ═══ 16. EL PROBLEMA DEL REFRESH ═══ -->
+<section>
+    <div class="label orange">Refresh</div>
+    <h2>El problema: los datos cambian, el dashboard no</h2>
+    <p class="sub">Sin actualización programada, tu reporte muestra una foto vieja</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">Sin refresh</h3>
+            <p style="margin-top:10px">Cada vez que querés ver datos nuevos:</p>
+            <ul style="font-size:0.46em">
+                <li>Abrir PBI Desktop</li>
+                <li>Apretar "Actualizar"</li>
+                <li>Esperar que cargue</li>
+                <li>Volver a publicar</li>
+            </ul>
+            <p style="margin-top:10px;color:var(--red);font-size:0.46em"><strong>Realidad:</strong> nadie lo hace. El dashboard envejece y se deja de usar.</p>
+        </div>
+        <div class="card soft-green" data-top="green">
+            <h3 style="color:var(--green)">Con refresh programado</h3>
+            <p style="margin-top:10px">Power BI Service:</p>
+            <ul style="font-size:0.46em">
+                <li>Abre solo tu fuente de datos</li>
+                <li>Trae los cambios</li>
+                <li>Recalcula medidas</li>
+                <li>Actualiza visuales</li>
+                <li>Te notifica si falla</li>
+            </ul>
+            <p style="margin-top:10px;color:var(--green);font-size:0.46em"><strong>Resultado:</strong> los referentes abren el reporte y siempre ven datos del día.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 17. SOLUCIÓN ISELIN: ONEDRIVE ═══ -->
+<section>
+    <div class="label orange">Refresh</div>
+    <h2>La solución para ISELIN: OneDrive / SharePoint</h2>
+    <p class="sub">Sin gateway, sin configuración técnica — usa la licencia que ya tienen</p>
+    <div class="cloud-flow">
+        <div class="cloud-step b">
+            <div class="ic">1</div>
+            <h3 style="color:var(--blue)">Subir el Excel a OneDrive</h3>
+            <p>OneDrive for Business o SharePoint del tenant de ISELIN</p>
+        </div>
+        <div class="cloud-arrow">→</div>
+        <div class="cloud-step t">
+            <div class="ic">2</div>
+            <h3 style="color:var(--teal)">Conectar PBI a esa URL</h3>
+            <p>En PBI Desktop · "Obtener datos" → Web → URL del archivo</p>
+        </div>
+        <div class="cloud-arrow">→</div>
+        <div class="cloud-step g">
+            <div class="ic">3</div>
+            <h3 style="color:var(--green)">Publicar y configurar refresh</h3>
+            <p>En PBI Service · Configuración del dataset → Refresh programado</p>
+        </div>
+    </div>
+    <div style="margin-top:14px;padding:12px 18px;background:var(--green-soft);border-left:3px solid var(--green);border-radius:6px">
+        <p style="font-size:0.46em;color:var(--ink2);margin:0"><strong style="color:var(--green)">Frecuencia:</strong> hasta 8 refreshes/día con licencia Pro. Lo típico: 1 vez por día (madrugada) o 4 veces (cada 6 horas).</p>
+    </div>
+</section>
+
+<!-- ═══ 18. GATEWAY (MENCIÓN) ═══ -->
+<section>
+    <div class="label orange">Refresh · Avanzado</div>
+    <h2>¿Y si los datos están en un servidor local?</h2>
+    <p class="sub">Para esos casos existe el On-Premises Data Gateway — está fuera del alcance de esta capacitación</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card soft-blue" data-top="blue">
+            <h3 style="color:var(--blue)">Qué es el Gateway</h3>
+            <p style="margin-top:8px">Una aplicación que se instala en un servidor de la red de ISELIN. Hace de "puente" entre Power BI Service (en la nube) y los datos que viven en máquinas locales (SQL, Oracle, archivos en red).</p>
+        </div>
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">Cuándo lo necesitás</h3>
+            <ul style="font-size:0.46em">
+                <li>Bases de datos SQL Server internas</li>
+                <li>Archivos en una red interna sin OneDrive</li>
+                <li>Sistemas legacy con conectores específicos</li>
+            </ul>
+            <p style="margin-top:8px;font-size:0.46em;color:var(--ink3)"><em>Para configurarlo, IT debe instalarlo y mantenerlo. Mientras esa decisión no se tome, el camino OneDrive cubre el 90% de los casos.</em></p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 19. MONITOREO REFRESH ═══ -->
+<section>
+    <div class="label orange">Refresh</div>
+    <h2>Monitorear el refresh: cuando algo falla, querés saberlo</h2>
+    <p class="sub">El historial de actualizaciones está a un click — usalo</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+        <div class="status-row">
+            <div class="dot green"></div>
+            <div class="info">Refresh exitoso<span>Dataset Logística · viajes 2026</span></div>
+            <div class="time">30/04 06:02</div>
+        </div>
+        <div class="status-row">
+            <div class="dot green"></div>
+            <div class="info">Refresh exitoso<span>Dataset Logística · viajes 2026</span></div>
+            <div class="time">29/04 06:01</div>
+        </div>
+        <div class="status-row">
+            <div class="dot red"></div>
+            <div class="info">Falló: "El archivo no se encuentra"<span>El Excel fue movido en OneDrive — corregir ruta</span></div>
+            <div class="time">28/04 06:01</div>
+        </div>
+        <div class="status-row">
+            <div class="dot green"></div>
+            <div class="info">Refresh exitoso<span>Dataset Logística · viajes 2026</span></div>
+            <div class="time">27/04 06:01</div>
+        </div>
+        <div class="status-row">
+            <div class="dot gray"></div>
+            <div class="info">No programado<span>Antes de configurar refresh</span></div>
+            <div class="time">26/04 —</div>
+        </div>
+    </div>
+    <div class="bottom-quote">"Configurá el refresh una vez, monitorealo cada semana, te ahorrás dolores de cabeza después."</div>
+</section>
+
+<!-- ═══ 20. BUENAS PRÁCTICAS ═══ -->
+<section>
+    <div class="label">Cierre</div>
+    <h2>Buenas prácticas: orden básico de tu trabajo</h2>
+    <p class="sub">No es burocracia: es lo que te permite mantener un dashboard a 6 meses</p>
+    <div class="bp-list">
+        <div class="bp"><div class="check">✓</div><div class="text"><strong>Nomenclatura clara de archivos.</strong> <span>Ej: <code style="font-family:var(--mono)">iselin_logistica_2026Q1.pbix</code> — área, período, propósito.</span></div></div>
+        <div class="bp"><div class="check">✓</div><div class="text"><strong>Un solo archivo "vivo" por reporte.</strong> <span>Evitar copias con sufijos "v2", "final", "definitivo". Usá OneDrive con historial de versiones.</span></div></div>
+        <div class="bp"><div class="check">✓</div><div class="text"><strong>Documentar las medidas DAX.</strong> <span>Tabla _Medidas con descripción de cada una (qué calcula, qué decisión soporta).</span></div></div>
+        <div class="bp"><div class="check">✓</div><div class="text"><strong>Misma lógica de colores en todos los reportes.</strong> <span>Verde = bueno, rojo = alerta, azul = volumen — siempre igual.</span></div></div>
+        <div class="bp"><div class="check">✓</div><div class="text"><strong>Revisar el refresh cada lunes.</strong> <span>5 minutos para ver si algún dataset falló durante la semana.</span></div></div>
+    </div>
+</section>
+
+<!-- ═══ 21. ROLES POST-CAPACITACIÓN ═══ -->
+<section>
+    <div class="label">Cierre</div>
+    <h2>Tres roles para que esto siga vivo en ISELIN</h2>
+    <p class="sub">No hace falta un equipo de datos completo — sí roles claros por área</p>
+    <div class="roles">
+        <div class="role-card b">
+            <div class="top">
+                <div class="ic">RD</div>
+                <div>
+                    <h4>Referente de datos</h4>
+                    <div class="who">Por área · 1-2 horas/semana</div>
+                </div>
+            </div>
+            <p>Mantiene el Excel limpio: estructura estable de columnas, sin filas vacías, sin "celdas combinadas". Es la persona que conoce los datos del área.</p>
+        </div>
+        <div class="role-card t">
+            <div class="top">
+                <div class="ic">AP</div>
+                <div>
+                    <h4>Analista PBI</h4>
+                    <div class="who">Transversal · 4-8 horas/semana</div>
+                </div>
+            </div>
+            <p>Construye y mantiene los dashboards: actualiza medidas DAX, agrega visuales nuevos según pedidos, monitorea el refresh, capacita a referentes nuevos.</p>
+        </div>
+        <div class="role-card g">
+            <div class="top">
+                <div class="ic">CO</div>
+                <div>
+                    <h4>Consumidor</h4>
+                    <div class="who">Toda la dirección y supervisores</div>
+                </div>
+            </div>
+            <p>Abre los reportes desde Power BI Service o desde la App. Filtra, navega, toma decisiones. No edita nada — solo consume el dato.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 22. HOJA DE RUTA 30-60-90 ═══ -->
+<section>
+    <div class="label">Cierre</div>
+    <h2>Hoja de ruta 30-60-90 días</h2>
+    <p class="sub">Lo que sugerimos hacer después de esta capacitación</p>
+    <div class="roadmap">
+        <div class="rm-col first">
+            <div class="when">Primeros 30 días</div>
+            <h4>Consolidar lo aprendido</h4>
+            <ul>
+                <li>Cada referente termina su .pbix de área</li>
+                <li>Subir los Excel fuente a OneDrive</li>
+                <li>Configurar 1 refresh diario por dataset</li>
+                <li>Compartir reportes con la dirección</li>
+                <li>Resolver dudas vía canal de consultas</li>
+            </ul>
+        </div>
+        <div class="rm-col second">
+            <div class="when">30 a 60 días</div>
+            <h4>Estandarizar y compartir</h4>
+            <ul>
+                <li>Definir paleta de colores oficial ISELIN</li>
+                <li>Plantilla de reporte compartida (.pbit)</li>
+                <li>Crear App por área</li>
+                <li>Configurar alertas en KPIs críticos</li>
+                <li>Primera revisión de buenas prácticas</li>
+            </ul>
+        </div>
+        <div class="rm-col third">
+            <div class="when">60 a 90 días</div>
+            <h4>Madurar la cultura</h4>
+            <ul>
+                <li>Reunión mensual con todos los referentes</li>
+                <li>Identificar 3-5 KPIs corporativos comunes</li>
+                <li>Detectar oportunidad de capacitación avanzada</li>
+                <li>Evaluar Gateway si surge necesidad</li>
+                <li>Medir uso real de los reportes (analytics)</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 23. RECURSOS ═══ -->
+<section>
+    <div class="label">Cierre</div>
+    <h2>Recursos para seguir aprendiendo</h2>
+    <p class="sub">Lo que te recomendamos consultar después de la capacitación</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card soft-blue" data-top="blue">
+            <h3 style="color:var(--blue)">Oficiales · gratuitos</h3>
+            <p style="margin-top:8px"><strong>Microsoft Learn — Power BI:</strong> cursos guiados, certificaciones (PL-300).</p>
+            <p style="margin-top:6px"><strong>Documentación DAX:</strong> referencia completa de funciones con ejemplos.</p>
+            <p style="margin-top:6px"><strong>Power BI Community:</strong> foro oficial — la respuesta a tu duda probablemente ya está ahí.</p>
+        </div>
+        <div class="card soft-purple" data-top="purple">
+            <h3 style="color:var(--purple)">De esta capacitación</h3>
+            <p style="margin-top:8px"><strong>Manual de análisis de datos · wiki:</strong> fundamentos teóricos, glosario, niveles de madurez.</p>
+            <p style="margin-top:6px"><strong>Guía práctica del dashboard ISELIN:</strong> 23 preguntas de negocio + medidas DAX comentadas + diseño visual.</p>
+            <p style="margin-top:6px"><strong>Cronograma completo:</strong> repaso de los 4 encuentros, conceptos clave por encuentro.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Power BI no se aprende en 4 encuentros: se empieza. La maestría viene con cada .pbix que armás."</div>
+</section>
+
+<!-- ═══ 24. ENTREGABLES ═══ -->
+<section>
+    <div class="label">Entregables</div>
+    <h2>Lo que te llevás del Encuentro 4</h2>
+    <p class="sub">Documentos que vas a recibir en los próximos días</p>
+    <div style="margin-top:18px;flex:1;display:flex;flex-direction:column;justify-content:center">
+        <div class="ent"><div class="badge blue">1</div><div><div class="title">Dashboard publicado en Power BI Service</div><div class="desc">Reporte completo en el workspace de tu área · acceso compartido</div></div></div>
+        <div class="ent"><div class="badge teal">2</div><div><div class="title">Guía de interpretación de datos en PBI</div><div class="desc">Tendencias, proyecciones, datos atípicos · ejemplos aplicados a ISELIN</div></div></div>
+        <div class="ent"><div class="badge orange">3</div><div><div class="title">Guía de publicación y refresh programado</div><div class="desc">Paso a paso para publicar, compartir y configurar actualización automática</div></div></div>
+        <div class="ent"><div class="badge green">4</div><div><div class="title">Documento de buenas prácticas</div><div class="desc">Nomenclatura, versionado, roles sugeridos, checklist de mantenimiento</div></div></div>
+        <div class="ent"><div class="badge purple">5</div><div><div class="title">Hoja de ruta post-capacitación</div><div class="desc">Plan 30-60-90 días para consolidar el uso de Power BI</div></div></div>
+    </div>
+</section>
+
+<!-- ═══ 25. CIERRE DEL PROGRAMA ═══ -->
+<section class="cover">
+    <div class="side"></div>
+    <div class="logo"><span class="da">data </span><span class="oi">oilers</span></div>
+    <div style="width:48px;height:3px;background:var(--grad-green);border-radius:4px;margin-bottom:24px"></div>
+    <h1 style="font-size:3em">¡Lo lograron!</h1>
+    <p style="color:#CBD5E1;font-size:0.7em;margin-top:14px">4 encuentros · de Excel desordenados a dashboards publicados en la nube</p>
+    <p style="color:#10B981;font-size:0.56em;margin-top:14px;font-weight:600;letter-spacing:0.05em">CAPACITACIÓN ISELIN 2026 · COMPLETA</p>
+    <div class="bottom-quote">"El verdadero éxito de esta capacitación no se mide hoy. Se mide en cuántos dashboards de ISELIN se siguen consultando dentro de 6 meses."</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script>
+Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'fade',
+    transitionSpeed: 'default',
+    backgroundTransition: 'fade',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0,
+    controls: true,
+    controlsLayout: 'edges',
+    progress: true,
+    history: true,
+});
+</script>
+</body>
+</html>

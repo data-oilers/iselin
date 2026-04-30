@@ -296,6 +296,56 @@ a { color: var(--primary); text-decoration: none; font-weight: 500; }
 a:hover { text-decoration: underline; }
 
 /* ── CALLOUTS ── */
+/* Acordeones de secciones de página (Paso 4 al 9) */
+section.collapsible {
+    padding: 0;
+    overflow: hidden;
+}
+section.collapsible > details > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 2rem 3.5rem;
+    margin: 0;
+    user-select: none;
+    transition: background 0.18s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+section.collapsible > details > summary::-webkit-details-marker { display: none; }
+section.collapsible > details > summary:hover {
+    background: var(--blue-soft);
+}
+section.collapsible > details > summary::before {
+    content: '▶';
+    font-size: 0.85rem;
+    color: var(--primary);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+section.collapsible > details[open] > summary::before {
+    transform: rotate(90deg);
+}
+section.collapsible > details > summary > h2 {
+    margin: 0;
+    padding-bottom: 0;
+    font-size: 1.65rem;
+}
+section.collapsible > details > summary > h2::after { display: none; }
+section.collapsible > details > summary > .acc-hint {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--ink2);
+    font-weight: 500;
+    opacity: 0.7;
+}
+section.collapsible > details[open] > summary > .acc-hint { opacity: 0; }
+section.collapsible > details > .acc-body {
+    padding: 0 3.5rem 3rem;
+    border-top: 1px solid var(--border);
+}
+section.collapsible > details > .acc-body > h3:first-child { margin-top: 1.5rem; }
+
 .callout {
     border-radius: 10px;
     padding: 16px 22px;
@@ -1099,8 +1149,10 @@ DIVIDE ( [colectivos_activos], [total_colectivos] )</code></pre>
 <!-- ============================================================
      SECCIÓN 6 — HOME
      ============================================================ -->
-<section id="home">
-    <h2>6. Paso 4 · Página Home / Resumen ejecutivo</h2>
+<section id="home" class="collapsible">
+    <details>
+        <summary><h2>6. Paso 4 · Página Home / Resumen ejecutivo</h2><span class="acc-hint">▸ click para expandir</span></summary>
+        <div class="acc-body">
 
     <div class="pagina-intro">
         <div class="role">Rol objetivo · Dirección</div>
@@ -1211,13 +1263,17 @@ DIVIDE ( [colectivos_activos], [total_colectivos] )</code></pre>
             <div class="visual-fmt"><strong>Formato:</strong> en <em>Etiquetas de detalle → Contenido</em> elegir "Categoría, porcentaje del total". Queda "Mañana 52%", "Tarde 48%".</div>
         </div>
     </div>
+        </div>
+    </details>
 </section>
 
 <!-- ============================================================
      SECCIÓN 7 — FLOTA
      ============================================================ -->
-<section id="flota">
-    <h2>7. Paso 5 · Página Flota</h2>
+<section id="flota" class="collapsible">
+    <details>
+        <summary><h2>7. Paso 5 · Página Flota</h2><span class="acc-hint">▸ click para expandir</span></summary>
+        <div class="acc-body">
 
     <div class="pagina-intro">
         <div class="role">Rol objetivo · Gerente de Flota</div>
@@ -1411,13 +1467,17 @@ RETURN
             </ul>
         </div>
     </div>
+        </div>
+    </details>
 </section>
 
 <!-- ============================================================
      SECCIÓN 8 — RUTAS
      ============================================================ -->
-<section id="rutas">
-    <h2>8. Paso 6 · Página Rutas</h2>
+<section id="rutas" class="collapsible">
+    <details>
+        <summary><h2>8. Paso 6 · Página Rutas</h2><span class="acc-hint">▸ click para expandir</span></summary>
+        <div class="acc-body">
 
     <div class="pagina-intro">
         <div class="role">Rol objetivo · Planificación Comercial</div>
@@ -1439,6 +1499,18 @@ CALCULATE ( [total_viajes], Viajes[Demora_Min] &gt; 5 )
 
 pct_viajes_con_demora_mayor_5 =
 DIVIDE ( [viajes_con_demora_mayor_5], [total_viajes] )</code></pre>
+    </div>
+
+    <div class="medida">
+        <div class="title">tuvo_demora_mayor_5 <span style="font-size: 0.8em; opacity: 0.7; font-weight: normal;">(columna calculada en <code>Viajes</code>)</span></div>
+        <div class="desc">Etiqueta cada viaje individualmente como "Sí" o "No" según si superó el umbral de 5 min. Reutiliza el mismo criterio que las dos medidas anteriores, pero a nivel de fila — es lo que necesita el visual <em>Influenciadores clave</em> para analizar qué factores disparan la demora.</div>
+        <pre data-lang="DAX"><code class="language-dax">tuvo_demora_mayor_5 =
+IF ( Viajes[Demora_Min] &gt; 5, "Sí", "No" )</code></pre>
+    </div>
+
+    <div class="callout info">
+        <div class="cicon">💡</div>
+        <div class="ctext"><strong>¿Por qué una columna y no una medida?</strong> Las medidas devuelven un número en el contexto del visual (ej. "23% de los viajes se demoraron"). La columna calculada agrega una etiqueta a <em>cada fila</em> de Viajes. Esa diferencia es la que habilita visuales que necesitan clasificar viaje por viaje — como Influenciadores clave, que compara grupos "Sí demora" vs "No demora" para detectar qué factores los distinguen.</div>
     </div>
 
     <h3>Visuales paso a paso</h3>
@@ -1485,30 +1557,58 @@ DIVIDE ( [viajes_con_demora_mayor_5], [total_viajes] )</code></pre>
 
     <div class="visual">
         <div class="visual-head">
-            <span class="visual-num">4</span><span class="visual-icon">🔵</span>
-            <div><div class="visual-title">Scatter Km × Demora por ruta</div><div class="visual-type">Gráfico de dispersión</div></div>
+            <span class="visual-num">4</span><span class="visual-icon">🤖</span>
+            <div><div class="visual-title">¿Qué hace que un viaje se demore?</div><div class="visual-type">Influenciadores clave (visual de IA, exclusivo de Power BI)</div></div>
         </div>
         <div class="visual-body">
-            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Gráfico de dispersión</strong>.</span></div>
-            <div class="visual-step"><span class="step-lbl">Eje X</span><span class="step-val"><code>[km_por_viaje]</code></span></div>
-            <div class="visual-step"><span class="step-lbl">Eje Y</span><span class="step-val"><code>[demora_promedio_min]</code></span></div>
-            <div class="visual-step"><span class="step-lbl">Leyenda</span><span class="step-val"><code>Rutas[Tipo]</code> (Urbana / Media / Larga)</span></div>
-            <div class="visual-step"><span class="step-lbl">Detalle</span><span class="step-val"><code>Rutas[Nombre_Ruta]</code></span></div>
-            <div class="visual-step"><span class="step-lbl">Tamaño</span><span class="step-val"><code>[total_viajes]</code> (bolas más grandes = rutas con más operación)</span></div>
+            <div class="visual-step"><span class="step-lbl">Seleccionar visual</span><span class="step-val">Ícono <strong>Influenciadores clave</strong> (panel <em>Visualizaciones</em> → ícono con bombilla y barras).</span></div>
+            <div class="visual-step"><span class="step-lbl">Analizar</span><span class="step-val"><code>Viajes[tuvo_demora_mayor_5]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Selector arriba del visual</span><span class="step-val">En el dropdown <em>"¿Qué influye que tuvo_demora_mayor_5 sea…"</em> elegir <strong>"Sí"</strong>. Le estás diciendo a PBI: "explicame qué hace que un viaje se demore".</span></div>
+            <div class="visual-step"><span class="step-lbl">Explicar por</span><span class="step-val"><code>Rutas[Tipo]</code> · <code>Rutas[Nombre_Ruta]</code> · <code>Viajes[Turno]</code> · <code>Choferes[Categoría]</code> · <code>Choferes[rango_antiguedad]</code> · <code>Colectivos[Parque]</code></span></div>
+            <div class="visual-step"><span class="step-lbl">Expandir por</span><span class="step-val">Vacío. Solo se completa cuando <em>Analizar</em> es una medida; acá usamos una columna, así que PBI ya sabe que el grano es "el viaje".</span></div>
+            <div class="visual-fmt"><strong>Dos pestañas, dos lecturas:</strong>
+                <ul style="margin: 6px 0 0 20px;">
+                    <li><strong>Influenciadores clave</strong> (pestaña por defecto): muestra cada factor por separado. La frase de salida es del tipo <em>"Cuando Rutas[Tipo] es Larga Distancia, la probabilidad de que tuvo_demora_mayor_5 sea Sí aumenta 2.3 veces"</em>.</li>
+                    <li><strong>Segmentos principales</strong> (pestaña arriba a la izquierda): combina factores y detecta el "combo perfecto" — por ejemplo, <em>Larga Distancia + Turno Tarde + Categoría C</em> agrupados como el segmento con mayor tasa de demora.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="callout info">
+        <div class="cicon">🧠</div>
+        <div class="ctext"><strong>Cómo presentar este visual en clase.</strong> Es el visual con más "efecto wow" del reporte porque <em>habla en castellano</em> en vez de pedirte que interpretes una nube de puntos. Tres tips:
+            <ul style="margin: 6px 0 0 20px;">
+                <li><strong>No metas demasiados campos en <em>Explicar por</em>.</strong> Arriba de 5–6 el visual se vuelve ruidoso. Si querés agregar otro, sacá uno antes.</li>
+                <li><strong>Mostrá las dos pestañas.</strong> La primera responde "qué factor solo importa más"; la segunda, "qué combinación de factores es la peor". Son preguntas distintas.</li>
+                <li><strong>Si algún factor no aparece en el resultado</strong>, no es un bug: es que PBI determinó que su efecto no es estadísticamente significativo dado el resto. Eso también es un hallazgo.</li>
+            </ul>
         </div>
     </div>
 
     <div class="callout success">
         <div class="cicon">🎯</div>
-        <div class="ctext"><strong>Qué vas a ver:</strong> R001 arriba del ranking de ocupación, R008 abajo (candidata a reducir frecuencia). R006 Malargüe aparece como outlier arriba-derecha en el scatter.</div>
+        <div class="ctext"><strong>Qué vas a ver:</strong>
+            <ul style="margin: 6px 0 0 20px;">
+                <li><strong>Ranking de ocupación:</strong> <em>Ruta 1 - Centro</em> arriba del todo, <em>Ruta 8 - San Rafael-Rincón</em> abajo (candidata a reducir frecuencia).</li>
+                <li><strong>Influenciadores clave (factores individuales):</strong> los tres factores que más aumentan la probabilidad de que un viaje se demore más de 5 minutos son <strong>Ruta 6 - San Rafael-Malargüe</strong>, <strong>chofer de Categoría C</strong> y <strong>turno Tarde</strong>. PBI los muestra como tres tarjetas, cada una con su frase ("cuando X, la probabilidad sube N veces").</li>
+                <li><strong>Segmentos principales (combinación de factores):</strong> el peor segmento combina <strong>turno Tarde + Categoría C</strong>. Es decir: la peor combinación de operación es un chofer Cat C trabajando en el turno de la tarde, independientemente de la ruta.</li>
+            </ul>
+            <br>
+            <strong>Lectura de negocio:</strong> el problema de la demora no es solo geográfico (la ruta a Malargüe), también es <em>operativo</em> — el turno tarde con choferes menos experimentados concentra el riesgo. Eso abre dos planes de acción distintos: revisar tiempos planificados de la Ruta 6, y reforzar el turno tarde con acompañamiento a los Cat C.
+        </div>
     </div>
+        </div>
+    </details>
 </section>
 
 <!-- ============================================================
      SECCIÓN 9 — PUNTUALIDAD
      ============================================================ -->
-<section id="puntualidad">
-    <h2>9. Paso 7 · Página Puntualidad</h2>
+<section id="puntualidad" class="collapsible">
+    <details>
+        <summary><h2>9. Paso 7 · Página Puntualidad</h2><span class="acc-hint">▸ click para expandir</span></summary>
+        <div class="acc-body">
 
     <div class="pagina-intro">
         <div class="role">Rol objetivo · Operaciones</div>
@@ -1604,13 +1704,17 @@ brecha_demora_turno = [demora_prom_tarde] - [demora_prom_manana]</code></pre>
         <div class="cicon">🎯</div>
         <div class="ctext"><strong>Qué vas a ver:</strong> línea de puntualidad creciendo ene→abr (plan operativo funciona). Turno Tarde casi duplica la demora de Mañana. Lunes y viernes peores días.</div>
     </div>
+        </div>
+    </details>
 </section>
 
 <!-- ============================================================
      SECCIÓN 10 — CHOFERES
      ============================================================ -->
-<section id="choferes">
-    <h2>10. Paso 8 · Página Choferes</h2>
+<section id="choferes" class="collapsible">
+    <details>
+        <summary><h2>10. Paso 8 · Página Choferes</h2><span class="acc-hint">▸ click para expandir</span></summary>
+        <div class="acc-body">
 
     <div class="pagina-intro">
         <div class="role">Rol objetivo · RRHH y Seguridad Vial</div>
@@ -1730,13 +1834,17 @@ CALCULATE ( [pct_siniestralidad], Choferes[rango_antiguedad] = "Experto (&gt;12)
         <div class="cicon">🎯</div>
         <div class="ctext"><strong>Qué vas a ver:</strong> nube descendente en el scatter (más antigüedad, menos siniestros). Cat C agrupados arriba-izquierda. Cat A ≈2.7% vs Cat C ≈13% de siniestralidad.</div>
     </div>
+        </div>
+    </details>
 </section>
 
 <!-- ============================================================
      SECCIÓN 11 — CORRELACIONES
      ============================================================ -->
-<section id="correlaciones">
-    <h2>11. Paso 9 · Página Correlaciones</h2>
+<section id="correlaciones" class="collapsible">
+    <details>
+        <summary><h2>11. Paso 9 · Página Correlaciones</h2><span class="acc-hint">▸ click para expandir</span></summary>
+        <div class="acc-body">
 
     <div class="pagina-intro">
         <div class="role">Rol objetivo · Analítica</div>
@@ -1784,6 +1892,8 @@ CALCULATE ( [pct_siniestralidad], Choferes[rango_antiguedad] = "Experto (&gt;12)
 ├──────────────────────────────┴──────────────────────────────┤
 │  Pasajeros vs Demora (por Tipo de Ruta)                     │
 └─────────────────────────────────────────────────────────────┘</pre>
+        </div>
+    </details>
 </section>
 
 <!-- ============================================================
@@ -1791,43 +1901,244 @@ CALCULATE ( [pct_siniestralidad], Choferes[rango_antiguedad] = "Experto (&gt;12)
      ============================================================ -->
 <section id="chequeos">
     <h2>12. Chequeos de calidad · Insights esperados</h2>
-    <p>Si el dashboard está bien construido, los siguientes <strong>12 insights</strong> tienen que aparecer naturalmente. Si alguno no aparece, revisá las medidas y los filtros.</p>
+    <p>Si el dashboard está bien construido, los siguientes <strong>12 insights</strong> tienen que aparecer naturalmente. Si alguno no aparece, revisá las medidas y los filtros. <strong>Todas las cifras de esta sección están validadas contra el dataset crudo</strong> (n = 2.119 viajes, ene-abr 2026).</p>
 
     <div class="kpi-grid">
         <div class="kpi up"><div class="lbl">Volumen mensual</div><div class="val">+60%</div><div class="sub">403 → 646 viajes (ene→abr)</div></div>
-        <div class="kpi up"><div class="lbl">Total pasajeros</div><div class="val">+106%</div><div class="sub">12.8k → 26.5k</div></div>
-        <div class="kpi up"><div class="lbl">Pax por viaje</div><div class="val">+29%</div><div class="sub">32 → 41</div></div>
-        <div class="kpi down"><div class="lbl">Turno Tarde vs Mañana</div><div class="val">2×</div><div class="sub">5.6 vs 3.9 min demora</div></div>
-        <div class="kpi down"><div class="lbl">Flota ≤2018 vs ≥2021</div><div class="val">+35%</div><div class="sub">consumo extra</div></div>
-        <div class="kpi down"><div class="lbl">Siniestralidad Cat C vs A</div><div class="val">5×</div><div class="sub">13% vs 2.7%</div></div>
-        <div class="kpi"><div class="lbl">Correlación Km-Gasoil</div><div class="val">+0.99</div><div class="sub">ley lineal validada</div></div>
-        <div class="kpi"><div class="lbl">Correlación Año-Consumo</div><div class="val">−0.91</div><div class="sub">justifica renovación</div></div>
+        <div class="kpi up"><div class="lbl">Total pasajeros</div><div class="val">+105%</div><div class="sub">12.868 → 26.369</div></div>
+        <div class="kpi up"><div class="lbl">Pax por viaje</div><div class="val">+28%</div><div class="sub">31,9 → 40,8</div></div>
+        <div class="kpi up"><div class="lbl">Puntualidad ene → abr</div><div class="val">+11,3 pp</div><div class="sub">60,8% → 72,1%</div></div>
+        <div class="kpi down"><div class="lbl">Turno Tarde vs Mañana</div><div class="val">1,44×</div><div class="sub">5,57 vs 3,86 min demora</div></div>
+        <div class="kpi down"><div class="lbl">Flota ≤2018 vs ≥2021</div><div class="val">+46%</div><div class="sub">33,1 vs 22,7 lts/100km</div></div>
+        <div class="kpi down"><div class="lbl">Siniestralidad Cat C vs A</div><div class="val">2,6×</div><div class="sub">11,1% vs 4,3%</div></div>
+        <div class="kpi"><div class="lbl">Correlación Km-Gasoil</div><div class="val">+0,98</div><div class="sub">ley lineal validada</div></div>
+        <div class="kpi"><div class="lbl">Correlación Año-Consumo</div><div class="val">−0,92</div><div class="sub">justifica renovación</div></div>
     </div>
 
     <table>
         <thead><tr><th>#</th><th>Insight</th><th>Acción sugerida</th></tr></thead>
         <tbody>
-            <tr><td>1</td><td><strong>Volumen creciente:</strong> # viajes +60% y pasajeros +106% en 4 meses.</td><td>Validar con comercial si es temporada o efecto de campaña.</td></tr>
-            <tr><td>2</td><td><strong>Pax/viaje crece 29%:</strong> los colectivos van más llenos.</td><td>Evaluar aumentar frecuencia en rutas más cargadas.</td></tr>
-            <tr><td>3</td><td><strong>Turno Tarde duplica demora</strong> y concentra más siniestros.</td><td>Refuerzo operativo en turno tarde.</td></tr>
-            <tr><td>4</td><td><strong>Flota vieja consume 35% más:</strong> 30 vs 22.5 lts/100km.</td><td>Plan de renovación priorizado por antigüedad.</td></tr>
-            <tr><td>5</td><td><strong>COL004 (INT-104) es outlier</strong> claro de consumo.</td><td>Ingreso a taller para diagnóstico mecánico.</td></tr>
-            <tr><td>6</td><td><strong>R001 (Centro)</strong> recorre más km que Km_Base en hora pico.</td><td>Revisar recorrido o sumar al Km_Base oficial.</td></tr>
-            <tr><td>7</td><td><strong>R006 (Malargüe)</strong> es la peor en puntualidad.</td><td>Revisar horarios y puntos de demora.</td></tr>
-            <tr><td>8</td><td><strong>R008 (Rincón)</strong> baja ocupación sistemática.</td><td>Reducir frecuencia o reasignar unidades.</td></tr>
-            <tr><td>9</td><td><strong>Cat C ≈ 5× siniestros de Cat A.</strong></td><td>Valida categorización y dispara capacitación.</td></tr>
-            <tr><td>10</td><td><strong>Km-Gasoil correlación +0.99</strong> (ley lineal validada).</td><td>Los puntos fuera de la recta son viajes anómalos.</td></tr>
-            <tr><td>11</td><td><strong>Año-Consumo correlación −0.91.</strong></td><td>Argumento cuantitativo para el plan de renovación.</td></tr>
-            <tr><td>12</td><td><strong>Puntualidad mejora mes a mes.</strong></td><td>El plan operativo está funcionando.</td></tr>
+            <tr><td>1</td><td><strong>Volumen creciente:</strong> viajes +60% y pasajeros +105% en 4 meses.</td><td>Validar con comercial si es temporada o efecto de campaña.</td></tr>
+            <tr><td>2</td><td><strong>Pax/viaje crece 28%</strong> (31,9 → 40,8): los colectivos van más llenos.</td><td>Evaluar aumentar frecuencia en rutas más cargadas.</td></tr>
+            <tr><td>3</td><td><strong>Turno Tarde tiene 44% más demora</strong> que Mañana (5,57 vs 3,86 min) y 1,57× la siniestralidad (7,2% vs 4,6%).</td><td>Refuerzo operativo en turno tarde.</td></tr>
+            <tr><td>4</td><td><strong>Flota vieja consume 46% más:</strong> 33,1 vs 22,7 lts/100km.</td><td>Plan de renovación priorizado por antigüedad.</td></tr>
+            <tr><td>5</td><td><strong>COL004 (INT-104) es outlier claro:</strong> 35,9 vs 28,3 promedio del parque Urbano (+7,6 lts/100km).</td><td>Ingreso a taller para diagnóstico mecánico.</td></tr>
+            <tr><td>6</td><td><strong>Ruta 1 - Centro</strong> recorre 16,2 km vs Km_Base de 15 (+8% sobre el plan).</td><td>Revisar recorrido o actualizar Km_Base oficial.</td></tr>
+            <tr><td>7</td><td><strong>Ruta 6 - San Rafael-Malargüe</strong> es la peor en puntualidad: <strong>68,5% de viajes demorados &gt;5 min</strong>, demora promedio 6,4 min.</td><td>Revisar cronograma y puntos de demora.</td></tr>
+            <tr><td>8</td><td><strong>Ruta 8 - San Rafael-Rincón</strong> baja ocupación: 22,4 pax/viaje vs 47,1 en Centro.</td><td>Reducir frecuencia o reasignar unidades.</td></tr>
+            <tr><td>9</td><td><strong>Cat C ≈ 2,6× siniestros de Cat A</strong> (11,1% vs 4,3%) y 1,6× más demora (6,03 vs 3,79 min).</td><td>Valida categorización y dispara plan de acompañamiento.</td></tr>
+            <tr><td>10</td><td><strong>Km-Gasoil correlación +0,98:</strong> ley lineal validada.</td><td>Los puntos fuera de la recta son viajes anómalos.</td></tr>
+            <tr><td>11</td><td><strong>Año-Consumo correlación −0,92</strong> (a nivel colectivo).</td><td>Argumento cuantitativo para el plan de renovación.</td></tr>
+            <tr><td>12</td><td><strong>Puntualidad mejora mes a mes:</strong> 60,8% → 72,1% (+11,3 puntos en 4 meses).</td><td>El plan operativo está funcionando — sostener.</td></tr>
         </tbody>
     </table>
 </section>
 
 <!-- ============================================================
-     SECCIÓN 13 — APÉNDICE
+     SECCIÓN 13 — INFORME EJECUTIVO
+     ============================================================ -->
+<section id="informe-ejecutivo">
+    <h2>13. Informe ejecutivo · Comunicación de hallazgos</h2>
+
+    <p>El análisis termina cuando la decisión se toma — no cuando el dashboard funciona. Un dashboard sin un informe que lo acompañe es una herramienta que la Dirección abre dos veces y después olvida. <strong>El informe ejecutivo es el puente entre los datos y la acción</strong>: traduce 2.119 filas y 31 medidas en cuatro páginas que un director puede leer en cinco minutos y firmar al pie.</p>
+
+    <h3>Principios del storytelling de datos</h3>
+
+    <div class="card-grid">
+        <div class="card"><span class="tag blue">Conclusión primero</span><p><strong>La idea principal va arriba, no abajo.</strong> Imaginá que el director solo lee el primer párrafo y cierra la pestaña: ¿le quedó claro qué pasa y qué tiene que decidir? Si la respuesta es no, reescribilo.</p></div>
+        <div class="card"><span class="tag green">De lo general a lo específico</span><p><strong>Hallazgo → Razón → Datos.</strong> Primero contás <em>qué</em> pasa ("la Ruta 6 es la peor en puntualidad"), después <em>por qué</em> creés que pasa, y al final mostrás los <em>números</em> que lo prueban. Nunca al revés: nadie quiere leer una tabla antes de saber para qué.</p></div>
+        <div class="card"><span class="tag yellow">Cuantificá</span><p><strong>Todo en pesos, viajes o porcentajes.</strong> "Alta siniestralidad" no mueve a nadie; "$35M/año en combustible extra" sí.</p></div>
+        <div class="card"><span class="tag red">Acción</span><p><strong>Cada hallazgo termina en una decisión.</strong> Si no hay un "qué hacer" detrás, no es un hallazgo — es una curiosidad.</p></div>
+        <div class="card"><span class="tag purple">Honestidad</span><p><strong>Mostrá los límites.</strong> Período corto, correlación ≠ causalidad, supuestos. Un informe que no admite incertidumbre pierde credibilidad.</p></div>
+    </div>
+
+    <div class="callout info">
+        <div class="cicon">📐</div>
+        <div class="ctext"><strong>Estructura recomendada</strong> (de arriba hacia abajo, en orden de importancia decreciente):
+            <ol style="margin: 6px 0 0 20px;">
+                <li><strong>Resumen ejecutivo</strong> — 1 párrafo + 3-4 bullets. Debe poder leerse en 60 segundos.</li>
+                <li><strong>Contexto</strong> — qué se analizó, período, alcance. 3-5 líneas.</li>
+                <li><strong>Hallazgos clave</strong> — 3 a 5, no más. Cada uno: titular accionable + cifra + interpretación + implicancia.</li>
+                <li><strong>Plan de acción</strong> — matriz impacto/esfuerzo o tabla priorizada.</li>
+                <li><strong>KPIs de seguimiento</strong> — qué medimos y con qué frecuencia para saber si funcionó.</li>
+                <li><strong>Notas y limitaciones</strong> — supuestos, ventana temporal, qué no se pudo validar.</li>
+            </ol>
+        </div>
+    </div>
+
+    <hr style="border: none; border-top: 2px dashed #cfd8dc; margin: 32px 0;">
+
+    <h3>Ejemplo · Informe ejecutivo ISELIN — Ene/Abr 2026</h3>
+    <p style="opacity: 0.75; font-style: italic;">Lo que sigue es el informe que un Senior Data Analyst entregaría a la Dirección de ISELIN tras este análisis. Está pensado para imprimirse en 4 páginas A4. Usalo como plantilla.</p>
+
+    <div style="background: #fafbfc; border: 1px solid #cfd8dc; border-radius: 8px; padding: 28px; margin: 16px 0;">
+
+        <div style="border-bottom: 3px solid #1F3A5F; padding-bottom: 12px; margin-bottom: 20px;">
+            <div style="font-size: 1.6em; font-weight: 700; color: #1F3A5F;">Análisis Operativo ISELIN</div>
+            <div style="font-size: 1.1em; color: #546E7A;">Período enero–abril 2026 · n = 2.119 viajes</div>
+            <div style="margin-top: 10px; font-size: 0.92em; color: #455a64;">
+                <strong>Para:</strong> Dirección General · Operaciones · RRHH · Mantenimiento &nbsp;|&nbsp;
+                <strong>De:</strong> Equipo de Datos &nbsp;|&nbsp;
+                <strong>Fecha:</strong> 30 de abril de 2026
+            </div>
+        </div>
+
+        <h4 style="color: #1F3A5F; margin-top: 0;">1. Resumen ejecutivo</h4>
+        <p>ISELIN cerró el primer cuatrimestre con <strong>crecimiento sostenido y mejora operativa medible</strong>: el volumen de viajes creció <strong>60%</strong> y los pasajeros transportados se duplicaron (<strong>+105%</strong>), mientras la puntualidad subió <strong>11,3 puntos</strong> (60,8% → 72,1%). El plan operativo está funcionando.</p>
+
+        <p>Sin embargo, <strong>el riesgo está concentrado en tres focos identificables</strong>, y cada uno tiene una decisión clara asociada:</p>
+
+        <ul>
+            <li><strong>Foco 1 — Una ruta concentra el problema de puntualidad.</strong> La <em>Ruta 6 - San Rafael-Malargüe</em> tiene el <strong>68,5% de sus viajes demorados &gt;5 min</strong>, contra un promedio del 33% en el resto del sistema. La causa más probable es planificación de tiempos, no operación.</li>
+            <li><strong>Foco 2 — Tres choferes Cat C novatos concentran el riesgo de seguridad.</strong> Esos 3 choferes tienen <strong>11,1% de siniestralidad</strong> (vs. 4,3% en Cat A) y aportan el <strong>33% de los siniestros del sistema</strong> con apenas el 20% de los viajes.</li>
+            <li><strong>Foco 3 — La flota anterior a 2018 es un costo creciente.</strong> Los 2 colectivos ≤2018 consumen <strong>46% más combustible</strong> que la flota ≥2021 (33,1 vs 22,7 lts/100 km). Renovar 1 unidad estima un ahorro de <strong>≈$35 M/año</strong> en gasoil.</li>
+        </ul>
+
+        <p><strong>Recomendación:</strong> ejecutar las cuatro acciones de la sección 4. Tres de ellas no requieren inversión y pueden mostrarse en métricas el próximo mes.</p>
+
+        <h4 style="color: #1F3A5F;">2. Contexto</h4>
+        <p>ISELIN opera 8 rutas con base en San Rafael (Mendoza): 5 urbanas, 2 de media distancia (Alvear, Malargüe) y 1 de larga distancia (Mendoza Capital). La flota es de 20 colectivos, con 17 activos al cierre del período (disponibilidad 85%). El plantel de choferes es de 15, categorizados A/B/C según experiencia y desempeño. El presente análisis cubre <strong>2.119 viajes entre el 1 de enero y el 30 de abril de 2026</strong>.</p>
+
+        <h4 style="color: #1F3A5F;">3. Hallazgos clave</h4>
+
+        <div class="callout success" style="margin: 12px 0;">
+            <div class="cicon">📈</div>
+            <div class="ctext"><strong>Hallazgo 1 — La operación crece y mejora simultáneamente.</strong>
+                <ul style="margin: 6px 0 0 20px;">
+                    <li>Viajes mensuales: 403 (ene) → 646 (abr) = <strong>+60,3%</strong>.</li>
+                    <li>Pasajeros transportados: 12.868 → 26.369 = <strong>+105%</strong>.</li>
+                    <li>Pax por viaje: 31,9 → 40,8 = <strong>+27,9%</strong> (los colectivos van más llenos, no se está sobre-ofertando).</li>
+                    <li>Puntualidad: 60,8% → 72,1%, mejora sostenida los 4 meses.</li>
+                </ul>
+                <em>Implicancia:</em> el sistema absorbió un crecimiento del 60% sin degradar la calidad, sino mejorándola. Validar con Comercial si el crecimiento se explica por demanda estructural o por efecto estacional/campaña, para dimensionar correctamente la planificación de Q2.
+            </div>
+        </div>
+
+        <div class="callout warn" style="margin: 12px 0;">
+            <div class="cicon">⏱️</div>
+            <div class="ctext"><strong>Hallazgo 2 — El problema de puntualidad está casi todo en una ruta y un turno.</strong>
+                <ul style="margin: 6px 0 0 20px;">
+                    <li>La <strong>Ruta 6 - San Rafael-Malargüe</strong> tiene <strong>68,5%</strong> de viajes demorados &gt;5 min, contra ~33% en el resto. Es <strong>2× la tasa promedio del sistema</strong>.</li>
+                    <li>El <strong>turno Tarde</strong> tiene 44% más demora que Mañana (5,57 vs 3,86 min) y 50% de puntualidad vs. 78% en Mañana.</li>
+                    <li>El segmento crítico combinado <strong>Tarde + Cat C</strong> (8% de los viajes) tiene <strong>80,7% de viajes demorados &gt;5 min y 16,4% de siniestralidad</strong> — el peor del dashboard.</li>
+                </ul>
+                <em>Implicancia:</em> el problema de demora no es estructural sino concentrado. Atacar dos focos específicos —la planificación de tiempos de R6 y la asignación del turno tarde— puede mejorar la puntualidad global del sistema en 8-10 puntos sin tocar nada más.
+            </div>
+        </div>
+
+        <div class="callout warn" style="margin: 12px 0; background: #fdecea; border-color: #C62828;">
+            <div class="cicon">⚠️</div>
+            <div class="ctext"><strong>Hallazgo 3 — La categorización A/B/C captura riesgo real, y los Cat C novatos requieren intervención.</strong>
+                <ul style="margin: 6px 0 0 20px;">
+                    <li>Siniestralidad por categoría: <strong>Cat A 4,3% · Cat B 3,9% · Cat C 11,1%</strong> (Cat C es 2,6× Cat A).</li>
+                    <li>Los <strong>3 choferes Cat C son todos novatos (≤2 años)</strong>: Roberto Díaz (12,8% siniestros), Oscar Giménez (11,4%) y Hugo Álvarez (8,8%). Concentran 33% de los siniestros del sistema con 20% de los viajes.</li>
+                    <li>Los choferes Senior y Experto (≥7 años) tienen siniestralidad ~3,7-4,5%, similar a Cat A.</li>
+                </ul>
+                <em>Implicancia:</em> el problema no es la categoría per se sino la combinación <strong>Cat C + novatez</strong>. Plan recomendado: acompañamiento de un Senior por turno durante 90 días + capacitación en conducción defensiva. Costo bajo, impacto medible en siniestralidad y demora.
+            </div>
+        </div>
+
+        <div class="callout info" style="margin: 12px 0;">
+            <div class="cicon">⛽</div>
+            <div class="ctext"><strong>Hallazgo 4 — La flota ≤2018 es un caso de negocio claro para renovación.</strong>
+                <ul style="margin: 6px 0 0 20px;">
+                    <li>Consumo por antigüedad: <strong>≤2018: 33,1 lts/100km · 2019-2020: 27,1 · ≥2021: 22,7</strong>. Brecha vieja vs. nueva: <strong>+46%</strong>.</li>
+                    <li>Correlación año-consumo a nivel colectivo: <strong>−0,92</strong> (lineal y fuerte).</li>
+                    <li>Outlier individual: <strong>COL004 / INT-104 (Agrale 2017)</strong> consume 35,9 lts/100km — 7,6 lts más que el promedio de su parque. Es problema mecánico, no de antigüedad.</li>
+                </ul>
+                <em>Implicancia financiera:</em> en un colectivo urbano que recorre ~6.000 km/mes, los 10,5 lts/100km extra de la flota vieja son <strong>≈630 lts/mes</strong>, ≈$880.000/mes a precio de gasoil actual ≈<strong>$10,5 M/año por unidad vieja</strong>. La inversión en una unidad nueva se amortiza en gasoil en 4-5 años, sin contar mantenimiento ni disponibilidad.
+            </div>
+        </div>
+
+        <h4 style="color: #1F3A5F;">4. Plan de acción priorizado</h4>
+
+        <table>
+            <thead>
+                <tr><th>#</th><th>Acción</th><th>Responsable</th><th>Plazo</th><th>Impacto esperado</th><th>Esfuerzo</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1</strong></td>
+                    <td>Revisar y ajustar el cronograma de la Ruta 6 — San Rafael-Malargüe (probable subestimación de tiempos en turno Tarde).</td>
+                    <td>Operaciones</td>
+                    <td>30 días</td>
+                    <td><strong>Alto</strong> — afecta el 13% de los viajes y mejora puntualidad global ~5 pp.</td>
+                    <td>Bajo</td>
+                </tr>
+                <tr>
+                    <td><strong>2</strong></td>
+                    <td>Plan de acompañamiento a los 3 choferes Cat C novatos: 1 Senior asignado por turno durante 90 días + capacitación en conducción defensiva.</td>
+                    <td>RRHH + Operaciones</td>
+                    <td>90 días</td>
+                    <td><strong>Alto</strong> — meta: bajar siniestralidad Cat C de 11,1% a &lt;7% (reducción ~36%).</td>
+                    <td>Medio</td>
+                </tr>
+                <tr>
+                    <td><strong>3</strong></td>
+                    <td>Diagnóstico mecánico inmediato del COL004 / INT-104 (outlier de consumo +27% sobre su parque).</td>
+                    <td>Mantenimiento</td>
+                    <td>15 días</td>
+                    <td><strong>Medio</strong> — ahorro estimado $2-4 M/año si se corrige.</td>
+                    <td>Bajo</td>
+                </tr>
+                <tr>
+                    <td><strong>4</strong></td>
+                    <td>Caso de negocio para renovar 1 unidad ≤2018 en Q3 2026 (priorizar la de mayor uso).</td>
+                    <td>Dirección + Finanzas</td>
+                    <td>60 días</td>
+                    <td><strong>Alto</strong> — ahorro proyectado ≈$10 M/año en combustible por unidad renovada.</td>
+                    <td>Alto</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 style="color: #1F3A5F;">5. KPIs de seguimiento</h4>
+        <p>Para validar que las acciones funcionan, monitorear mensualmente:</p>
+        <table>
+            <thead><tr><th>KPI</th><th>Valor actual</th><th>Meta a 6 meses</th><th>Frecuencia</th></tr></thead>
+            <tbody>
+                <tr><td>Puntualidad global</td><td>67,1%</td><td>≥ 78%</td><td>Mensual</td></tr>
+                <tr><td>% viajes demorados &gt;5 min en R6 - Malargüe</td><td>68,5%</td><td>≤ 40%</td><td>Mensual</td></tr>
+                <tr><td>Siniestralidad choferes Cat C</td><td>11,1%</td><td>≤ 7%</td><td>Mensual</td></tr>
+                <tr><td>lts/100 km flota ≤2018</td><td>33,1</td><td>≤ 30 (con renovación parcial)</td><td>Trimestral</td></tr>
+                <tr><td>Disponibilidad de flota</td><td>85%</td><td>≥ 90%</td><td>Semanal</td></tr>
+            </tbody>
+        </table>
+
+        <h4 style="color: #1F3A5F;">6. Notas y limitaciones</h4>
+        <ul>
+            <li><strong>Ventana corta:</strong> el análisis cubre 4 meses. La estacionalidad anual (turismo en Malargüe en invierno, vendimia en marzo) puede explicar parte del crecimiento — validar con histórico 2025 antes de comprometerse a planes de capacidad de largo plazo.</li>
+            <li><strong>Correlación ≠ causalidad:</strong> la correlación año-consumo (−0,92) es muy fuerte pero no descarta que parte del exceso de los Agrale 2017 sea por modelo/marca y no por antigüedad. La renovación debería evaluarse caso por caso.</li>
+            <li><strong>Datos auto-reportados:</strong> el campo <em>Demora_Min</em> y <em>Pasajeros</em> dependen del registro del chofer. Recomendamos cruzar con sistema GPS o validador electrónico cuando estén disponibles.</li>
+            <li><strong>Tamaño muestral:</strong> el segmento Tarde + Cat C tiene n = 171 viajes — suficiente para detectar el patrón pero conviene reconfirmarlo con otro cuatrimestre.</li>
+        </ul>
+
+        <p style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #cfd8dc; font-size: 0.85em; color: #546E7A;">
+            <strong>Anexo técnico disponible bajo pedido:</strong> validaciones DAX, queries de fuente, gráficos de soporte (Influenciadores clave, scatter Km × Gasoil, evolución mensual de KPIs). Dashboard Power BI: <em>iselin_dashboard_2026Q1.pbix</em>.
+        </p>
+
+    </div>
+
+    <div class="callout info">
+        <div class="cicon">🎤</div>
+        <div class="ctext"><strong>Cómo presentar este informe en una reunión de 30 minutos.</strong>
+            <ol style="margin: 6px 0 0 20px;">
+                <li><strong>Min 0-5:</strong> resumen ejecutivo en voz alta. <em>"ISELIN creció 60%, mejoró puntualidad 11 puntos, y el riesgo restante está en tres focos puntuales que tienen acción asociada."</em></li>
+                <li><strong>Min 5-20:</strong> los 4 hallazgos, uno por slide o página. Mostrá el visual del dashboard que respalda cada uno (Influenciadores clave para el hallazgo 2; combo de líneas para el 1; matriz para el 3; scatter para el 4).</li>
+                <li><strong>Min 20-25:</strong> tabla del plan de acción. Pedí confirmación de responsables y plazos en vivo.</li>
+                <li><strong>Min 25-30:</strong> KPIs y próxima fecha de revisión. Cerrar con la pregunta: <em>"¿qué necesitan que mida en el próximo informe?"</em></li>
+            </ol>
+            <strong>Regla de oro:</strong> no abrir el dashboard durante el resumen ejecutivo. El dashboard es para el deep-dive después de los hallazgos, no para sustituirlos.
+        </div>
+    </div>
+
+</section>
+
+<!-- ============================================================
+     SECCIÓN 14 — APÉNDICE
      ============================================================ -->
 <section id="apendices">
-    <h2>13. Apéndice · Convenciones</h2>
+    <h2>14. Apéndice · Convenciones</h2>
 
     <h3>Slicers globales sugeridos</h3>
     <div class="card-grid">
@@ -1847,17 +2158,6 @@ CALCULATE ( [pct_siniestralidad], Choferes[rango_antiguedad] = "Experto (&gt;12)
         <li>Prefijo <code>flag_</code> → clasificaciones cualitativas (<code>flag_outlier_consumo</code>)</li>
     </ul>
 
-    <h3>Paleta de colores</h3>
-    <table>
-        <thead><tr><th>Color</th><th>Hex</th><th>Uso</th></tr></thead>
-        <tbody>
-            <tr><td>Azul ISELIN</td><td><code>#1F3A5F</code></td><td>Métricas operativas, volumen</td></tr>
-            <tr><td>Verde</td><td><code>#2E7D32</code></td><td>Indicadores positivos (puntualidad, disponibilidad)</td></tr>
-            <tr><td>Rojo</td><td><code>#C62828</code></td><td>Indicadores negativos (siniestros, outliers, demoras)</td></tr>
-            <tr><td>Naranja</td><td><code>#EF6C00</code></td><td>Alertas, KPIs intermedios</td></tr>
-            <tr><td>Gris</td><td><code>#546E7A</code></td><td>Bordes, contexto</td></tr>
-        </tbody>
-    </table>
 </section>
 
 </main>

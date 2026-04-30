@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E3 — Fórmulas DAX, Dashboards Avanzados y Storytelling | ISELIN</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --font: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --bg: #F5F7FA;
+    --surface: #FFFFFF;
+    --surface-alt: #F0F3F8;
+    --surface-dark: #0E1525;
+    --border: #E2E8F0;
+    --border-hover: #CBD5E1;
+    --ink: #0F172A;
+    --ink2: #334155;
+    --ink3: #475569;
+    --ink4: #64748B;
+    --blue: #3B82F6;
+    --blue-soft: #EFF6FF;
+    --blue-mid: #BFDBFE;
+    --teal: #0D9488;
+    --teal-soft: #F0FDFA;
+    --orange: #EA580C;
+    --orange-soft: #FFF7ED;
+    --green: #059669;
+    --green-soft: #ECFDF5;
+    --purple: #7C3AED;
+    --purple-soft: #F5F3FF;
+    --red: #DC2626;
+    --grad-blue: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+    --grad-teal: linear-gradient(135deg, #0D9488 0%, #0891B2 100%);
+    --grad-warm: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%);
+    --grad-green: linear-gradient(135deg, #059669 0%, #0D9488 100%);
+    --grad-purple: linear-gradient(135deg, #7C3AED 0%, #6366F1 100%);
+    --grad-cover: linear-gradient(160deg, #0E1525 0%, #162032 40%, #1A2744 100%);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow: 0 4px 16px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.08);
+    --r: 14px;
+    --r-sm: 8px;
+    --r-lg: 20px;
+}
+.reveal-viewport { background: var(--bg); }
+.reveal { font-family: var(--font); font-size: 36px; color: var(--ink2); }
+.reveal .slides { text-align: left; }
+.reveal .slides section {
+    padding: 44px 72px 48px;
+    box-sizing: border-box;
+    display: flex !important;
+    flex-direction: column;
+    height: 720px;
+}
+.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+    font-family: var(--font); color: var(--ink); font-weight: 700;
+    text-transform: none; letter-spacing: -0.025em; line-height: 1.15; margin: 0; text-align: left;
+}
+.reveal h1 { font-size: 2.4em; font-weight: 900; letter-spacing: -0.04em; }
+.reveal h2 { font-size: 1.6em; font-weight: 800; }
+.reveal h3 { font-size: 0.88em; font-weight: 700; }
+.reveal p { margin: 0; line-height: 1.65; }
+.reveal strong { color: var(--ink); font-weight: 600; }
+.reveal .slide-number {
+    font-family: var(--font); font-size: 12px; font-weight: 500;
+    color: var(--ink4); background: none; right: 52px; bottom: 20px;
+}
+.reveal .progress span { background: var(--teal); height: 3px; }
+
+#home-btn {
+    position: fixed; top: 16px; left: 16px; z-index: 100;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 16px;
+    font-family: var(--font); font-size: 13px; font-weight: 600;
+    color: var(--ink3); text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+}
+#home-btn:hover { color: var(--teal); border-color: var(--teal); transform: translateY(-1px); }
+.reveal .controls { color: var(--teal); }
+.reveal .controls button { opacity: 0.4; }
+.reveal .controls button:hover { opacity: 1; }
+
+.grow { flex: 1; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex: 1; align-content: stretch; }
+
+.label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.4em; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 6px;
+}
+.label::before {
+    content: ''; width: 24px; height: 2px; background: var(--teal); border-radius: 2px;
+}
+.label.blue { color: var(--blue); }
+.label.blue::before { background: var(--blue); }
+.label.green { color: var(--green); }
+.label.green::before { background: var(--green); }
+.label.orange { color: var(--orange); }
+.label.orange::before { background: var(--orange); }
+.label.purple { color: var(--purple); }
+.label.purple::before { background: var(--purple); }
+
+.sub { color: var(--ink2); font-size: 0.52em; font-weight: 400; margin-top: 6px; line-height: 1.5; }
+.bottom-quote {
+    margin-top: 20px; padding-top: 14px; text-align: center;
+    font-size: 0.42em; font-weight: 500; font-style: italic;
+    color: var(--ink3); border-top: 1px solid var(--border);
+}
+
+.card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 24px;
+    box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+}
+.card[data-top]::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.card[data-top="blue"]::before { background: var(--grad-blue); }
+.card[data-top="teal"]::before { background: var(--grad-teal); }
+.card[data-top="orange"]::before { background: var(--grad-warm); }
+.card[data-top="green"]::before { background: var(--grad-green); }
+.card[data-top="purple"]::before { background: var(--grad-purple); }
+.card h3 { font-size: 0.62em; margin-bottom: 8px; }
+.card p { font-size: 0.5em; color: var(--ink2); line-height: 1.75; }
+.card ul { font-size: 0.5em; color: var(--ink2); line-height: 1.85; padding-left: 1.1em; margin: 8px 0 0; }
+.card.soft-blue { background: var(--blue-soft); border-color: var(--blue-mid); }
+.card.soft-teal { background: var(--teal-soft); border-color: #99F6E4; }
+.card.soft-orange { background: var(--orange-soft); border-color: #FED7AA; }
+.card.soft-green { background: var(--green-soft); border-color: #A7F3D0; }
+.card.soft-purple { background: var(--purple-soft); border-color: #DDD6FE; }
+
+.badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: var(--r-sm);
+    font-weight: 800; font-size: 0.52em; color: white; flex-shrink: 0;
+}
+.badge.blue { background: var(--grad-blue); }
+.badge.teal { background: var(--grad-teal); }
+.badge.orange { background: var(--grad-warm); }
+.badge.green { background: var(--grad-green); }
+.badge.purple { background: var(--grad-purple); }
+
+.pill {
+    display: inline-block; font-size: 0.4em; font-weight: 600;
+    padding: 3px 12px; border-radius: 20px;
+    background: var(--surface-alt); color: var(--ink3); border: 1px solid var(--border);
+}
+
+.agenda { display: flex; flex-direction: column; gap: 7px; flex: 1; margin-top: 14px; justify-content: center; }
+.ag {
+    display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 13px 24px;
+    position: relative; overflow: hidden;
+}
+.ag::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.ag:nth-child(1)::before, .ag:nth-child(3)::before, .ag:nth-child(5)::before, .ag:nth-child(7)::before { background: var(--teal); }
+.ag:nth-child(2)::before, .ag:nth-child(4)::before, .ag:nth-child(6)::before { background: var(--blue); }
+.ag .t { font-size: 0.44em; color: var(--ink3); font-weight: 600; font-variant-numeric: tabular-nums; }
+.ag .n { font-size: 0.52em; color: var(--ink); font-weight: 600; }
+.ag .d { font-size: 0.42em; color: var(--ink3); text-align: right; }
+
+.tl { display: flex; gap: 0; flex: 1; margin-top: 28px; position: relative; align-items: flex-start; }
+.tl::before {
+    content: ''; position: absolute; top: 80px; left: 10%; right: 10%;
+    height: 2px; background: var(--border);
+}
+.tl-item { flex: 1; text-align: center; position: relative; z-index: 1; }
+.tl-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 18px 16px; margin: 0 10px 18px;
+    box-shadow: var(--shadow-sm);
+}
+.tl-card.done { border-color: var(--green); background: var(--green-soft); }
+.tl-card.active { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-soft), var(--shadow); }
+.tl-dot { width: 14px; height: 14px; border-radius: 50%; margin: 0 auto 16px; background: var(--ink4); }
+.tl-dot.done { background: var(--green); }
+.tl-dot.active { background: var(--teal); box-shadow: 0 0 0 4px var(--teal-soft); }
+.tl-dot.blue { background: var(--blue); }
+.tl-item h4 { font-size: 0.48em; text-align: center; }
+.tl-item p { font-size: 0.4em; color: var(--ink2); text-align: center; margin-top: 4px; }
+
+.code {
+    background: #0E1525; color: #E2E8F0;
+    border-radius: var(--r-sm); padding: 20px 24px;
+    font-family: var(--mono); font-size: 0.46em; line-height: 1.7;
+    overflow-x: auto;
+}
+.code .k { color: #7DD3FC; font-weight: 600; }
+.code .t { color: #C4B5FD; }
+.code .c { color: #94A3B8; font-style: italic; }
+.code .s { color: #FCA5A5; }
+.code .o { color: #FDBA74; }
+.code .n { color: #6EE7B7; }
+.code .v { color: #F9A8D4; }
+
+.ent { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.ent .title { font-size: 0.5em; color: var(--ink); font-weight: 600; }
+.ent .desc { font-size: 0.42em; color: var(--ink3); }
+
+.cover {
+    background: var(--grad-cover) !important;
+    color: white;
+    justify-content: center !important;
+    position: relative;
+}
+.cover h1, .cover h2, .cover h3 { color: #F1F5F9; }
+.cover p { color: #94A3B8; }
+.cover .side {
+    position: absolute; left: 0; top: 0; width: 5px; height: 100%;
+    background: linear-gradient(180deg, #0D9488, #3B82F6, #7C3AED);
+}
+.cover .logo { font-size: 0.7em; font-weight: 800; margin-bottom: 48px; }
+.cover .logo .da { color: #94A3B8; }
+.cover .logo .oi { color: #14B8A6; }
+.cover .enc {
+    display: inline-block; font-size: 0.42em; font-weight: 700;
+    padding: 5px 20px; border-radius: 24px; letter-spacing: 0.12em;
+    background: var(--grad-warm); color: white; margin-bottom: 16px;
+}
+.cover .meta { font-size: 0.46em; color: #4B5F7A; margin-top: 48px; }
+.cover .bottom-quote { color: #4B5F7A; border-top-color: rgba(255,255,255,0.08); }
+
+/* ═══ E3-SPECIFIC ═══ */
+.principle-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+    flex: 1; margin-top: 14px; align-content: center;
+}
+.principle {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 16px 18px;
+    display: flex; gap: 14px; align-items: flex-start;
+}
+.principle .ic {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.5em; font-weight: 800; color: white; flex-shrink: 0;
+}
+.principle.b .ic { background: var(--grad-blue); }
+.principle.t .ic { background: var(--grad-teal); }
+.principle.o .ic { background: var(--grad-warm); }
+.principle.g .ic { background: var(--grad-green); }
+.principle h4 { font-size: 0.48em; margin: 0 0 6px; }
+.principle p { font-size: 0.4em; color: var(--ink3); margin: 0; line-height: 1.5; }
+
+.before-after {
+    display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px;
+    flex: 1; margin-top: 14px; align-items: stretch;
+}
+.before-after .arrow {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4em; color: var(--teal);
+}
+.ba-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 18px;
+    display: flex; flex-direction: column;
+}
+.ba-card.bad { border-left: 3px solid var(--red); background: #FEF2F2; }
+.ba-card.good { border-left: 3px solid var(--green); background: var(--green-soft); }
+.ba-card .tag-bf {
+    font-size: 0.38em; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 8px;
+}
+.ba-card.bad .tag-bf { color: var(--red); }
+.ba-card.good .tag-bf { color: var(--green); }
+.ba-card pre {
+    font-family: var(--mono); font-size: 0.4em; line-height: 1.6;
+    background: #0E1525; color: #E2E8F0; padding: 14px;
+    border-radius: 6px; margin: 0; flex: 1;
+    overflow: hidden;
+}
+
+.fn-row {
+    display: grid; grid-template-columns: 200px 1fr; gap: 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 16px 22px;
+    align-items: center;
+}
+.fn-row .name {
+    font-family: var(--mono); font-size: 0.5em; font-weight: 700;
+    color: var(--purple);
+}
+.fn-row .desc { font-size: 0.46em; color: var(--ink2); }
+
+.dash-mock {
+    display: grid; grid-template-rows: auto 1fr; gap: 10px;
+    flex: 1; margin-top: 12px;
+    background: var(--surface-alt); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 14px;
+}
+.dash-mock .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+}
+.dash-mock .kpi-mock {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px;
+}
+.dash-mock .kpi-mock .lbl {
+    font-size: 0.32em; color: var(--ink4); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.dash-mock .kpi-mock .val {
+    font-size: 0.7em; font-weight: 800; color: var(--ink); margin-top: 4px;
+}
+.dash-mock .charts {
+    display: grid; grid-template-columns: 2fr 1fr; gap: 10px;
+}
+.dash-mock .chart-mock {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px;
+    display: flex; flex-direction: column; gap: 6px;
+}
+.dash-mock .chart-mock .ttl {
+    font-size: 0.36em; font-weight: 600; color: var(--ink);
+}
+.dash-mock .chart-mock svg { width: 100%; flex: 1; }
+
+.feature-list { display: flex; flex-direction: column; gap: 10px; flex: 1; margin-top: 14px; justify-content: center; }
+.feat {
+    display: grid; grid-template-columns: 44px 1fr; gap: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 14px 20px;
+    align-items: center;
+}
+.feat .ico {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6em;
+}
+.feat .ico.b { background: var(--blue-soft); color: var(--blue); }
+.feat .ico.t { background: var(--teal-soft); color: var(--teal); }
+.feat .ico.o { background: var(--orange-soft); color: var(--orange); }
+.feat .ico.g { background: var(--green-soft); color: var(--green); }
+.feat .ico.p { background: var(--purple-soft); color: var(--purple); }
+.feat h4 { font-size: 0.5em; margin: 0; }
+.feat p { font-size: 0.4em; color: var(--ink3); margin-top: 3px; }
+
+.color-row { display: flex; gap: 14px; flex: 1; margin-top: 14px; align-items: stretch; }
+.color-card {
+    flex: 1; border-radius: var(--r-sm); padding: 18px;
+    display: flex; flex-direction: column; gap: 6px;
+    color: white;
+}
+.color-card.green { background: var(--grad-green); }
+.color-card.red { background: linear-gradient(135deg, #DC2626, #EF4444); }
+.color-card.orange { background: var(--grad-warm); }
+.color-card.gray { background: linear-gradient(135deg, #475569, #64748B); }
+.color-card .hex { font-family: var(--mono); font-size: 0.36em; opacity: 0.8; }
+.color-card h4 { color: white; font-size: 0.52em; }
+.color-card p { font-size: 0.38em; color: rgba(255,255,255,0.85); margin-top: 6px; line-height: 1.4; }
+</style>
+</head>
+<body>
+<a href="../../index.html" id="home-btn" title="Volver al inicio">← Inicio</a>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══ 1. PORTADA ═══ -->
+<section class="cover">
+    <div class="side"></div>
+    <div class="logo"><span class="da">data </span><span class="oi">oilers</span></div>
+    <div class="enc">ENCUENTRO 3 DE 4</div>
+    <h1>Fórmulas DAX,<br>Dashboards Avanzados<br>y Storytelling con Datos</h1>
+    <p style="font-size:0.68em;color:#CBD5E1;margin-top:12px">Capacitación en Análisis de Datos</p>
+    <p style="font-size:0.52em;color:#F59E0B;margin-top:8px;font-weight:600;letter-spacing:0.05em">ISELIN · TRANSPORTE</p>
+    <p class="meta">Jueves 23 de abril de 2026 · Virtual · 2 horas</p>
+    <div class="bottom-quote">"Un dashboard sin historia es solo un Excel con colores."</div>
+</section>
+
+<!-- ═══ 2. ¿DÓNDE QUEDAMOS? ═══ -->
+<section>
+    <div class="label">Recap</div>
+    <h2>¿Dónde quedamos?</h2>
+    <p class="sub">Un repaso rápido antes de avanzar</p>
+    <div class="tl">
+        <div class="tl-item">
+            <div class="tl-card done"><h4 style="color:var(--green);font-size:0.56em">E1 ✓</h4><p style="font-size:0.44em;color:var(--ink4)">16/04 · Presencial</p></div>
+            <div class="tl-dot done"></div>
+            <p>Fundamentos,<br>Calidad y primer<br>contacto con PBI</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card done"><h4 style="color:var(--green);font-size:0.56em">E2 ✓</h4><p style="font-size:0.44em;color:var(--ink4)">21/04 · Virtual</p></div>
+            <div class="tl-dot done"></div>
+            <p>Modelo de datos,<br>Power Query y<br>visualizaciones</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card active"><h4 style="color:var(--teal);font-size:0.56em">E3 · Hoy</h4><p style="font-size:0.44em;color:var(--ink4)">23/04 · Virtual</p></div>
+            <div class="tl-dot active"></div>
+            <p>Fórmulas DAX,<br>dashboards y<br>storytelling</p>
+        </div>
+        <div class="tl-item">
+            <div class="tl-card"><h4 style="color:var(--ink4);font-size:0.56em">E4</h4><p style="font-size:0.44em;color:var(--ink4)">30/04 · Presencial</p></div>
+            <div class="tl-dot"></div>
+            <p>Interpretación,<br>publicación y<br>actualización</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"En E2 modelamos los datos. Hoy aprendemos a hacerles preguntas más profundas."</div>
+</section>
+
+<!-- ═══ 3. AGENDA ═══ -->
+<section>
+    <div class="label blue">Agenda</div>
+    <h2>De qué se trata el encuentro de hoy</h2>
+    <p class="sub">7 bloques · 2 horas · objetivo: terminar con un dashboard que cuenta una historia</p>
+    <div class="agenda">
+        <div class="ag"><div class="t">5 min</div><div class="n">Recap rápido y resolución de bloqueos</div><div class="d">Bloque 1</div></div>
+        <div class="ag"><div class="t">30 min</div><div class="n">Fórmulas DAX más potentes (CALCULATE, VAR, tiempo)</div><div class="d">Bloque 2</div></div>
+        <div class="ag"><div class="t">10 min</div><div class="n">Tabla de calendario: la pieza que falta</div><div class="d">Bloque 3</div></div>
+        <div class="ag"><div class="t">30 min</div><div class="n">Visualizaciones avanzadas e interactividad</div><div class="d">Bloque 4</div></div>
+        <div class="ag"><div class="t">25 min</div><div class="n">Storytelling con datos: diseñar para comunicar</div><div class="d">Bloque 5</div></div>
+        <div class="ag"><div class="t">15 min</div><div class="n">Construcción en vivo: dashboard multipágina</div><div class="d">Bloque 6</div></div>
+        <div class="ag"><div class="t">5 min</div><div class="n">Cierre y preparación para E4</div><div class="d">Bloque 7</div></div>
+    </div>
+</section>
+
+<!-- ═══ 4. CALCULATE: REPASO ═══ -->
+<section>
+    <div class="label purple">DAX</div>
+    <h2><code style="font-family:var(--mono);font-size:0.8em;color:var(--purple)">CALCULATE()</code>: el repaso de E2</h2>
+    <p class="sub">La función estrella de DAX: aplicar una métrica con un filtro a medida</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card soft-purple" data-top="purple">
+            <h3 style="color:var(--purple)">Sintaxis</h3>
+            <pre class="code" style="margin-top:10px"><span class="k">CALCULATE</span>(
+  <span class="c">// expresión a calcular</span>
+  <span class="k">SUM</span>( <span class="t">Viajes</span>[<span class="o">Pasajeros</span>] ),
+  <span class="c">// filtros que aplicamos</span>
+  <span class="t">Rutas</span>[<span class="o">Tipo</span>] = <span class="s">"Urbana"</span>
+)</pre>
+        </div>
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">Qué hace</h3>
+            <p style="margin-top:10px">Toma una medida (ej: <em>total de pasajeros</em>) y le aplica un <strong>filtro adicional</strong> antes de devolver el resultado.</p>
+            <p style="margin-top:10px">En el ejemplo: cuenta los pasajeros <strong>solo de las rutas urbanas</strong>, sin importar qué slicer esté activo en la página.</p>
+            <p style="margin-top:10px;color:var(--orange)"><strong>Es la base de todo lo que viene hoy.</strong></p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 5. CALCULATE MULTIFILTROS ═══ -->
+<section>
+    <div class="label purple">DAX</div>
+    <h2>CALCULATE con varios filtros a la vez</h2>
+    <p class="sub">Podés sumar tantos filtros como necesites, separados por comas</p>
+    <pre class="code" style="margin-top:18px"><span class="v">pasajeros_urbano_tarde</span> =
+<span class="k">CALCULATE</span>(
+  <span class="k">SUM</span>( <span class="t">Viajes</span>[<span class="o">Pasajeros</span>] ),
+  <span class="t">Rutas</span>[<span class="o">Tipo</span>] = <span class="s">"Urbana"</span>,
+  <span class="t">Viajes</span>[<span class="o">Turno</span>] = <span class="s">"Tarde"</span>,
+  <span class="t">Calendario</span>[<span class="o">Anio</span>] = <span class="n">2026</span>
+)</pre>
+    <div class="grid-2" style="margin-top:18px">
+        <div class="card soft-blue" data-top="blue">
+            <h3 style="color:var(--blue)">Cómo se leen los filtros</h3>
+            <p style="margin-top:8px">Power BI los aplica <strong>todos a la vez (AND)</strong>: el resultado son los pasajeros que cumplen las 3 condiciones simultáneamente.</p>
+        </div>
+        <div class="card soft-orange" data-top="orange">
+            <h3 style="color:var(--orange)">Cuándo usarlo</h3>
+            <p style="margin-top:8px">Cuando querés un KPI específico (ej: <em>"pasajeros del turno tarde en rutas urbanas en 2026"</em>) sin tener que filtrar la página entera.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"CALCULATE multiplica el poder de tu modelo: cada combinación es una nueva historia."</div>
+</section>
+
+<!-- ═══ 6. VAR / RETURN ═══ -->
+<section>
+    <div class="label purple">DAX</div>
+    <h2>VAR / RETURN: organizá fórmulas largas</h2>
+    <p class="sub">Cuando una fórmula crece, las variables la hacen legible y rápida</p>
+    <div class="before-after">
+        <div class="ba-card bad">
+            <div class="tag-bf">Sin VAR · difícil de leer</div>
+            <pre><span style="color:#F9A8D4">var_pct =</span>
+<span style="color:#FDBA74">DIVIDE</span>(
+  <span style="color:#7DD3FC">SUM</span>(<span style="color:#C4B5FD">Viajes</span>[<span style="color:#FDBA74">Pasajeros</span>]) -
+  <span style="color:#7DD3FC">CALCULATE</span>(
+    <span style="color:#7DD3FC">SUM</span>(<span style="color:#C4B5FD">Viajes</span>[<span style="color:#FDBA74">Pasajeros</span>]),
+    <span style="color:#7DD3FC">DATEADD</span>(<span style="color:#C4B5FD">Calendario</span>[<span style="color:#FDBA74">Fecha</span>],-1,<span style="color:#FCA5A5">MONTH</span>)
+  ),
+  <span style="color:#7DD3FC">CALCULATE</span>(<span style="color:#7DD3FC">SUM</span>(...))
+)</pre>
+        </div>
+        <div class="arrow">→</div>
+        <div class="ba-card good">
+            <div class="tag-bf">Con VAR · clara</div>
+            <pre><span style="color:#F9A8D4">var_pct =</span>
+<span style="color:#7DD3FC">VAR</span> <span style="color:#F9A8D4">actual</span> = <span style="color:#7DD3FC">SUM</span>(<span style="color:#C4B5FD">Viajes</span>[<span style="color:#FDBA74">Pasajeros</span>])
+<span style="color:#7DD3FC">VAR</span> <span style="color:#F9A8D4">anterior</span> = <span style="color:#7DD3FC">CALCULATE</span>(
+  <span style="color:#F9A8D4">actual</span>,
+  <span style="color:#7DD3FC">DATEADD</span>(<span style="color:#C4B5FD">Calendario</span>[<span style="color:#FDBA74">Fecha</span>],-1,<span style="color:#FCA5A5">MONTH</span>)
+)
+<span style="color:#7DD3FC">RETURN</span>
+  <span style="color:#FDBA74">DIVIDE</span>(<span style="color:#F9A8D4">actual</span> - <span style="color:#F9A8D4">anterior</span>, <span style="color:#F9A8D4">anterior</span>)</pre>
+        </div>
+    </div>
+    <div class="bottom-quote">"VAR no es para escribir fórmulas más cortas, es para que se entiendan al volver a leerlas."</div>
+</section>
+
+<!-- ═══ 7. TABLA DE CALENDARIO: POR QUÉ ═══ -->
+<section>
+    <div class="label orange">Calendario</div>
+    <h2>¿Por qué necesitás una tabla de calendario?</h2>
+    <p class="sub">Sin ella, las funciones de tiempo de DAX no funcionan</p>
+    <div class="grid-2 grow" style="margin-top:18px;align-items:stretch">
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">El problema</h3>
+            <p style="margin-top:10px">Tu tabla de Viajes tiene una columna <code style="font-family:var(--mono);font-size:0.85em">Fecha</code>, pero solo con las fechas en que hubo viajes.</p>
+            <p style="margin-top:8px">¿Qué pasa los días sin operación? ¿Cómo agrupás por semana, trimestre, año?</p>
+            <p style="margin-top:8px"><strong style="color:var(--red)">Sin calendario dedicado: no podés comparar períodos.</strong></p>
+        </div>
+        <div class="card soft-green" data-top="green">
+            <h3 style="color:var(--green)">La solución</h3>
+            <p style="margin-top:10px">Una tabla aparte con <strong>todas las fechas</strong> del rango (ej: 2024 al 2027), aunque no haya viajes en algunas.</p>
+            <p style="margin-top:8px">Se conecta con Viajes por la fecha. Power BI ya sabe qué es enero, qué es trimestre, qué es día hábil.</p>
+            <p style="margin-top:8px"><strong style="color:var(--green)">Habilita TOTALYTD, comparaciones año-a-año y mucho más.</strong></p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 8. CREAR LA TABLA CALENDARIO ═══ -->
+<section>
+    <div class="label orange">Calendario</div>
+    <h2>Crear la tabla con DAX</h2>
+    <p class="sub">Dos opciones: rango fijo (recomendado) o automático</p>
+    <pre class="code" style="margin-top:14px"><span class="c">// Opción 1: rango definido por vos (recomendado)</span>
+<span class="v">Calendario</span> = <span class="k">CALENDAR</span>( <span class="k">DATE</span>(<span class="n">2024</span>,<span class="n">1</span>,<span class="n">1</span>), <span class="k">DATE</span>(<span class="n">2027</span>,<span class="n">12</span>,<span class="n">31</span>) )
+
+<span class="c">// Opción 2: rango automático según tus datos</span>
+<span class="v">Calendario</span> = <span class="k">CALENDARAUTO</span>()
+
+<span class="c">// Después agregás columnas calculadas:</span>
+<span class="v">Anio</span> = <span class="k">YEAR</span>( <span class="t">Calendario</span>[<span class="o">Date</span>] )
+<span class="v">Mes</span> = <span class="k">MONTH</span>( <span class="t">Calendario</span>[<span class="o">Date</span>] )
+<span class="v">NombreMes</span> = <span class="k">FORMAT</span>( <span class="t">Calendario</span>[<span class="o">Date</span>], <span class="s">"mmm"</span> )
+<span class="v">Trimestre</span> = <span class="s">"T"</span> & <span class="k">QUARTER</span>( <span class="t">Calendario</span>[<span class="o">Date</span>] )
+<span class="v">EsHabil</span> = <span class="k">WEEKDAY</span>( <span class="t">Calendario</span>[<span class="o">Date</span>], <span class="n">2</span> ) &lt;= <span class="n">5</span></pre>
+    <div style="margin-top:14px;padding:12px 18px;background:var(--orange-soft);border-left:3px solid var(--orange);border-radius:6px">
+        <p style="font-size:0.46em;color:var(--ink2);margin:0"><strong style="color:var(--orange)">Paso final:</strong> click derecho sobre la tabla → <em>"Marcar como tabla de fechas"</em>. Sin esto, las funciones de tiempo no funcionan.</p>
+    </div>
+</section>
+
+<!-- ═══ 9. TOTALYTD ═══ -->
+<section>
+    <div class="label purple">DAX · Tiempo</div>
+    <h2><code style="font-family:var(--mono);font-size:0.8em;color:var(--purple)">TOTALYTD()</code>: acumulado del año</h2>
+    <p class="sub">Year-To-Date: lo que llevamos sumado desde el 1 de enero hasta hoy</p>
+    <pre class="code" style="margin-top:14px"><span class="v">pasajeros_ytd</span> =
+<span class="k">TOTALYTD</span>(
+  <span class="k">SUM</span>( <span class="t">Viajes</span>[<span class="o">Pasajeros</span>] ),
+  <span class="t">Calendario</span>[<span class="o">Date</span>]
+)</pre>
+    <div class="grid-2" style="margin-top:14px">
+        <div class="card soft-purple" data-top="purple">
+            <h3 style="color:var(--purple)">Cuándo usarlo</h3>
+            <p style="margin-top:8px">Para mostrar progreso acumulado: <em>"Llevamos 78.651 pasajeros en 2026"</em>, <em>"Cumplimos el 65% del objetivo anual"</em>.</p>
+        </div>
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">Aplicado a ISELIN</h3>
+            <p style="margin-top:8px">KPI de cumplimiento anual de viajes vs. objetivo, ideal para la página de <strong>Dirección</strong> en el dashboard.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"YTD responde la pregunta: ¿cómo venimos vs. el plan, hasta hoy?"</div>
+</section>
+
+<!-- ═══ 10. SAMEPERIODLASTYEAR ═══ -->
+<section>
+    <div class="label purple">DAX · Tiempo</div>
+    <h2><code style="font-family:var(--mono);font-size:0.7em;color:var(--purple)">SAMEPERIODLASTYEAR()</code></h2>
+    <p class="sub">Comparar con el mismo período del año anterior — sin escribir filtros</p>
+    <pre class="code" style="margin-top:14px"><span class="v">pasajeros_anio_anterior</span> =
+<span class="k">CALCULATE</span>(
+  <span class="k">SUM</span>( <span class="t">Viajes</span>[<span class="o">Pasajeros</span>] ),
+  <span class="k">SAMEPERIODLASTYEAR</span>( <span class="t">Calendario</span>[<span class="o">Date</span>] )
+)
+
+<span class="v">var_anual</span> = <span class="k">DIVIDE</span>(
+  [<span class="o">total_pasajeros</span>] - [<span class="o">pasajeros_anio_anterior</span>],
+  [<span class="o">pasajeros_anio_anterior</span>]
+)</pre>
+    <div style="margin-top:14px;padding:14px 20px;background:var(--blue-soft);border-radius:8px;border:1px solid var(--blue-mid)">
+        <p style="font-size:0.46em;color:var(--ink2);margin:0"><strong style="color:var(--blue)">Lectura típica:</strong> <em>"Marzo 2026: +18% vs. marzo 2025"</em>. Power BI compara automáticamente cada celda de la matriz contra su equivalente del año pasado, sin que vos escribas un solo filtro.</p>
+    </div>
+</section>
+
+<!-- ═══ 11. DATEADD ═══ -->
+<section>
+    <div class="label purple">DAX · Tiempo</div>
+    <h2><code style="font-family:var(--mono);font-size:0.8em;color:var(--purple)">DATEADD()</code>: desplazar períodos</h2>
+    <p class="sub">Más flexible que SAMEPERIODLASTYEAR — corrés el período X días, meses, trimestres</p>
+    <pre class="code" style="margin-top:14px"><span class="v">pasajeros_mes_anterior</span> =
+<span class="k">CALCULATE</span>(
+  <span class="k">SUM</span>( <span class="t">Viajes</span>[<span class="o">Pasajeros</span>] ),
+  <span class="k">DATEADD</span>( <span class="t">Calendario</span>[<span class="o">Date</span>], <span class="n">-1</span>, <span class="k">MONTH</span> )
+)
+
+<span class="c">// Tres días atrás:</span>
+<span class="k">DATEADD</span>( <span class="t">Calendario</span>[<span class="o">Date</span>], <span class="n">-3</span>, <span class="k">DAY</span> )
+
+<span class="c">// Próximo trimestre:</span>
+<span class="k">DATEADD</span>( <span class="t">Calendario</span>[<span class="o">Date</span>], <span class="n">+1</span>, <span class="k">QUARTER</span> )</pre>
+    <div class="bottom-quote">"DATEADD es la navaja suiza del tiempo en DAX: cualquier comparación de períodos pasa por acá."</div>
+</section>
+
+<!-- ═══ 12. SUMX / AVERAGEX ═══ -->
+<section>
+    <div class="label purple">DAX</div>
+    <h2>Las funciones "X": cálculos fila por fila</h2>
+    <p class="sub">Cuando SUM no alcanza porque hay que multiplicar primero, después sumar</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue)">SUMX: el patrón</h3>
+            <pre class="code" style="margin-top:8px;font-size:0.4em"><span class="v">ingreso_total</span> =
+<span class="k">SUMX</span>(
+  <span class="t">Viajes</span>,
+  <span class="t">Viajes</span>[<span class="o">Pasajeros</span>] * <span class="t">Viajes</span>[<span class="o">Tarifa</span>]
+)</pre>
+            <p style="margin-top:8px;font-size:0.42em">Para cada fila de Viajes calcula <em>Pasajeros × Tarifa</em>, y al final suma todo.</p>
+        </div>
+        <div class="card" data-top="green">
+            <h3 style="color:var(--green)">AVERAGEX: igual pero promedio</h3>
+            <pre class="code" style="margin-top:8px;font-size:0.4em"><span class="v">consumo_promedio_viaje</span> =
+<span class="k">AVERAGEX</span>(
+  <span class="t">Viajes</span>,
+  <span class="k">DIVIDE</span>(<span class="t">Viajes</span>[<span class="o">Gasoil</span>], <span class="t">Viajes</span>[<span class="o">Km</span>]) * <span class="n">100</span>
+)</pre>
+            <p style="margin-top:8px;font-size:0.42em">Calcula lts/100km de cada viaje y después promedia. Distinto a sumar gasoil / sumar km.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 13. EJEMPLO INTEGRADOR ═══ -->
+<section>
+    <div class="label purple">Ejemplo</div>
+    <h2>Variación porcentual: mes actual vs. anterior</h2>
+    <p class="sub">Junta lo aprendido: VAR + CALCULATE + DATEADD</p>
+    <pre class="code" style="margin-top:14px"><span class="v">var_pasajeros_mom</span> =
+<span class="k">VAR</span> <span class="v">actual</span> = <span class="k">SUM</span>( <span class="t">Viajes</span>[<span class="o">Pasajeros</span>] )
+<span class="k">VAR</span> <span class="v">anterior</span> = <span class="k">CALCULATE</span>(
+  <span class="k">SUM</span>( <span class="t">Viajes</span>[<span class="o">Pasajeros</span>] ),
+  <span class="k">DATEADD</span>( <span class="t">Calendario</span>[<span class="o">Date</span>], <span class="n">-1</span>, <span class="k">MONTH</span> )
+)
+<span class="k">RETURN</span>
+  <span class="k">DIVIDE</span>( <span class="v">actual</span> - <span class="v">anterior</span>, <span class="v">anterior</span> )</pre>
+    <div style="margin-top:14px;padding:14px 20px;background:var(--green-soft);border:1px solid #A7F3D0;border-radius:8px">
+        <p style="font-size:0.46em;color:var(--ink2);margin:0"><strong style="color:var(--green)">Resultado típico en ISELIN abril 2026:</strong> +12,9% vs. marzo. Con esa medida en una tarjeta y formato condicional verde/rojo, el director ve el dato sin leer ningún número.</p>
+    </div>
+</section>
+
+<!-- ═══ 14. FORMATO CONDICIONAL ═══ -->
+<section>
+    <div class="label">Visualización avanzada</div>
+    <h2>Formato condicional: que el color cuente la historia</h2>
+    <p class="sub">Reglas automáticas de color según el valor de cada celda</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card soft-teal" data-top="teal">
+            <h3 style="color:var(--teal)">Cómo se aplica</h3>
+            <p style="margin-top:8px">Click derecho sobre el campo en el visual → <strong>Formato condicional</strong> → elegir tipo (color de fondo / texto / barra de datos).</p>
+            <p style="margin-top:8px">Modos: <strong>escala</strong> (gradiente verde→amarillo→rojo), <strong>reglas</strong> (umbrales fijos), o por <strong>valor de campo</strong>.</p>
+        </div>
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">Ejemplos en ISELIN</h3>
+            <ul style="font-size:0.46em">
+                <li>Matriz Ruta × Turno: fondo rojo si demora &gt; 6 min</li>
+                <li>Tabla de choferes: ícono ⚠️ si siniestralidad &gt; 7%</li>
+                <li>KPI: número en rojo si var. mensual &lt; 0</li>
+            </ul>
+        </div>
+    </div>
+    <div class="bottom-quote">"El color es el primer mensaje que ve el lector — usalo para guiar la atención."</div>
+</section>
+
+<!-- ═══ 15. TOOLTIPS PERSONALIZADOS ═══ -->
+<section>
+    <div class="label">Visualización avanzada</div>
+    <h2>Tooltips personalizados: detalle al pasar el mouse</h2>
+    <p class="sub">Una página oculta del reporte aparece como información emergente</p>
+    <div class="feature-list">
+        <div class="feat"><div class="ico b">1</div><div><h4>Crear una página chica (320×240) y marcarla como "Tooltip"</h4><p>En propiedades de página → <em>Información sobre herramientas</em>: activar.</p></div></div>
+        <div class="feat"><div class="ico t">2</div><div><h4>Diseñarla con la info que querés mostrar al pasar el mouse</h4><p>Foto del colectivo, KPIs del viaje, mini-gráfico, lo que le suma al lector.</p></div></div>
+        <div class="feat"><div class="ico g">3</div><div><h4>En el visual destino, asociar la página tooltip</h4><p>Propiedades del visual → <em>Información sobre herramientas</em> → tipo: Página de informe → elegir la creada.</p></div></div>
+    </div>
+    <div class="bottom-quote">"Un buen tooltip es como una tarjeta de presentación: dice lo justo y se va."</div>
+</section>
+
+<!-- ═══ 16. DRILLTHROUGH ═══ -->
+<section>
+    <div class="label">Visualización avanzada</div>
+    <h2>Drillthrough: ir al detalle con un click derecho</h2>
+    <p class="sub">Llevás al usuario a una página específica, ya filtrada por el dato que clickeó</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue)">Cómo se configura</h3>
+            <p style="margin-top:8px">1. Crear la página de detalle (ej: <em>Detalle de Ruta</em>).</p>
+            <p style="margin-top:6px">2. Arrastrar el campo clave (<code style="font-family:var(--mono);font-size:0.9em">Rutas[Nombre_Ruta]</code>) a la zona <strong>"Obtener detalles"</strong> del panel de visualizaciones.</p>
+            <p style="margin-top:6px">3. En cualquier visual del reporte, click derecho → <em>Profundizar</em> → elegir la página.</p>
+        </div>
+        <div class="card soft-blue" data-top="blue">
+            <h3 style="color:var(--blue)">Ejemplo ISELIN</h3>
+            <p style="margin-top:8px">Estoy en la página <em>Resumen ejecutivo</em>. Veo en un gráfico que <em>Ruta 6 Malargüe</em> tiene 6,4 min de demora.</p>
+            <p style="margin-top:6px">Click derecho → <em>Profundizar a Detalle de Ruta</em> → me lleva a una página entera dedicada a Malargüe: viajes, choferes, evolución, siniestros.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 17. BOOKMARKS Y BOTONES ═══ -->
+<section>
+    <div class="label">Visualización avanzada</div>
+    <h2>Vistas guardadas + botones: navegación pro</h2>
+    <p class="sub">Bookmarks capturan un estado del reporte. Botones lo restauran al click.</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="purple">
+            <h3 style="color:var(--purple)">Caso 1 · Vistas alternativas</h3>
+            <p style="margin-top:8px">Mismo reporte, dos lecturas:</p>
+            <ul style="font-size:0.46em">
+                <li><strong>Vista mensual</strong>: gráficos por mes</li>
+                <li><strong>Vista anual</strong>: mismos gráficos, pero por año</li>
+            </ul>
+            <p style="margin-top:8px;font-size:0.46em">Dos botones arriba alternan ambos bookmarks.</p>
+        </div>
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">Caso 2 · Navegación entre páginas</h3>
+            <p style="margin-top:8px">Botón con acción <em>Navegación de página</em> en lugar de bookmark:</p>
+            <ul style="font-size:0.46em">
+                <li>Barra lateral con 6 botones, uno por página</li>
+                <li>El usuario navega como si fuera una app</li>
+                <li>Mucho más prolijo que las pestañas estándar</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 18. KPI Y GAUGE ═══ -->
+<section>
+    <div class="label">Visualización avanzada</div>
+    <h2>Visuales para mostrar progreso vs. objetivo</h2>
+    <p class="sub">Dos opciones nativas de PBI cuando hay meta + actual</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="green">
+            <h3 style="color:var(--green)">KPI · indicador con tendencia</h3>
+            <p style="margin-top:8px">Muestra: <strong>valor actual</strong>, <strong>meta</strong>, <strong>flecha de tendencia</strong> (verde sube / roja baja).</p>
+            <p style="margin-top:6px">Ideal cuando importa la dirección del cambio, no solo el número.</p>
+            <pre class="code" style="margin-top:8px;font-size:0.36em"><span class="c">// Indicador</span>: pct_puntualidad
+<span class="c">// Eje de tendencia</span>: Calendario[Mes]
+<span class="c">// Objetivo</span>: 0,75</pre>
+        </div>
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">Velocímetro (Gauge)</h3>
+            <p style="margin-top:8px">Aguja de 0 a un máximo, con la meta marcada en la rueda.</p>
+            <p style="margin-top:6px">Útil para KPIs únicos en la página principal: <em>"Disponibilidad de flota: 85% / meta 90%"</em>.</p>
+            <p style="margin-top:6px;color:var(--red);font-size:0.46em"><strong>Cuidado:</strong> ocupa mucho espacio para mostrar un solo dato. No abusar.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 19. STORYTELLING — INTRO ═══ -->
+<section>
+    <div class="label green">Storytelling</div>
+    <h2>Diseñar para comunicar, no para decorar</h2>
+    <p class="sub">4 principios que separan un dashboard útil de uno que se abre dos veces y se olvida</p>
+    <div class="principle-grid">
+        <div class="principle b">
+            <div class="ic">1</div>
+            <div><h4>Menos es más</h4><p>Cada gráfico tiene que responder una pregunta. Si no responde nada, sobra.</p></div>
+        </div>
+        <div class="principle t">
+            <div class="ic">2</div>
+            <div><h4>Jerarquía visual</h4><p>Tamaño y posición indican importancia. Lo más crítico, arriba y grande.</p></div>
+        </div>
+        <div class="principle o">
+            <div class="ic">3</div>
+            <div><h4>Flujo de lectura</h4><p>Diseñá en Z o F: el ojo barre de izquierda a derecha, de arriba a abajo.</p></div>
+        </div>
+        <div class="principle g">
+            <div class="ic">4</div>
+            <div><h4>Significado consistente</h4><p>Si el verde es "bueno" en una página, debe serlo en todas.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ 20. PALETA Y COLORES ═══ -->
+<section>
+    <div class="label green">Storytelling</div>
+    <h2>Paleta de colores: 3-4 tonos y un significado</h2>
+    <p class="sub">Si todo es de un color distinto, nada destaca. Reservá colores para mensajes.</p>
+    <div class="color-row">
+        <div class="color-card green">
+            <div class="hex">#059669</div>
+            <h4>Verde</h4>
+            <p>Indicadores positivos: cumplimiento, puntualidad, disponibilidad.</p>
+        </div>
+        <div class="color-card red">
+            <div class="hex">#DC2626</div>
+            <h4>Rojo</h4>
+            <p>Alertas: demoras, siniestros, outliers que requieren acción.</p>
+        </div>
+        <div class="color-card orange">
+            <div class="hex">#EA580C</div>
+            <h4>Naranja</h4>
+            <p>Intermedio: KPIs en zona de atención, valores cerca del umbral.</p>
+        </div>
+        <div class="color-card gray">
+            <div class="hex">#475569</div>
+            <h4>Gris</h4>
+            <p>Contexto: bordes, fondos, datos de soporte que no compiten por la atención.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Los colores no son decoración: son etiquetas que el ojo lee antes que las palabras."</div>
+</section>
+
+<!-- ═══ 21. LAYOUT ═══ -->
+<section>
+    <div class="label green">Storytelling</div>
+    <h2>Una página = una pregunta de negocio</h2>
+    <p class="sub">El layout clásico que funciona el 90% de las veces</p>
+    <div class="dash-mock">
+        <div class="kpi-row">
+            <div class="kpi-mock"><div class="lbl">Viajes</div><div class="val">2.119</div></div>
+            <div class="kpi-mock"><div class="lbl">Pasajeros</div><div class="val">78.6k</div></div>
+            <div class="kpi-mock"><div class="lbl">Puntualidad</div><div class="val" style="color:var(--green)">67%</div></div>
+            <div class="kpi-mock"><div class="lbl">Siniestralidad</div><div class="val" style="color:var(--red)">5,6%</div></div>
+        </div>
+        <div class="charts">
+            <div class="chart-mock">
+                <div class="ttl">Viajes por mes (tendencia)</div>
+                <svg viewBox="0 0 300 80" preserveAspectRatio="none">
+                    <polyline points="10,60 70,52 130,40 200,28 290,18" fill="none" stroke="#0D9488" stroke-width="2"/>
+                    <circle cx="10" cy="60" r="3" fill="#0D9488"/>
+                    <circle cx="70" cy="52" r="3" fill="#0D9488"/>
+                    <circle cx="130" cy="40" r="3" fill="#0D9488"/>
+                    <circle cx="200" cy="28" r="3" fill="#0D9488"/>
+                    <circle cx="290" cy="18" r="3" fill="#0D9488"/>
+                </svg>
+            </div>
+            <div class="chart-mock">
+                <div class="ttl">Top rutas (detalle)</div>
+                <svg viewBox="0 0 120 80">
+                    <rect x="6" y="8" width="100" height="9" fill="#3B82F6"/>
+                    <rect x="6" y="22" width="78" height="9" fill="#3B82F6"/>
+                    <rect x="6" y="36" width="62" height="9" fill="#3B82F6"/>
+                    <rect x="6" y="50" width="48" height="9" fill="#3B82F6"/>
+                    <rect x="6" y="64" width="32" height="9" fill="#3B82F6"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top:12px;font-size:0.42em;color:var(--ink3);text-align:center"><strong>KPIs arriba</strong> · <strong>Tendencia al medio</strong> · <strong>Detalle al final</strong> · una sola pregunta por página</div>
+</section>
+
+<!-- ═══ 22. ACCESIBILIDAD ═══ -->
+<section>
+    <div class="label green">Storytelling</div>
+    <h2>Accesibilidad: que lo entienda cualquiera</h2>
+    <p class="sub">No es un nice-to-have: es lo que diferencia un dashboard que se usa de uno que no</p>
+    <div class="grid-3 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card soft-blue" data-top="blue">
+            <h3 style="color:var(--blue)">Contraste</h3>
+            <p style="margin-top:8px">Texto oscuro sobre fondo claro (o viceversa). Probá con la herramienta <em>WebAIM Contrast Checker</em>: mínimo 4.5:1.</p>
+        </div>
+        <div class="card soft-orange" data-top="orange">
+            <h3 style="color:var(--orange)">Tamaño de fuente</h3>
+            <p style="margin-top:8px">12pt mínimo en visuales. Títulos 16pt+. Si dudás, hacelo más grande.</p>
+        </div>
+        <div class="card soft-green" data-top="green">
+            <h3 style="color:var(--green)">Texto alternativo</h3>
+            <p style="margin-top:8px">Cada visual tiene un campo <em>Texto alternativo</em>. Una frase corta para lectores de pantalla y para imprimir el reporte sin gráficos.</p>
+        </div>
+    </div>
+    <div class="bottom-quote">"Si tu jefe lo abre desde el celular en un viaje, ¿lo entiende? Si la respuesta es no, rediseñá."</div>
+</section>
+
+<!-- ═══ 23. CONSTRUCCIÓN EN VIVO ═══ -->
+<section>
+    <div class="label orange">Demo en vivo</div>
+    <h2>Dashboard multipágina: lo armamos juntos</h2>
+    <p class="sub">3 páginas con todo lo aprendido — usando los datos de ISELIN</p>
+    <div class="grid-3 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card" data-top="blue">
+            <h3 style="color:var(--blue)">Página 1 · Resumen ejecutivo</h3>
+            <p style="margin-top:8px;font-size:0.46em">4 tarjetas KPI · Línea de viajes mensual · TOTALYTD vs. objetivo · Variación % vs. mes anterior con flecha verde/roja.</p>
+        </div>
+        <div class="card" data-top="teal">
+            <h3 style="color:var(--teal)">Página 2 · Detalle operativo</h3>
+            <p style="margin-top:8px;font-size:0.46em">Matriz Ruta × Turno con formato condicional · drillthrough activado por ruta · tooltip personalizado con detalle del viaje.</p>
+        </div>
+        <div class="card" data-top="orange">
+            <h3 style="color:var(--orange)">Página 3 · Análisis de calidad</h3>
+            <p style="margin-top:8px;font-size:0.46em">Comparación A/B/C de choferes · gauge de disponibilidad de flota · gráfico de evolución de siniestralidad mensual.</p>
+        </div>
+    </div>
+    <div style="margin-top:14px;padding:12px 18px;background:var(--orange-soft);border-left:3px solid var(--orange);border-radius:6px">
+        <p style="font-size:0.46em;color:var(--ink2);margin:0"><strong>Navegación:</strong> botones laterales con acción <em>Navegación de página</em>. Bookmarks para alternar vista mensual / anual.</p>
+    </div>
+</section>
+
+<!-- ═══ 24. CONCEPTOS CLAVE ═══ -->
+<section>
+    <div class="label">Resumen</div>
+    <h2>Los 9 conceptos que te llevás de hoy</h2>
+    <p class="sub">Si dominás estos, ya pasaste el nivel intermedio de Power BI</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;margin-top:14px;align-content:center">
+        <div class="fn-row" style="grid-template-columns:1fr"><div class="name">VAR / RETURN</div></div>
+        <div class="fn-row" style="grid-template-columns:1fr"><div class="name">TOTALYTD</div></div>
+        <div class="fn-row" style="grid-template-columns:1fr"><div class="name">SAMEPERIODLASTYEAR</div></div>
+        <div class="fn-row" style="grid-template-columns:1fr"><div class="name">DATEADD</div></div>
+        <div class="fn-row" style="grid-template-columns:1fr"><div class="name">Tabla de calendario</div></div>
+        <div class="fn-row" style="grid-template-columns:1fr"><div class="name">Formato condicional</div></div>
+        <div class="fn-row" style="grid-template-columns:1fr"><div class="name">Tooltips personalizados</div></div>
+        <div class="fn-row" style="grid-template-columns:1fr"><div class="name">Drillthrough</div></div>
+        <div class="fn-row" style="grid-template-columns:1fr"><div class="name">Bookmarks &amp; botones</div></div>
+    </div>
+    <div class="bottom-quote">"De acá en adelante, lo único que te separa de un dashboard profesional es práctica."</div>
+</section>
+
+<!-- ═══ 25. TAREA Y ENTREGABLES ═══ -->
+<section>
+    <div class="label">Cierre</div>
+    <h2>Tarea para el Encuentro 4</h2>
+    <p class="sub">Para llegar a E4 con un dashboard listo para publicar</p>
+    <div class="grid-2 grow" style="margin-top:14px;align-items:stretch">
+        <div class="card soft-teal" data-top="teal" style="display:flex;flex-direction:column">
+            <h3 style="color:var(--teal)">Sobre tu .pbix personal</h3>
+            <p>1. Completar al menos <strong>2 páginas</strong> del dashboard de tu área.</p>
+            <p style="margin-top:6px">2. Sumar <strong>1 medida con función de tiempo</strong> (TOTALYTD, DATEADD o SAMEPERIODLASTYEAR).</p>
+            <p style="margin-top:6px">3. Aplicar <strong>formato condicional</strong> en al menos un visual.</p>
+            <p style="margin-top:6px">4. Pensar en una <strong>pregunta de negocio</strong> que el dashboard responda.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="card" style="flex-shrink:0">
+                <h3 style="color:var(--ink3)">Si te trabás</h3>
+                <p>Mandá el archivo por el canal de consultas. La <em>Guía práctica de ISELIN</em> tiene el modelo completo paso a paso.</p>
+            </div>
+            <div style="flex:1">
+                <h3 style="font-size:0.64em;margin-bottom:12px">Entregables de E3</h3>
+                <div class="ent"><div class="badge blue">1</div><div><div class="title">Dashboard multipágina</div><div class="desc">.pbix con 3+ páginas, DAX y navegación</div></div></div>
+                <div class="ent"><div class="badge teal">2</div><div><div class="title">Guía de fórmulas DAX</div><div class="desc">Referencia rápida con ejemplos ISELIN</div></div></div>
+                <div class="ent"><div class="badge green">3</div><div><div class="title">Guía de diseño de dashboards</div><div class="desc">Storytelling, paleta, layouts, checklist</div></div></div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-quote">"Un dashboard solo vale si alguien lo usa para decidir."</div>
+</section>
+
+<!-- ═══ 26. CIERRE ═══ -->
+<section class="cover">
+    <div class="side"></div>
+    <div class="logo"><span class="da">data </span><span class="oi">oilers</span></div>
+    <div style="width:48px;height:3px;background:var(--grad-warm);border-radius:4px;margin-bottom:24px"></div>
+    <h1 style="font-size:3.2em">¡Gracias!</h1>
+    <p style="color:#CBD5E1;font-size:0.72em;margin-top:12px">Nos vemos en el Encuentro 4 — Jueves 30 de abril · Presencial</p>
+    <p style="color:#F59E0B;font-size:0.58em;margin-top:8px">Interpretación de Datos, Publicación y Actualización Automática</p>
+    <div class="bottom-quote">"Hoy aprendiste a contar historias con datos. La próxima, a publicarlas."</div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script>
+Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'fade',
+    transitionSpeed: 'default',
+    backgroundTransition: 'fade',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0,
+    controls: true,
+    controlsLayout: 'edges',
+    progress: true,
+    history: true,
+});
+</script>
+</body>
+</html>
